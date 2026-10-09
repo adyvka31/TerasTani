@@ -1,0 +1,16 @@
+{
+  "name": "TerasTani",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"pnpm -C tera-frontend dev\" \"pnpm -C tera-backend dev\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.29.2",
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}
