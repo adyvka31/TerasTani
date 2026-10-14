@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
+
+  
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     const userStr = localStorage.getItem('user');
     if (!userStr) navigate('/login');
@@ -12,6 +15,12 @@ export default function Dashboard() {
   }, [navigate]);
 
   if (!userData) return null;
+
+  const handleConfirmLogout = () => {
+    localStorage.clear();
+    navigate('/home');
+  };
+
 
   return (
     <div className="min-h-screen bg-[#F4F7F6] font-sans selection:bg-emerald-200">
@@ -22,11 +31,45 @@ export default function Dashboard() {
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-emerald-500/30">T</div>
             <span className="font-extrabold text-xl text-gray-800 tracking-tight">TerasTani</span>
           </div>
-          <button onClick={() => { localStorage.clear(); navigate('/login'); }} className="text-gray-500 hover:text-red-500 font-bold text-sm transition-colors">
+          <button 
+            onClick={() => setIsLogoutModalOpen(true)} 
+            className="text-gray-500 hover:text-red-500 font-bold text-sm transition-colors"
+          >
             Keluar
           </button>
         </div>
       </nav>
+
+      {isLogoutModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 relative animate-in fade-in zoom-in-95 duration-200 text-center">
+            
+            <div className="mx-auto w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-2xl mb-4">
+              👋
+            </div>
+            
+            <h3 className="text-xl font-bold text-gray-800 mb-2">Konfirmasi Keluar</h3>
+            <p className="text-gray-500 text-sm mb-6">
+              Apakah Anda yakin ingin keluar dari TerasTani? Anda harus login kembali untuk mengakses data panen Anda.
+            </p>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => setIsLogoutModalOpen(false)}
+                className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleConfirmLogout}
+                className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-red-500/30"
+              >
+                Ya, Keluar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         
