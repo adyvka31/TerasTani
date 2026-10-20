@@ -1,27 +1,27 @@
 /**
- * Seed initial feature data: Quotas, Fleets, Sensors, and Default Users
+ * Seed initial feature data: Quotas, Fleets, Sensors, Notifications, and Initial Harvest Activity
  */
 require('dotenv').config();
 const { pool } = require('../config/db.config');
 
 async function seedFeatures() {
   try {
-    console.log('Seeding demo quotas, fleets, and sensors...');
+    console.log('Seeding initial feature data into Supabase...');
 
-    // 1. Get clusters and distributor
-    const cRes = await pool.query('SELECT id, rw_number FROM clusters');
+    // 1. Get clusters and users
+    const cRes = await pool.query('SELECT id, rw_number, village_name FROM clusters');
     const dRes = await pool.query("SELECT id FROM users WHERE role = 'distributor' LIMIT 1");
     const uRes = await pool.query("SELECT id FROM users WHERE role = 'user' LIMIT 1");
 
     const distId = dRes.rows[0]?.id || 6;
     const userId = uRes.rows[0]?.id || 5;
-    const defaultClusterId = cRes.rows[0]?.id;
+    const defaultCluster = cRes.rows[0];
 
     // Link users to default cluster, initial balance, and XP
-    if (defaultClusterId) {
+    if (defaultCluster) {
       await pool.query(
         'UPDATE users SET cluster_id = $1, wallet_balance = 2450000, xp_points = 1450 WHERE id = $2',
-        [defaultClusterId, userId]
+        [defaultCluster.id, userId]
       );
       console.log('User #', userId, 'updated with cluster, balance, and XP.');
     }
@@ -64,6 +64,46 @@ async function seedFeatures() {
         );
       }
       console.log('Sensor readings seeded.');
+    }
+
+    // Seed realistic starting notifications for user
+    const nCount = await pool.query('SELECT count(*) FROM notifications');
+    if (parseInt(nCount.rows[0].count, 10) === 0) {
+      await pool.query(
+        "INSERT INTO notifications (user_id, type, title, message) VALUES ($1, 'HARVEST', 'Inspeksi AI Berhasil', 'Validasi Selada Romaine 14.2 kg disetujui Grade A+ oleh sistem visi komputer lumbung.')",
+        [userId]
+      );
+      await pool.query(
+        "INSERT INTO notifications (user_id, type, title, message) VALUES ($1, 'FLEET', 'Jadwal Penjemputan Truk', 'Armada PT Segar Nusantara dijadwalkan tiba di Hub RW 07 pukul 14:30 WIB.')",
+        [userId]
+      );
+      await pool.query(
+        "INSERT INTO notifications (user_id, type, title, message) VALUES ($1, 'WALLET', 'Pencairan Escrow', 'Dana pelepasan escrow sebesar Rp 427.500 telah ditambahkan ke dompet TerasTani.')",
+        [userId]
+      );
+      console.log('Starter notifications seeded.');
+    }
+
+    // Seed realistic starting wallet transactions
+    const wCount = await pool.query('SELECT count(*) FROM wallet_transactions');
+    if (parseInt(wCount.rows[0].count, 10) === 0) {
+      await pool.query(
+        "INSERT INTO wallet_transactions (user_id, amount, type, status, payment_method, notes, reference_code, processed_at) VALUES ($1, 427500, 'HARVEST_PAYOUT', 'COMPLETED', 'ESCROW', 'Pelepasan Escrow Penjualan Selada', 'TX-9481', NOW())",
+        [userId]
+      );
+      await pool.query(
+        "INSERT INTO wallet_transactions (user_id, amount, type, status, payment_method, notes, reference_code, processed_at) VALUES ($1, 1500000, 'WITHDRAWAL', 'COMPLETED', 'BCA', 'Penarikan Dana ke Rekening BCA', 'TX-9320', NOW() - INTERVAL '2 days')",
+        [userId]
+      );
+      await pool.query(
+        "INSERT INTO wallet_transactions (user_id, amount, type, status, payment_method, notes, reference_code, processed_at) VALUES ($1, 680000, 'HARVEST_PAYOUT', 'COMPLETED', 'ESCROW', 'Pelepasan Escrow Penjualan Pakcoy', 'TX-9211', NOW() - INTERVAL '5 days')",
+        [userId]
+      );
+      await pool.query(
+        "INSERT INTO wallet_transactions (user_id, amount, type, status, payment_method, notes, reference_code, processed_at) VALUES ($1, 150000, 'BONUS', 'COMPLETED', 'SYSTEM', 'Insentif Komunal Grade A+ Konsisten', 'TX-9040', NOW() - INTERVAL '8 days')",
+        [userId]
+      );
+      console.log('Starter wallet transactions seeded.');
     }
 
     console.log('Feature seeding complete!');

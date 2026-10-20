@@ -1,23 +1,20 @@
 /**
- * App Layout Header & Telemetry Bar
+ * Top Application Header
+ * Telemetry ribbon, cluster selector, quick action modal trigger, notifications, and profile
  */
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { 
-  Sprout, 
-  Menu, 
-  X, 
-  ChevronRight, 
-  ChevronDown, 
   Sun, 
-  Thermometer, 
   Droplets, 
+  Thermometer, 
+  ChevronDown, 
   MapPin, 
   Plus, 
   Bell, 
   Sparkles, 
   LogOut 
 } from 'lucide-react';
+import { dashboardApi } from '../../api/dashboard.api';
 
 export default function Header({
   user,
@@ -31,61 +28,74 @@ export default function Header({
   onOpenLogoutModal,
 }) {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
+  const loadNotifications = async () => {
+    try {
+      const res = await dashboardApi.getNotifications();
+      if (res.data) {
+        setNotifications(res.data.list || []);
+        setUnreadCount(res.data.unreadCount || 0);
+      }
+    } catch {
+      // Fallback
+    }
+  };
+
+  const handleMarkRead = async (notifId) => {
+    try {
+      await dashboardApi.markNotificationRead(notifId);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notifId ? { ...n, is_read: true } : n))
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    } catch {
+      // ignore
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-40 bg-paper/95 backdrop-blur-md border-b-2 border-ink px-4 sm:px-6 lg:px-8 py-3.5 transition-all">
+    <header className="sticky top-0 z-40 bg-paper/95 backdrop-blur-md border-b-2 border-ink px-4 sm:px-6 lg:px-10 py-3 transition-colors">
       <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
         
-        {/* Left: Mobile Toggle & Brand Curation */}
-        <div className="flex items-center gap-3.5">
+        {/* Left: Branding & Mobile Menu Toggle */}
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             type="button"
             onClick={onToggleSidebar}
-            className="lg:hidden p-2 rounded-xl border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] hover:bg-white transition-all cursor-pointer"
-            aria-label="Toggle Menu Navigasi"
+            className="lg:hidden p-2 rounded-xl border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] hover:bg-white cursor-pointer"
+            aria-label="Toggle menu"
           >
-            {isSidebarOpen ? <X className="w-5 h-5 text-ink" /> : <Menu className="w-5 h-5 text-ink" />}
+            <span className="block w-5 h-0.5 bg-ink mb-1"></span>
+            <span className="block w-5 h-0.5 bg-ink mb-1"></span>
+            <span className="block w-5 h-0.5 bg-ink"></span>
           </button>
 
-          <Link to="/home" className="flex items-center gap-3 group cursor-pointer">
-            <div className="w-9 h-9 rounded-xl bg-moss-900 text-paper flex items-center justify-center border-2 border-ink shadow-[2.5px_2.5px_0px_0px_#171715] transition-transform group-hover:-translate-y-0.5">
-              <Sprout className="h-5 w-5 text-ochre-400" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-display font-medium text-xl sm:text-2xl tracking-tight text-ink leading-none">
-                Teras<span className="font-editorial-italic font-normal text-moss-700">Tani</span>
-              </span>
-              <span className="font-mono text-[9px] uppercase tracking-widest text-graphite hidden sm:block mt-0.5 font-bold">
-                {user.role === 'user' ? 'KONSORSIUM KULTIVATOR WARGA' : 'JARINGAN DISTRIBUSI KOMERSIAL'}
-              </span>
-            </div>
-          </Link>
-
-          {/* Breadcrumb Module Eyebrow */}
-          <div className="hidden xl:flex items-center gap-2 pl-4 border-l-2 border-ink/15 font-mono text-xs text-graphite">
-            <span>PORTAL EKOSISTEM</span>
-            <ChevronRight className="w-3.5 h-3.5 text-graphite/40" />
-            <span className="font-bold text-ink uppercase">
-              {activeTab === 'overview' && 'Ringkasan Monitoring'}
-              {activeTab === 'calculator' && 'Kalkulator Tani AI'}
-              {activeTab === 'vision' && 'Inspeksi & Mutu AI'}
-              {activeTab === 'lumbung' && 'Lumbung & QR Komunal'}
-              {activeTab === 'finance' && 'Escrow & Finansial'}
-              {activeTab === 'gamification' && 'Misi & XP Komunal'}
-              {activeTab === 'dist-quota' && 'Bursa Kuota Pasokan'}
-              {activeTab === 'dist-fleet' && 'Manifest Armada Pick-Up'}
+          <div className="flex items-baseline gap-2">
+            <span className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-ink">
+              TerasTani
+            </span>
+            <span className="hidden sm:inline font-mono text-[10px] uppercase font-bold tracking-widest text-ochre-600 bg-ochre-100 border border-ochre-300 px-2 py-0.5 rounded-full">
+              Komersial v2.4
             </span>
           </div>
         </div>
 
-        {/* Center: Live Environmental Sensor Matrix Pill */}
-        <div className="hidden md:flex items-center gap-3 px-3.5 py-1.5 rounded-xl border-2 border-ink bg-ivory shadow-[2.5px_2.5px_0px_0px_#171715] font-mono text-[11px]">
-          <div className="flex items-center gap-1.5 font-bold text-ink">
-            <span className="w-2.5 h-2.5 rounded-full bg-leaf-500 ambient-pulse"></span>
-            <span>SENSOR IOT</span>
+        {/* Center: Live Environmental Telemetry */}
+        <div className="hidden xl:flex items-center gap-6 px-4 py-1.5 rounded-2xl border-2 border-ink bg-ivory font-mono text-xs shadow-[3px_3px_0px_0px_#171715]">
+          <div className="flex items-center gap-2 pr-4 border-r border-ink/20">
+            <span className="w-2 h-2 rounded-full bg-leaf-500 animate-ping"></span>
+            <span className="font-bold text-graphite uppercase tracking-wider text-[11px]">
+              Sensor RW Terpadu
+            </span>
           </div>
-          <span className="text-graphite/40">|</span>
-          <div className="flex items-center gap-3 text-graphite">
+
+          <div className="flex items-center gap-5 text-xs">
             <span className="flex items-center gap-1 text-ink font-semibold">
               <Sun className="w-3.5 h-3.5 text-ochre-500" />
               <span>{currentWeather.lux}</span>
@@ -111,7 +121,9 @@ export default function Header({
             className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border-2 border-ink bg-paper hover:bg-ivory shadow-[2px_2px_0px_0px_#171715] font-mono text-xs text-ink cursor-pointer transition-all"
           >
             <MapPin className="w-3.5 h-3.5 text-moss-700" />
-            <span className="font-bold truncate max-w-[130px]">{activeCluster.id}</span>
+            <span className="font-bold truncate max-w-[130px]">
+              {activeCluster?.rw_number ? `Hub ${activeCluster.rw_number}` : (activeCluster?.id || 'Klaster RW')}
+            </span>
             <ChevronDown className="w-3 h-3 text-graphite" />
           </button>
 
@@ -134,9 +146,11 @@ export default function Header({
               aria-label="Pusat Notifikasi"
             >
               <Bell className="w-4 h-4 text-ink" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-ochre-500 border border-ink text-ink font-mono text-[9px] font-bold flex items-center justify-center">
-                3
-              </span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-ochre-500 border border-ink text-ink font-mono text-[9px] font-bold flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
             </button>
 
             {/* Notification Dropdown Panel */}
@@ -148,34 +162,34 @@ export default function Header({
                     <span>Notifikasi Lumbung</span>
                   </span>
                   <span className="font-mono text-[10px] text-graphite bg-ivory px-2 py-0.5 rounded border border-ink/20">
-                    3 Terkini
+                    {notifications.length} Pesan
                   </span>
                 </div>
 
-                <div className="space-y-2.5 font-sans text-xs">
-                  <div className="p-2.5 rounded-xl bg-leaf-50 border-2 border-leaf-200">
-                    <div className="flex items-center justify-between font-mono text-[10px] text-leaf-700 font-bold mb-1">
-                      <span>INSPEKSI AI BERHASIL</span>
-                      <span>10m lalu</span>
-                    </div>
-                    <p className="text-ink font-medium">Validasi Selada Romaine 14.2 kg disetujui Grade A+ oleh sistem visi computer lumbung.</p>
-                  </div>
-
-                  <div className="p-2.5 rounded-xl bg-ochre-50 border-2 border-ochre-200">
-                    <div className="flex items-center justify-between font-mono text-[10px] text-ochre-700 font-bold mb-1">
-                      <span>JADWAL PENJEMPUTAN TRUK</span>
-                      <span>45m lalu</span>
-                    </div>
-                    <p className="text-ink font-medium">Armada PT Segar Nusantara dijadwalkan tiba di Hub RW 07 pukul 14:30 WIB.</p>
-                  </div>
-
-                  <div className="p-2.5 rounded-xl bg-ivory border-2 border-ink/15">
-                    <div className="flex items-center justify-between font-mono text-[10px] text-graphite font-bold mb-1">
-                      <span>PENCAIRAN ESCROW</span>
-                      <span>2j lalu</span>
-                    </div>
-                    <p className="text-ink font-medium">Dana Rp 420.000 telah masuk ke saldo dompet TerasTani Anda.</p>
-                  </div>
+                <div className="space-y-2.5 font-sans text-xs max-h-72 overflow-y-auto pr-1 scrollbar-thin">
+                  {notifications.length > 0 ? (
+                    notifications.map((n) => (
+                      <div 
+                        key={n.id} 
+                        onClick={() => handleMarkRead(n.id)}
+                        className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer ${
+                          n.is_read ? 'bg-ivory border-ink/10 opacity-70' : 'bg-white border-ink shadow-[2px_2px_0px_0px_#171715]'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between font-mono text-[10px] font-bold mb-1">
+                          <span className={n.type === 'HARVEST' ? 'text-leaf-700' : 'text-ochre-700'}>
+                            {n.title}
+                          </span>
+                          <span className="text-graphite">
+                            {n.created_at ? new Date(n.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : ''}
+                          </span>
+                        </div>
+                        <p className="text-ink font-medium">{n.message}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-center text-graphite text-xs py-4">Belum ada notifikasi baru.</p>
+                  )}
                 </div>
 
                 <button
@@ -183,21 +197,36 @@ export default function Header({
                   onClick={() => setIsNotificationOpen(false)}
                   className="w-full mt-3 py-2 text-center font-mono text-[11px] font-bold text-moss-800 hover:text-ink underline block"
                 >
-                  Tutup Notifikasi &times;
+                  Tutup Notifikasi
                 </button>
               </div>
             )}
           </div>
 
-          {/* Logout Trigger */}
-          <button
-            type="button"
-            onClick={onOpenLogoutModal}
-            className="p-2 rounded-xl border-2 border-ink bg-ivory hover:bg-red-50 hover:text-red-700 shadow-[2px_2px_0px_0px_#171715] transition-all cursor-pointer"
-            title="Keluar dari Akun"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
+          {/* User Profile Capsule */}
+          <div className="flex items-center gap-2 pl-2 border-l-2 border-ink/15">
+            <div className="w-8 h-8 rounded-xl bg-moss-900 border-2 border-ink flex items-center justify-center text-paper font-mono text-xs font-bold shadow-[2px_2px_0px_0px_#171715]">
+              {user.name ? user.name.slice(0, 2).toUpperCase() : 'TT'}
+            </div>
+            <div className="hidden md:block text-left">
+              <span className="block font-mono text-xs font-bold text-ink leading-tight truncate max-w-[120px]">
+                {user.name || 'Petani Rawasari'}
+              </span>
+              <span className="block font-mono text-[10px] text-graphite uppercase">
+                {user.role === 'distributor' ? 'Mitra Off-Taker' : 'Kultivator RW'}
+              </span>
+            </div>
+
+            {/* Logout Trigger */}
+            <button
+              type="button"
+              onClick={onOpenLogoutModal}
+              className="p-1.5 rounded-lg border-2 border-ink/20 hover:border-ink hover:bg-ivory transition-all cursor-pointer text-graphite hover:text-ink ml-1"
+              title="Keluar dari akun"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
         </div>
 
