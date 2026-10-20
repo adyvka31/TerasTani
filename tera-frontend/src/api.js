@@ -1,2 +1,3 @@
-// tera-frontend/src/api.js
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+// tera-frontend/src/api.js - Backwards Compatibility Export
+export { API_BASE_URL } from './config/env';
+export { default } from './api/client';

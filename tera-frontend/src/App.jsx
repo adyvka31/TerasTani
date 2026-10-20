@@ -1,6 +1,12 @@
+/**
+ * Application Root Component
+ * Configures React Router, Global Context Providers, Lazy Route Chunks, and Route Guards
+ */
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Sprout } from 'lucide-react';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
@@ -23,24 +29,35 @@ function PageLoader() {
   );
 }
 
-function App() {
+export default function App() {
   return (
-    <Router>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          {/* Redirect root URL to /home */}
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/home" element={<Home />} />
-          {/* Catch-all redirect */}
-          <Route path="*" element={<Navigate to="/home" replace />} />
-        </Routes>
-      </Suspense>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Default entrypoint redirects to /home */}
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            
+            {/* Public authentication routes */}
+            <Route path="/home" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            
+            {/* Protected authenticated routes */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Catch-all fallback */}
+            <Route path="*" element={<Navigate to="/home" replace />} />
+          </Routes>
+        </Suspense>
+      </Router>
+    </AuthProvider>
   );
 }
-
-export default App;

@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { X, ArrowRight, ShieldCheck, Sparkles, Building2, User } from 'lucide-react';
-import { API_BASE_URL } from '../api';
+import { useAuth } from '../hooks/useAuth';
+import { authApi } from '../api/auth.api';
 
 export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   if (!isOpen) return null;
 
@@ -17,13 +18,14 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, formData);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      const result = await authApi.login(formData);
+      const token = result.token || result.data?.token;
+      const user = result.user || result.data?.user;
+      login(token, user);
       onClose();
       navigate('/dashboard');
     } catch (error) {
-      alert(error.response?.data?.message || 'Login gagal. Periksa kembali kredensial Anda.');
+      alert(error.message || 'Login gagal. Periksa kembali kredensial Anda.');
     } finally {
       setIsLoading(false);
     }
@@ -131,11 +133,11 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/register`, formData);
+      await authApi.register(formData);
       alert('Registrasi berhasil! Silakan login untuk mulai bertani.');
       onSwitchToLogin();
     } catch (error) {
-      alert(error.response?.data?.message || 'Terjadi kesalahan saat registrasi.');
+      alert(error.message || 'Terjadi kesalahan saat registrasi.');
     } finally {
       setIsLoading(false);
     }

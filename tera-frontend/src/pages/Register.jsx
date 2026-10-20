@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { API_BASE_URL } from '../api';
+import { authApi } from '../api/auth.api';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -75,13 +74,13 @@ export default function Register() {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      await axios.post(`${API_BASE_URL}/register`, formData);
+      await authApi.register(formData);
       setSuccessMessage('Pendaftaran entitas berhasil! Mengalihkan ke portal otentikasi...');
       setTimeout(() => {
         navigate('/login');
       }, 1500);
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Terjadi kendala saat pendaftaran akun. Silakan coba kembali.');
+      setErrorMessage(error.message || 'Terjadi kendala saat pendaftaran akun. Silakan coba kembali.');
     } finally {
       setIsLoading(false);
     }

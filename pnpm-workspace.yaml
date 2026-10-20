@@ -1,0 +1,3 @@
+packages:
+  - 'tera-backend'
+  - 'tera-frontend'

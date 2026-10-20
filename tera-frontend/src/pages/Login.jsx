@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { API_BASE_URL } from '../api';
+import { useAuth } from '../hooks/useAuth';
+import { authApi } from '../api/auth.api';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -26,6 +26,8 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
 
+  const { login } = useAuth();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (errorMessage) setErrorMessage(null);
@@ -36,12 +38,13 @@ export default function Login() {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, formData);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      const result = await authApi.login(formData);
+      const token = result.token || result.data?.token;
+      const user = result.user || result.data?.user;
+      login(token, user);
       navigate('/dashboard');
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Email atau kata sandi tidak cocok dengan arsip kami. Silakan periksa kembali.');
+      setErrorMessage(error.message || 'Email atau kata sandi tidak cocok dengan arsip kami. Silakan periksa kembali.');
     } finally {
       setIsLoading(false);
     }
