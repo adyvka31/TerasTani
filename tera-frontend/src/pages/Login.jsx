@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../api';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -35,7 +36,7 @@ export default function Login() {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      const response = await axios.post('http://localhost:5000/login', formData);
+      const response = await axios.post(`${API_BASE_URL}/login`, formData);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       navigate('/dashboard');
@@ -372,29 +373,41 @@ export default function Login() {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 font-mono text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs">
+                  <button
+                    type="button"
+                    onClick={() => handleQuickFill('admin@gmail.com', '12345678', 'warga')}
+                    className="p-2.5 rounded-xl border-2 border-ink/20 bg-ivory hover:border-ink hover:shadow-[2.5px_2.5px_0px_0px_#171715] text-left transition-all cursor-pointer flex flex-col justify-between"
+                  >
+                    <div>
+                      <span className="font-bold text-ink block text-[11px]">Akun Admin</span>
+                      <span className="text-graphite text-[10px] truncate block">admin@gmail.com</span>
+                    </div>
+                    <span className="text-[10px] text-moss-800 font-bold underline mt-1.5">12345678</span>
+                  </button>
+
                   <button
                     type="button"
                     onClick={() => handleQuickFill('warga.rawasari@terastani.id', 'rahasia123', 'warga')}
-                    className="p-3 rounded-xl border-2 border-ink/20 bg-ivory hover:border-ink hover:shadow-[2.5px_2.5px_0px_0px_#171715] text-left transition-all cursor-pointer flex items-center justify-between"
+                    className="p-2.5 rounded-xl border-2 border-ink/20 bg-ivory hover:border-ink hover:shadow-[2.5px_2.5px_0px_0px_#171715] text-left transition-all cursor-pointer flex flex-col justify-between"
                   >
                     <div>
                       <span className="font-bold text-ink block text-[11px]">Warga Kultivator</span>
-                      <span className="text-graphite text-[10px]">warga.rawasari@...</span>
+                      <span className="text-graphite text-[10px] truncate block">warga.rawasari@...</span>
                     </div>
-                    <span className="text-[10px] text-moss-800 font-bold underline">Isi &rarr;</span>
+                    <span className="text-[10px] text-moss-800 font-bold underline mt-1.5">rahasia123</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleQuickFill('distributor@segarlogistik.co.id', 'rahasia123', 'distributor')}
-                    className="p-3 rounded-xl border-2 border-ink/20 bg-ivory hover:border-ink hover:shadow-[2.5px_2.5px_0px_0px_#171715] text-left transition-all cursor-pointer flex items-center justify-between"
+                    className="p-2.5 rounded-xl border-2 border-ink/20 bg-ivory hover:border-ink hover:shadow-[2.5px_2.5px_0px_0px_#171715] text-left transition-all cursor-pointer flex flex-col justify-between"
                   >
                     <div>
-                      <span className="font-bold text-ink block text-[11px]">Distributor Resmi</span>
-                      <span className="text-graphite text-[10px]">distributor@segar...</span>
+                      <span className="font-bold text-ink block text-[11px]">Mitra Distributor</span>
+                      <span className="text-graphite text-[10px] truncate block">distributor@segar...</span>
                     </div>
-                    <span className="text-[10px] text-ochre-700 font-bold underline">Isi &rarr;</span>
+                    <span className="text-[10px] text-ochre-700 font-bold underline mt-1.5">rahasia123</span>
                   </button>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { X, ArrowRight, ShieldCheck, Sparkles, Building2, User } from 'lucide-react';
+import { API_BASE_URL } from '../api';
 
 export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -16,7 +17,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/login', formData);
+      const response = await axios.post(`${API_BASE_URL}/login`, formData);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       onClose();
@@ -30,7 +31,8 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/75 backdrop-blur-md transition-all duration-300"
+      onClick={onClose}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/35 backdrop-blur-[2px] transition-all duration-300"
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-modal-title"
@@ -129,7 +131,7 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await axios.post('http://localhost:5000/register', formData);
+      await axios.post(`${API_BASE_URL}/register`, formData);
       alert('Registrasi berhasil! Silakan login untuk mulai bertani.');
       onSwitchToLogin();
     } catch (error) {
@@ -141,7 +143,8 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/75 backdrop-blur-md transition-all duration-300"
+      onClick={onClose}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/35 backdrop-blur-[2px] transition-all duration-300"
       role="dialog"
       aria-modal="true"
       aria-labelledby="register-modal-title"

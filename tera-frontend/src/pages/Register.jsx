@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../api';
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -74,7 +75,7 @@ export default function Register() {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      await axios.post('http://localhost:5000/register', formData);
+      await axios.post(`${API_BASE_URL}/register`, formData);
       setSuccessMessage('Pendaftaran entitas berhasil! Mengalihkan ke portal otentikasi...');
       setTimeout(() => {
         navigate('/login');
