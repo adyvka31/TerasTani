@@ -1,1 +1,123 @@
 @import "tailwindcss";
+
+@theme {
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-ivory: #F4F0E8;
+  --color-paper: #FAF9F6;
+  --color-ink: #171715;
+  --color-graphite: #565550;
+  --color-graphite-light: #8A8880;
+  
+  --color-moss-950: #07120D;
+  --color-moss-900: #0B1912;
+  --color-moss-800: #122B1E;
+  --color-moss-700: #1B3D2B;
+  --color-moss-600: #25543B;
+  --color-moss-500: #2F6C4C;
+  --color-leaf-400: #48956A;
+  --color-leaf-300: #72B890;
+  --color-leaf-100: #D8EFE2;
+  --color-ochre-500: #C48E3E;
+  --color-ochre-400: #DEAB5A;
+  --color-ochre-100: #FBF3E3;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: #FAF9F6;
+    color: #171715;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: #122B1E;
+    color: #FAF9F6;
+  }
+}
+
+/* Custom luxury editorial utility classes */
+.font-display {
+  font-family: var(--font-serif);
+  font-feature-settings: "opsz" 32, "calt" 1, "kern" 1;
+}
+
+.font-editorial-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.text-balance-editorial {
+  text-wrap: balance;
+}
+
+/* Subtle grain overlay for cinematic tactile print texture */
+.paper-grain {
+  background-image: radial-gradient(rgba(23, 23, 21, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.dark-grain {
+  background-image: radial-gradient(rgba(244, 240, 232, 0.05) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+/* Cohesive Motion Language: Ambient, Interface & Transitions */
+@keyframes ambientFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes ambientPulseSlow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(0.95);
+  }
+}
+
+.ambient-float {
+  animation: ambientFloat 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.ambient-pulse {
+  animation: ambientPulseSlow 3.5s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+/* Interface Micro-Interactions */
+.editorial-btn {
+  transition: transform 0.18s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.18s cubic-bezier(0.2, 0, 0, 1), background-color 0.18s ease;
+}
+
+.editorial-btn:active {
+  transform: scale(0.98);
+}
+
+.editorial-btn:focus-visible {
+  outline: 2px solid #1B3D2B;
+  outline-offset: 2px;
+}
+
+/* Card hover tactile lift */
+.editorial-card-lift {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.editorial-card-lift:hover {
+  transform: translateY(-3px);
+}
