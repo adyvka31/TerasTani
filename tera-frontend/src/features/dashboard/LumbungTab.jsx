@@ -1,6 +1,7 @@
 /**
  * Dashboard Tab 4: Community Warehouse & QR Dispatch System
  */
+import { useState } from 'react';
 import { QrCode } from 'lucide-react';
 import { formatIDR } from '../../utils/formatters';
 
@@ -12,7 +13,27 @@ export default function LumbungTab({
   setDepositWeight,
   depositTicket,
   onGenerateTicket,
+  cropPriceMap = {
+    'Selada Romaine Super': 28500,
+    'Pakcoy Hijau Nauli': 24000,
+    'Bayam Jepang Horenso': 35000,
+    'Daun Mint & Basil Segar': 45000,
+  },
 }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const currentPricePerKg = cropPriceMap[depositCrop] || 28500;
+  const estimatedEscrow = Math.round(depositWeight * currentPricePerKg);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await onGenerateTicket(e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       
@@ -62,7 +83,7 @@ export default function LumbungTab({
             </p>
           </div>
 
-          <form onSubmit={onGenerateTicket} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block font-mono text-xs uppercase font-bold text-graphite mb-1.5">
                 Komoditas Panen:
@@ -100,88 +121,75 @@ export default function LumbungTab({
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-ivory border-2 border-ink/15 space-y-1 font-mono text-xs">
+            <div className="p-4 rounded-xl bg-ivory border-2 border-ink/20 font-mono text-xs space-y-1.5">
               <div className="flex justify-between">
-                <span className="text-graphite">Titik Kumpul Penyerahan:</span>
-                <span className="font-bold text-ink">{activeCluster.name}</span>
+                <span className="text-graphite">Garansi Harga Serap:</span>
+                <span className="font-bold text-ink">{formatIDR(currentPricePerKg)} / kg</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-graphite">Estimasi Nilai Escrow:</span>
-                <span className="font-bold text-moss-800">
-                  {formatIDR(depositWeight * 28500)}
-                </span>
+                <span className="text-graphite">Estimasi Valuasi Escrow:</span>
+                <span className="font-bold text-moss-800 text-sm">{formatIDR(estimatedEscrow)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-graphite">Klaster Tujuan:</span>
+                <span className="font-bold text-ochre-700">{activeCluster?.name || 'Hub RW 07 Rawasari'}</span>
               </div>
             </div>
 
             <button
               type="submit"
-              className="nb-btn-ochre w-full py-4 rounded-xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center justify-center gap-2 cursor-pointer transition-all"
+              disabled={isSubmitting}
+              className="nb-btn-ochre w-full py-4 rounded-2xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
             >
               <QrCode className="w-4 h-4" />
-              <span>Terbitkan Tiket Setor QR Sekarang</span>
+              <span>{isSubmitting ? 'Menerbitkan Tiket...' : 'Terbitkan Tiket Setor QR (+75 XP)'}</span>
             </button>
           </form>
         </div>
 
-        {/* Right: Active QR Dispatch Ticket Preview */}
-        <div className="lg:col-span-6 bg-ivory border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full items-center text-center space-y-5">
-          <div className="w-full flex items-center justify-between pb-3 border-b-2 border-ink/10 font-mono text-xs">
-            <span className="font-bold text-ink uppercase">Tiket Digital Resmi Lumbung</span>
-            <span className="text-leaf-600 font-bold bg-leaf-100 px-2 py-0.5 rounded border border-leaf-300">
-              Aktif Hari Ini
+        {/* Right: Last Issued Ticket or Information */}
+        <div className="lg:col-span-6 bg-paper border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-4">
+          <div className="pb-3 border-b-2 border-ink/10 flex justify-between items-center">
+            <span className="font-mono text-xs uppercase font-bold text-ink">
+              Tiket Aktif Terbaru
+            </span>
+            <span className="font-mono text-[11px] text-leaf-600 bg-leaf-50 px-2.5 py-0.5 rounded-full border border-leaf-300 font-bold">
+              Siap Pindai
             </span>
           </div>
 
-          {/* Simulated High-Res QR Ticket Canvas */}
-          <div className="p-6 bg-white border-2 border-ink rounded-3xl shadow-[5px_5px_0px_0px_#171715] space-y-3 max-w-xs w-full">
-            <div className="w-48 h-48 mx-auto bg-moss-950 p-3 rounded-2xl flex items-center justify-center border-2 border-ink">
-              {/* Stylized QR Visual Matrix */}
-              <div className="w-full h-full bg-white p-2 rounded-xl grid grid-cols-6 grid-rows-6 gap-1">
-                {[...Array(36)].map((_, i) => (
-                  <div 
-                    key={i} 
-                    className={`rounded-xs ${
-                      (i % 2 === 0 && i % 3 === 0) || i === 0 || i === 5 || i === 30 || i === 35 
-                        ? 'bg-ink' 
-                        : i % 5 === 0 
-                        ? 'bg-moss-800' 
-                        : 'bg-transparent'
-                    }`}
-                  ></div>
-                ))}
+          {depositTicket ? (
+            <div className="p-5 rounded-2xl bg-white border-2 border-ink shadow-[4px_4px_0px_0px_#171715] text-center space-y-3">
+              <div className="w-32 h-32 mx-auto bg-moss-950 p-2 rounded-xl flex items-center justify-center">
+                <div className="w-full h-full bg-white p-1.5 rounded-lg grid grid-cols-5 grid-rows-5 gap-1">
+                  {[...Array(25)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`rounded-xs ${i % 2 === 0 || i === 0 || i === 4 || i === 20 || i === 24 ? 'bg-ink' : 'bg-transparent'}`}
+                    ></div>
+                  ))}
+                </div>
+              </div>
+              <span className="font-mono text-sm font-bold text-ink block">{depositTicket.batchId}</span>
+              <div className="font-mono text-xs text-graphite space-y-1">
+                <p><strong>Komoditas:</strong> {depositTicket.crop}</p>
+                <p><strong>Bobot:</strong> {depositTicket.weight} kg</p>
+                <p><strong>Valuasi Escrow:</strong> {formatIDR(depositTicket.escrowValuation)}</p>
+                <p><strong>Waktu:</strong> {depositTicket.timestamp}</p>
               </div>
             </div>
+          ) : (
+            <div className="p-8 text-center text-graphite font-sans text-xs">
+              Belum ada tiket setor aktif. Buat tiket baru menggunakan formulir di sebelah kiri.
+            </div>
+          )}
 
-            <div className="font-mono text-xs">
-              <span className="text-[10px] text-graphite uppercase block">KODE BATCH ESCROW</span>
-              <strong className="text-ink font-bold text-sm block">
-                {depositTicket ? depositTicket.batchId : 'TT-RW07-849201'}
-              </strong>
-            </div>
-
-            <div className="text-left font-mono text-[11px] pt-3 border-t border-ink/10 space-y-1">
-              <div className="flex justify-between">
-                <span className="text-graphite">Komoditas:</span>
-                <span className="font-bold text-ink truncate max-w-[140px]">
-                  {depositTicket ? depositTicket.crop : 'Selada Romaine Super'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-graphite">Bobot:</span>
-                <span className="font-bold text-ink">
-                  {depositTicket ? depositTicket.weight : '12.5'} kg
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-graphite">Klaster:</span>
-                <span className="font-bold text-ink">{activeCluster.id}</span>
-              </div>
-            </div>
+          <div className="p-4 rounded-xl bg-moss-900 text-paper font-mono text-xs space-y-1">
+            <span className="text-ochre-300 font-bold block">Tips Timbang:</span>
+            <p className="text-paper/80 text-[11px] leading-relaxed">
+              Bawa panen dalam keranjang/crate berpori agar aerasi tetap terjaga. Petugas timbang klaster RW akan mencocokkan bobot timbangan digital dengan tiket Anda.
+            </p>
           </div>
-
-          <p className="font-mono text-xs text-graphite max-w-sm">
-            Tunjukkan tiket QR ini kepada Koordinator Lumbung RW saat menaruh sayur di peti pendingin (Crate). Dana akan otomatis dilepaskan ke dompet Anda saat diverifikasi.
-          </p>
         </div>
 
       </div>

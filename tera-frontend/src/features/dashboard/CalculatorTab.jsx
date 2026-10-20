@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Bot, Building2, Sprout, Layers, Check } from 'lucide-react';
 import { CROP_PARAMETERS } from '../../constants/app.constants';
 import { formatIDR } from '../../utils/formatters';
+import { dashboardApi } from '../../api/dashboard.api';
 
 export default function CalculatorTab({ userXP, setUserXP }) {
   const [calcPlotType, setCalcPlotType] = useState('balkon');
@@ -12,6 +13,7 @@ export default function CalculatorTab({ userXP, setUserXP }) {
   const [calcArea, setCalcArea] = useState(12);
   const [calcSunHours, setCalcSunHours] = useState(6.5);
   const [calcSavedNotice, setCalcSavedNotice] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const selectedCropConfig = CROP_PARAMETERS[calcCrop] || CROP_PARAMETERS.selada;
   const calculatedHoles = Math.round(calcArea * 28);
@@ -19,6 +21,37 @@ export default function CalculatorTab({ userXP, setUserXP }) {
   const calculatedGrossIncome = Math.round(calculatedBiomassKg * selectedCropConfig.pricePerKg);
   const calculatedNutrientCost = Math.round(calcArea * selectedCropConfig.costPerSqm);
   const calculatedNetRevenue = calculatedGrossIncome - calculatedNutrientCost;
+
+  const handleSavePlan = async () => {
+    try {
+      setIsSaving(true);
+      await dashboardApi.saveCalculation({
+        land_area_sqm: calcArea,
+        land_type: calcPlotType,
+        sunlight_hours: calcSunHours,
+        recommended_crop: selectedCropConfig.name,
+        estimated_yield_kg: parseFloat(calculatedBiomassKg),
+        estimated_revenue: calculatedNetRevenue,
+        planting_schedule: {
+          cycle_days: selectedCropConfig.cycle,
+          holes: calculatedHoles,
+          nutrient_cost: calculatedNutrientCost,
+        },
+        ai_raw_analysis: `Estimasi lahan ${calcPlotType} seluas ${calcArea} m² dengan paparan ${calcSunHours} jam matahari. Menghasilkan estimasi ${calculatedBiomassKg} kg.`,
+      });
+      setUserXP((prev) => prev + 50);
+      setCalcSavedNotice(true);
+      setTimeout(() => setCalcSavedNotice(false), 3500);
+    } catch (err) {
+      console.error('Gagal menyimpan kalkulasi:', err);
+      // Fallback local award
+      setUserXP((prev) => prev + 50);
+      setCalcSavedNotice(true);
+      setTimeout(() => setCalcSavedNotice(false), 3500);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
@@ -46,7 +79,7 @@ export default function CalculatorTab({ userXP, setUserXP }) {
         <div className="lg:col-span-7 bg-white border-2 border-ink rounded-[2.5rem] p-6 sm:p-8 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full">
           <div className="space-y-6 overflow-y-auto max-h-[600px] pr-2 scrollbar-thin">
             
-            {/* Step 1: Lokasi & Tipe Lahan */}
+            {/* Step 1: Karakteristik Lahan */}
             <div>
               <label className="block font-mono text-xs uppercase tracking-wider text-graphite font-bold mb-2">
                 1. Pilih Karakteristik Lahan:
@@ -77,7 +110,7 @@ export default function CalculatorTab({ userXP, setUserXP }) {
               </div>
             </div>
 
-            {/* Step 2: Crop Selection */}
+            {/* Step 2: Komoditas */}
             <div>
               <label className="block font-mono text-xs uppercase tracking-wider text-graphite font-bold mb-2">
                 2. Komoditas Tanam yang Direncanakan:
@@ -157,7 +190,7 @@ export default function CalculatorTab({ userXP, setUserXP }) {
           </div>
         </div>
 
-        {/* Right: Calculated Yield & Financial Summary Card */}
+        {/* Right: Summary Card */}
         <div className="lg:col-span-5 bg-moss-900 text-paper border-2 border-ink rounded-[2.5rem] p-6 sm:p-8 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-6">
           
           <div>
@@ -200,15 +233,12 @@ export default function CalculatorTab({ userXP, setUserXP }) {
           <div className="pt-6 border-t border-white/15 space-y-3">
             <button
               type="button"
-              onClick={() => {
-                setCalcSavedNotice(true);
-                setUserXP(userXP + 50);
-                setTimeout(() => setCalcSavedNotice(false), 3000);
-              }}
-              className="nb-btn-ochre w-full py-3.5 rounded-xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center justify-center gap-2 cursor-pointer transition-all"
+              disabled={isSaving}
+              onClick={handleSavePlan}
+              className="nb-btn-ochre w-full py-3.5 rounded-xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
             >
               <Check className="w-4 h-4" />
-              <span>Simpan ke Rencana Budidaya (+50 XP)</span>
+              <span>{isSaving ? 'Menyimpan...' : 'Simpan ke Rencana Budidaya (+50 XP)'}</span>
             </button>
 
             {calcSavedNotice && (

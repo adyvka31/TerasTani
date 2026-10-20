@@ -6,9 +6,25 @@ import { Award } from 'lucide-react';
 export default function GamificationTab({
   user,
   userXP,
-  claimedQuests,
+  missions = [],
+  claimedQuests = [],
   onClaimQuest,
+  leaderboard = [],
 }) {
+  const displayMissions = missions.length > 0 ? missions : [
+    { id: 'q1', title: 'Catat pH & EC Air 3 Hari Berturut', reward_xp: 50, description: 'Jaga kestabilan nutrisi tandon hidroponik pekarangan Anda.' },
+    { id: 'q2', title: 'Validasi Foto Panen dengan Kamera AI', reward_xp: 75, description: 'Gunakan fitur Computer Vision untuk memastikan standar mutu Grade A.' },
+    { id: 'q3', title: 'Setor Minimal 10 kg ke Crate Lumbung', reward_xp: 120, description: 'Bantu klaster RW Anda mencapai kuota truk logistik mingguan.' }
+  ];
+
+  const displayLeaderboard = leaderboard.length > 0 ? leaderboard : [
+    { rank: 1, name: 'Siti Rahmawati (RT 03)', xp: '2.420 XP', kg: '84 kg', medal: '🥇' },
+    { rank: 2, name: 'Bambang Trianto (RT 05)', xp: '1.890 XP', kg: '62 kg', medal: '🥈' },
+    { rank: 3, name: `${user?.name || 'Adyvka'} (Anda)`, xp: `${userXP} XP`, kg: '42.5 kg', medal: '🥉', isSelf: true },
+    { rank: 4, name: 'Kurniawan H. (RT 01)', xp: '1.210 XP', kg: '38 kg' },
+    { rank: 5, name: 'Dewi Anggraini (RT 07)', xp: '980 XP', kg: '31 kg' }
+  ];
+
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       
@@ -40,35 +56,32 @@ export default function GamificationTab({
           </div>
 
           <div className="space-y-3 font-mono text-xs overflow-y-auto max-h-[460px] pr-1.5 scrollbar-thin">
-            {[
-              { id: 'q1', title: 'Catat pH & EC Air 3 Hari Berturut', xp: 50, desc: 'Jaga kestabilan nutrisi tandon hidroponik pekarangan Anda.' },
-              { id: 'q2', title: 'Validasi Foto Panen dengan Kamera AI', xp: 75, desc: 'Gunakan fitur Computer Vision untuk memastikan standar mutu Grade A.' },
-              { id: 'q3', title: 'Setor Minimal 10 kg ke Crate Lumbung', xp: 120, desc: 'Bantu klaster RW Anda mencapai kuota truk logistik mingguan.' }
-            ].map((q) => {
-              const isClaimed = claimedQuests.includes(q.id);
+            {displayMissions.map((q) => {
+              const isClaimed = claimedQuests.includes(q.id) || q.is_completed;
+              const xpVal = q.reward_xp || q.xp || 50;
               return (
                 <div key={q.id} className="p-4 rounded-2xl bg-ivory border-2 border-ink/20 flex flex-col justify-between gap-3">
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-bold text-ink text-sm">{q.title}</span>
                       <span className="font-bold text-ochre-700 bg-ochre-100 px-2 py-0.5 rounded border border-ochre-300 text-[10px]">
-                        +{q.xp} XP
+                        +{xpVal} XP
                       </span>
                     </div>
-                    <p className="font-sans text-xs text-graphite leading-relaxed">{q.desc}</p>
+                    <p className="font-sans text-xs text-graphite leading-relaxed">{q.description || q.desc}</p>
                   </div>
 
                   <button
                     type="button"
                     disabled={isClaimed}
-                    onClick={() => onClaimQuest(q.id, q.xp)}
+                    onClick={() => onClaimQuest(q.id, xpVal)}
                     className={`py-2 px-4 rounded-xl border-2 font-mono text-xs uppercase font-bold transition-all cursor-pointer ${
                       isClaimed
                         ? 'bg-leaf-200 text-leaf-800 border-leaf-400 opacity-80 cursor-default'
                         : 'bg-ochre-400 text-ink border-ink hover:bg-ochre-300 shadow-[2px_2px_0px_0px_#171715]'
                     }`}
                   >
-                    {isClaimed ? '✓ Hadiah XP Sudah Diklaim' : `Selesaikan & Klaim +${q.xp} XP`}
+                    {isClaimed ? '✓ Hadiah XP Sudah Diklaim' : `Selesaikan & Klaim +${xpVal} XP`}
                   </button>
                 </div>
               );
@@ -84,31 +97,30 @@ export default function GamificationTab({
           </div>
 
           <div className="space-y-2.5 font-mono text-xs overflow-y-auto max-h-[460px] pr-1.5 scrollbar-thin">
-            {[
-              { rank: 1, name: 'Siti Rahmawati (RT 03)', xp: '2.420 XP', kg: '84 kg', medal: '🥇' },
-              { rank: 2, name: 'Bambang Trianto (RT 05)', xp: '1.890 XP', kg: '62 kg', medal: '🥈' },
-              { rank: 3, name: `${user.name || 'Adyvka'} (Anda)`, xp: `${userXP} XP`, kg: '42.5 kg', medal: '🥉', isSelf: true },
-              { rank: 4, name: 'Kurniawan H. (RT 01)', xp: '1.210 XP', kg: '38 kg' },
-              { rank: 5, name: 'Dewi Anggraini (RT 07)', xp: '980 XP', kg: '31 kg' }
-            ].map((row) => (
+            {displayLeaderboard.map((row, idx) => (
               <div 
-                key={row.rank} 
+                key={row.rank || row.id || idx} 
                 className={`p-3.5 rounded-xl border-2 flex items-center justify-between ${
-                  row.isSelf 
+                  row.isSelf || (user && row.id === user.id)
                     ? 'bg-ochre-400/30 border-ochre-600 font-bold' 
                     : 'bg-white border-ink/15'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-6 text-center font-bold text-sm">
-                    {row.medal || `#${row.rank}`}
+                  <span className="text-base font-bold text-graphite w-6 text-center">
+                    {row.medal || `#${row.rank || idx + 1}`}
                   </span>
-                  <span className="text-ink font-semibold">{row.name}</span>
+                  <div>
+                    <span className="text-ink text-xs block">{row.name}</span>
+                    <span className="text-graphite text-[10px] block">
+                      Panen: {row.kg || `${row.total_harvest_kg || 0} kg`}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4 text-right">
-                  <span className="text-moss-800 font-bold">{row.xp}</span>
-                  <span className="text-graphite text-[10px] hidden sm:inline">{row.kg} panen</span>
-                </div>
+
+                <span className="text-ochre-700 font-bold bg-white px-2.5 py-1 rounded border border-ink/15 text-xs">
+                  {row.xp || `${row.xp_points || 0} XP`}
+                </span>
               </div>
             ))}
           </div>

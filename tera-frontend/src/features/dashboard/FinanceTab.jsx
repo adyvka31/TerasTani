@@ -6,8 +6,18 @@ import { formatIDR } from '../../utils/formatters';
 
 export default function FinanceTab({
   walletBalance,
+  pendingEscrow = 1400000,
+  totalWithdrawn = 14850000,
+  transactions = [],
   onOpenWithdrawModal,
 }) {
+  const displayTransactions = transactions.length > 0 ? transactions : [
+    { id: 'TX-9481', title: 'Pelepasan Escrow Penjualan Selada', date: 'Hari ini, 10:15 WIB', amount: '+ Rp 427.500', type: 'in', status: 'Selesai' },
+    { id: 'TX-9320', title: 'Penarikan Dana ke BCA', date: '18 Okt 2026, 14:20 WIB', amount: '- Rp 1.500.000', type: 'out', status: 'Berhasil' },
+    { id: 'TX-9211', title: 'Pelepasan Escrow Penjualan Pakcoy', date: '15 Okt 2026, 16:45 WIB', amount: '+ Rp 680.000', type: 'in', status: 'Selesai' },
+    { id: 'TX-9040', title: 'Insentif Komunal Grade A+ Konsisten', date: '12 Okt 2026, 09:00 WIB', amount: '+ Rp 150.000', type: 'in', status: 'Bonus RW' }
+  ];
+
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       
@@ -54,7 +64,7 @@ export default function FinanceTab({
             Saldo Tertahan di Escrow
           </span>
           <div className="font-display text-3xl sm:text-4xl font-normal text-ochre-700">
-            {formatIDR(1400000)}
+            {formatIDR(pendingEscrow)}
           </div>
           <span className="font-mono text-[11px] text-graphite block mt-2">
             Menunggu inspeksi penjemputan armada
@@ -66,10 +76,10 @@ export default function FinanceTab({
             Total Pencairan Kumulatif
           </span>
           <div className="font-display text-3xl sm:text-4xl font-normal text-ink">
-            {formatIDR(14850000)}
+            {formatIDR(totalWithdrawn)}
           </div>
           <span className="font-mono text-[11px] text-graphite block mt-2">
-            Akumulasi 6 bulan panen presisi
+            Akumulasi panen presisi lumbung
           </span>
         </div>
       </div>
@@ -84,31 +94,33 @@ export default function FinanceTab({
         </div>
 
         <div className="space-y-3 font-mono text-xs">
-          {[
-            { id: 'TX-9481', title: 'Pelepasan Escrow Penjualan Selada', date: 'Hari ini, 10:15 WIB', amount: '+ Rp 427.500', type: 'in', status: 'Selesai' },
-            { id: 'TX-9320', title: 'Penarikan Dana ke BCA (Adyvka)', date: '18 Okt 2026, 14:20 WIB', amount: '- Rp 1.500.000', type: 'out', status: 'Berhasil' },
-            { id: 'TX-9211', title: 'Pelepasan Escrow Penjualan Pakcoy', date: '15 Okt 2026, 16:45 WIB', amount: '+ Rp 680.000', type: 'in', status: 'Selesai' },
-            { id: 'TX-9040', title: 'Insentif Komunal Grade A+ Konsisten', date: '12 Okt 2026, 09:00 WIB', amount: '+ Rp 150.000', type: 'in', status: 'Bonus RW' }
-          ].map((tx) => (
-            <div key={tx.id} className="p-4 rounded-xl bg-ivory border-2 border-ink/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${tx.type === 'in' ? 'bg-leaf-500' : 'bg-red-500'}`}></span>
-                  <span className="font-bold text-ink">{tx.title}</span>
-                  <span className="text-graphite text-[10px]">({tx.id})</span>
+          {displayTransactions.map((tx) => {
+            const isOut = tx.type === 'out' || tx.type === 'WITHDRAWAL';
+            const amountStr = tx.amount 
+              ? (typeof tx.amount === 'string' ? tx.amount : `${isOut ? '-' : '+'} ${formatIDR(tx.amount)}`)
+              : `${formatIDR(0)}`;
+
+            return (
+              <div key={tx.id} className="p-4 rounded-xl bg-ivory border-2 border-ink/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${!isOut ? 'bg-leaf-500' : 'bg-red-500'}`}></span>
+                    <span className="font-bold text-ink">{tx.title || (tx.type === 'WITHDRAWAL' ? 'Penarikan Saldo' : 'Pencairan Escrow Panen')}</span>
+                    <span className="text-graphite text-[10px]">({tx.reference_code || tx.id})</span>
+                  </div>
+                  <span className="text-[11px] text-graphite block mt-1">
+                    {tx.created_at ? new Date(tx.created_at).toLocaleString('id-ID') : (tx.date || 'Hari ini')}
+                  </span>
                 </div>
-                <span className="text-[11px] text-graphite block mt-1">{tx.date}</span>
+                <div className="sm:text-right">
+                  <span className={`font-bold block ${!isOut ? 'text-leaf-700' : 'text-red-700'}`}>
+                    {amountStr}
+                  </span>
+                  <span className="text-[10px] text-graphite">{tx.status || 'Berhasil'}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-4 self-end sm:self-center">
-                <span className={`font-bold text-sm ${tx.type === 'in' ? 'text-leaf-700' : 'text-red-700'}`}>
-                  {tx.amount}
-                </span>
-                <span className="px-2 py-0.5 rounded bg-white border border-ink/20 text-[10px] text-graphite">
-                  {tx.status}
-                </span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
