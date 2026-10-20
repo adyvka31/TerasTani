@@ -1,28 +1,66 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 @theme {
   --font-serif: 'Fraunces', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
+  /* Tactile Editorial Neutrals */
   --color-ivory: #F4F0E8;
   --color-paper: #FAF9F6;
+  --color-sand: #ECE6D8;
   --color-ink: #171715;
   --color-graphite: #565550;
   --color-graphite-light: #8A8880;
+  --color-graphite-muted: #B3B0A6;
   
-  --color-moss-950: #07120D;
-  --color-moss-900: #0B1912;
-  --color-moss-800: #122B1E;
-  --color-moss-700: #1B3D2B;
-  --color-moss-600: #25543B;
+  /* Living Botanical Moss (Deep forest canopy, rich soil, night architecture) */
+  --color-moss-50: #F2F7F4;
+  --color-moss-100: #E3EDE7;
+  --color-moss-200: #C5DCD0;
+  --color-moss-300: #9EBFAD;
+  --color-moss-400: #6F9E83;
   --color-moss-500: #2F6C4C;
-  --color-leaf-400: #48956A;
-  --color-leaf-300: #72B890;
+  --color-moss-600: #24553B;
+  --color-moss-700: #1B3D2B;
+  --color-moss-800: #122B1E;
+  --color-moss-900: #0B1912;
+  --color-moss-950: #06100B;
+
+  /* Fresh Chlorophyll & Hydroponic Sprout (Living crops, active growth) */
+  --color-leaf-50: #F0F9F4;
   --color-leaf-100: #D8EFE2;
-  --color-ochre-500: #C48E3E;
-  --color-ochre-400: #DEAB5A;
-  --color-ochre-100: #FBF3E3;
+  --color-leaf-200: #B0DFC4;
+  --color-leaf-300: #68BA88;
+  --color-leaf-400: #389B63;
+  --color-leaf-500: #287C4D;
+  --color-leaf-600: #1D613A;
+
+  /* Calibrated Golden Harvest Ochre (Sunlight, agricultural prosperity, high-contrast brass) */
+  --color-ochre-50: #FDFBF7;
+  --color-ochre-100: #FAF0DB;
+  --color-ochre-200: #F4DEA8;
+  --color-ochre-300: #ECC572;
+  --color-ochre-400: #DEAB42;
+  --color-ochre-500: #C9942B;
+  --color-ochre-600: #A8771A;
+  --color-ochre-700: #875C10;
+  --color-ochre-800: #6A4709;
+  --color-ochre-900: #503504;
+  --color-ochre-950: #2E1E02;
+
+  /* Atmospheric Dew & Irrigation Water (Natural sage-aquamarine replacing synthetic cyan) */
+  --color-dew-50: #F1F9F8;
+  --color-dew-100: #D6F1EE;
+  --color-dew-200: #B1E4DD;
+  --color-dew-300: #62BEB1;
+  --color-dew-400: #3DA598;
+  --color-dew-500: #2A8276;
+
+  /* Botanical Sprout Pulse Indicators */
+  --color-sprout-400: #34D399;
+  --color-sprout-500: #10B981;
 }
 
 @layer base {
@@ -66,6 +104,230 @@
 .dark-grain {
   background-image: radial-gradient(rgba(244, 240, 232, 0.05) 1px, transparent 0);
   background-size: 28px 28px;
+}
+
+/* Smooth Scroll via Lenis (Lightweight, Butter-Smooth momentum) */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* 2D Architectural Blueprint Dot Grid */
+.bg-grid-dots-2d {
+  background-image: radial-gradient(#171715 1.2px, transparent 1.2px);
+  background-size: 20px 20px;
+}
+
+/* 2D Architectural Blueprint Square Grid (Kotak-kotak tipis presisi) */
+.blueprint-grid {
+  background-image: 
+    linear-gradient(to right, rgba(23, 23, 21, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(23, 23, 21, 0.07) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* 2D Architectural Blueprint Dot Matrix (Titik-titik tipis presisi) */
+.blueprint-dots {
+  background-image: radial-gradient(rgba(23, 23, 21, 0.11) 1.25px, transparent 1.25px);
+  background-size: 24px 24px;
+}
+
+/* Chapter 02: Architectural Drafting Dot Matrix (Presisi Titik Arsitektur Ganda) */
+.pattern-drafting-dots {
+  background-image: 
+    radial-gradient(circle, rgba(23, 23, 21, 0.13) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(45, 90, 61, 0.08) 1.0px, transparent 1.0px);
+  background-size: 24px 24px, 12px 12px;
+  background-position: 0 0, 12px 12px;
+}
+
+/* Chapter 06: Dark Muted Architectural Coordinate Dots (Tenang, Elegan, Spasi Renggang) */
+.pattern-dark-constellation {
+  background-color: #0B1912;
+  background-image: radial-gradient(circle, rgba(222, 171, 66, 0.14) 1.2px, transparent 1.2px);
+  background-size: 48px 48px;
+}
+
+/* =========================================================================
+   EDITORIAL NEO-BRUTALISM & 2D TACTILE INTERACTIVITY SYSTEM
+   ========================================================================= */
+
+/* Neo-Brutalist Solid Offset Drop Shadows */
+.nb-shadow-xs {
+  box-shadow: 2px 2px 0px 0px #171715;
+}
+
+.nb-shadow-sm {
+  box-shadow: 3px 3px 0px 0px #171715;
+}
+
+.nb-shadow {
+  box-shadow: 5px 5px 0px 0px #171715;
+}
+
+.nb-shadow-lg {
+  box-shadow: 7px 7px 0px 0px #171715;
+}
+
+.nb-shadow-xl {
+  box-shadow: 10px 10px 0px 0px #171715;
+}
+
+.nb-shadow-ochre {
+  box-shadow: 5px 5px 0px 0px #C9942B;
+}
+
+.nb-shadow-leaf {
+  box-shadow: 5px 5px 0px 0px #24553B;
+}
+
+.nb-shadow-white {
+  box-shadow: 5px 5px 0px 0px #FAF9F6;
+}
+
+/* Interactive Neo-Brutalist Buttons */
+.nb-btn {
+  border: 2px solid #171715;
+  box-shadow: 3.5px 3.5px 0px 0px #171715;
+  transition: transform 0.16s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.16s cubic-bezier(0.2, 0, 0, 1), background-color 0.16s ease;
+  user-select: none;
+}
+
+.nb-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5.5px 5.5px 0px 0px #171715;
+}
+
+.nb-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #171715;
+}
+
+/* Primary Ochre Action Neo-Brutalist Button (Calibrated Golden Harvest) */
+.nb-btn-ochre {
+  background-color: #C9942B;
+  color: #171715;
+  border: 2px solid #171715;
+  box-shadow: 3.5px 3.5px 0px 0px #171715;
+  transition: transform 0.16s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.16s cubic-bezier(0.2, 0, 0, 1), background-color 0.16s ease;
+  user-select: none;
+}
+
+.nb-btn-ochre:hover {
+  background-color: #DEAB42;
+  transform: translate(-2px, -2px);
+  box-shadow: 5.5px 5.5px 0px 0px #171715;
+}
+
+.nb-btn-ochre:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #171715;
+}
+
+/* Dark Moss Action Neo-Brutalist Button */
+.nb-btn-moss {
+  background-color: #0B1912;
+  color: #FAF9F6;
+  border: 2px solid #171715;
+  box-shadow: 3.5px 3.5px 0px 0px #171715;
+  transition: transform 0.16s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.16s cubic-bezier(0.2, 0, 0, 1), background-color 0.16s ease;
+  user-select: none;
+}
+
+.nb-btn-moss:hover {
+  background-color: #122B1E;
+  transform: translate(-2px, -2px);
+  box-shadow: 5.5px 5.5px 0px 0px #171715;
+}
+
+.nb-btn-moss:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px 0px #171715;
+}
+
+/* Neo-Brutalist Cards */
+.nb-card {
+  border: 2px solid #171715;
+  box-shadow: 5px 5px 0px 0px #171715;
+  transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.22s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.nb-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0px 0px #171715;
+}
+
+.nb-card-ochre {
+  border: 2px solid #171715;
+  box-shadow: 5px 5px 0px 0px #C9942B;
+  transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.22s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.nb-card-ochre:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0px 0px #DEAB42;
+}
+
+.nb-card-dark {
+  border: 2px solid #FAF9F6;
+  box-shadow: 5px 5px 0px 0px #C9942B;
+  transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.22s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.nb-card-dark:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0px 0px #DEAB42;
+}
+
+/* 2D Stamp Seal Sticker */
+.nb-stamp {
+  border: 2px solid #171715;
+  box-shadow: 3px 3px 0px 0px #171715;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* 2D Registration Crosshairs for Architectural Precision */
+.reg-mark {
+  position: relative;
+}
+
+.reg-mark::before {
+  content: '+';
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #171715;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.reg-mark::after {
+  content: '+';
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: #171715;
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 /* Cohesive Motion Language: Ambient, Interface & Transitions */

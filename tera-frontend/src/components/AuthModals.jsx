@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { X, Sprout, ArrowRight, ShieldCheck, Sparkles, Building2, User } from 'lucide-react';
+import { X, ArrowRight, ShieldCheck, Sparkles, Building2, User } from 'lucide-react';
 
 export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -30,36 +30,32 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/70 backdrop-blur-md transition-all duration-300"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/75 backdrop-blur-md transition-all duration-300"
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-modal-title"
     >
       <div 
-        className="bg-paper border border-ink/10 rounded-3xl shadow-2xl w-full max-w-md p-8 md:p-10 relative animate-in fade-in zoom-in-95 duration-200"
+        className="bg-paper border-2 border-ink rounded-3xl shadow-[8px_8px_0px_0px_#171715] md:shadow-[12px_12px_0px_0px_#171715] w-full max-w-md p-8 md:p-10 relative animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <button 
           onClick={onClose} 
-          className="absolute top-6 right-6 p-2 text-graphite hover:text-ink hover:bg-ivory rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-moss-600"
+          className="absolute top-6 right-6 p-2 text-ink bg-ivory hover:bg-white border-2 border-ink rounded-xl shadow-[2px_2px_0px_0px_#171715] active:translate-x-0.5 active:translate-y-0.5 transition-all focus:outline-none"
           aria-label="Tutup modal"
         >
           <X size={18} />
         </button>
 
-        {/* Editorial Eyebrow */}
-        <div className="flex items-center gap-2 mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-moss-600"></span>
-          <span className="font-mono text-xs uppercase tracking-widest text-graphite">Portal Akses Ekosistem</span>
+        {/* Editorial Eyebrow in 2D style */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] mb-4">
+          <span className="w-2 h-2 rounded-full bg-moss-600"></span>
+          <span className="font-mono text-xs uppercase tracking-widest text-ink font-bold">Portal Akses Ekosistem</span>
         </div>
 
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ivory border border-ink/10 mb-3 text-xs font-medium text-moss-800">
-            <Sprout className="w-3.5 h-3.5 text-moss-600" />
-            <span>TerasTani Platform</span>
-          </div>
           <h2 id="login-modal-title" className="font-display text-3xl font-normal tracking-tight text-ink">
-            Selamat Datang <span className="font-editorial-italic font-light">Kembali</span>
+            Selamat Datang <span className="font-editorial-italic font-light text-moss-800">Kembali</span>
           </h2>
           <p className="text-sm text-graphite mt-2 leading-relaxed">
             Masuk ke dasbor terpadu untuk memantau siklus tanam AI atau alokasi kuota lumbung komunal.
@@ -68,7 +64,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5">
+            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5 font-bold">
               Alamat Email
             </label>
             <input 
@@ -77,12 +73,12 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
               placeholder="nama@domain.com" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-3 rounded-xl border border-ink/15 bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:ring-2 focus:ring-moss-600 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
             />
           </div>
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <label className="font-mono text-xs uppercase tracking-wider text-graphite">
+              <label className="font-mono text-xs uppercase tracking-wider text-graphite font-bold">
                 Kata Sandi
               </label>
             </div>
@@ -92,26 +88,26 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
               placeholder="••••••••" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-3 rounded-xl border border-ink/15 bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:ring-2 focus:ring-moss-600 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
             />
           </div>
           
           <button 
             type="submit" 
             disabled={isLoading} 
-            className="w-full mt-2 bg-moss-800 hover:bg-moss-900 text-paper font-medium py-3.5 px-5 rounded-full shadow-md transition-all flex items-center justify-center gap-2 group disabled:opacity-70 cursor-pointer"
+            className="nb-btn-ochre w-full mt-4 py-3.5 px-5 rounded-xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center justify-center gap-2 group disabled:opacity-70 cursor-pointer"
           >
             <span>{isLoading ? 'Memverifikasi...' : 'Masuk ke Dasbor'}</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1 text-ink" />
           </button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-ink/10 flex flex-col sm:flex-row items-center justify-between text-xs text-graphite gap-2">
+        <div className="mt-8 pt-6 border-t-2 border-ink/10 flex flex-col sm:flex-row items-center justify-between text-xs text-graphite gap-2">
           <span>Belum tergabung dalam ekosistem?</span>
           <button 
             type="button"
             onClick={onSwitchToRegister} 
-            className="font-semibold text-moss-700 hover:text-moss-900 underline underline-offset-4 transition-colors cursor-pointer"
+            className="font-bold text-moss-800 hover:text-ink underline underline-offset-4 transition-colors cursor-pointer"
           >
             Daftar Akun Baru
           </button>
@@ -145,32 +141,32 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/70 backdrop-blur-md transition-all duration-300"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/75 backdrop-blur-md transition-all duration-300"
       role="dialog"
       aria-modal="true"
       aria-labelledby="register-modal-title"
     >
       <div 
-        className="bg-paper border border-ink/10 rounded-3xl shadow-2xl w-full max-w-lg p-8 md:p-10 relative animate-in fade-in zoom-in-95 duration-200"
+        className="bg-paper border-2 border-ink rounded-3xl shadow-[8px_8px_0px_0px_#171715] md:shadow-[12px_12px_0px_0px_#171715] w-full max-w-lg p-8 md:p-10 relative animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <button 
           onClick={onClose} 
-          className="absolute top-6 right-6 p-2 text-graphite hover:text-ink hover:bg-ivory rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-moss-600"
+          className="absolute top-6 right-6 p-2 text-ink bg-ivory hover:bg-white border-2 border-ink rounded-xl shadow-[2px_2px_0px_0px_#171715] active:translate-x-0.5 active:translate-y-0.5 transition-all focus:outline-none"
           aria-label="Tutup modal"
         >
           <X size={18} />
         </button>
 
-        {/* Editorial Eyebrow */}
-        <div className="flex items-center gap-2 mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-ochre-500"></span>
-          <span className="font-mono text-xs uppercase tracking-widest text-graphite">Registrasi Entitas Baru</span>
+        {/* Editorial Eyebrow in 2D style */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] mb-4">
+          <span className="w-2 h-2 rounded-full bg-ochre-500"></span>
+          <span className="font-mono text-xs uppercase tracking-widest text-ink font-bold">Registrasi Entitas Baru</span>
         </div>
 
         <div className="mb-6">
           <h2 id="register-modal-title" className="font-display text-3xl font-normal tracking-tight text-ink">
-            Bergabung dengan <span className="font-editorial-italic font-light">TerasTani</span>
+            Bergabung dengan <span className="font-editorial-italic font-light text-moss-800">TerasTani</span>
           </h2>
           <p className="text-sm text-graphite mt-1.5 leading-relaxed">
             Pilih entitas Anda untuk membuka akses kalkulator AI dan jaringan lumbung komunal.
@@ -178,27 +174,27 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Role selector as bespoke luxury toggle cards */}
+          {/* Role selector as bespoke 2D Neo-Brutalist toggle cards */}
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-2">
+            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-2 font-bold">
               Pilih Peran Entitas
             </label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, role: 'user' })}
-                className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col gap-1.5 ${
+                className={`p-3.5 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col gap-1.5 ${
                   formData.role === 'user'
-                    ? 'border-moss-700 bg-moss-900/5 text-ink shadow-xs ring-1 ring-moss-700'
-                    : 'border-ink/10 bg-white/60 text-graphite hover:border-ink/30'
+                    ? 'border-ink bg-moss-100 text-ink shadow-[3.5px_3.5px_0px_0px_#171715] translate-x-0.5 translate-y-0.5 font-bold'
+                    : 'border-ink/20 bg-white text-graphite hover:border-ink hover:shadow-[2px_2px_0px_0px_#171715]'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <User className={`w-4 h-4 ${formData.role === 'user' ? 'text-moss-700' : 'text-graphite'}`} />
+                  <User className={`w-4 h-4 ${formData.role === 'user' ? 'text-moss-900' : 'text-graphite'}`} />
                   {formData.role === 'user' && <span className="w-2 h-2 rounded-full bg-moss-600"></span>}
                 </div>
                 <div>
-                  <div className="font-semibold text-sm text-ink">Warga (Petani)</div>
+                  <div className="font-bold text-sm text-ink">Warga (Petani)</div>
                   <div className="text-xs text-graphite">Pemilik lahan mikro & urban</div>
                 </div>
               </button>
@@ -206,18 +202,18 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, role: 'distributor' })}
-                className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col gap-1.5 ${
+                className={`p-3.5 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col gap-1.5 ${
                   formData.role === 'distributor'
-                    ? 'border-ochre-500 bg-ochre-500/5 text-ink shadow-xs ring-1 ring-ochre-500'
-                    : 'border-ink/10 bg-white/60 text-graphite hover:border-ink/30'
+                    ? 'border-ink bg-ochre-100 text-ink shadow-[3.5px_3.5px_0px_0px_#171715] translate-x-0.5 translate-y-0.5 font-bold'
+                    : 'border-ink/20 bg-white text-graphite hover:border-ink hover:shadow-[2px_2px_0px_0px_#171715]'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <Building2 className={`w-4 h-4 ${formData.role === 'distributor' ? 'text-ochre-500' : 'text-graphite'}`} />
+                  <Building2 className={`w-4 h-4 ${formData.role === 'distributor' ? 'text-ochre-700' : 'text-graphite'}`} />
                   {formData.role === 'distributor' && <span className="w-2 h-2 rounded-full bg-ochre-500"></span>}
                 </div>
                 <div>
-                  <div className="font-semibold text-sm text-ink">Distributor Resmi</div>
+                  <div className="font-bold text-sm text-ink">Distributor Resmi</div>
                   <div className="text-xs text-graphite">Pembeli pasokan & logistik</div>
                 </div>
               </button>
@@ -225,7 +221,7 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
           </div>
 
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5">
+            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5 font-bold">
               Nama Lengkap atau Institusi
             </label>
             <input 
@@ -234,12 +230,12 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               placeholder="Contoh: Raden Dananjaya" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-2.5 rounded-xl border border-ink/15 bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:ring-2 focus:ring-moss-600 focus:border-transparent transition-all"
+              className="w-full px-4 py-2.5 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
             />
           </div>
 
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5">
+            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5 font-bold">
               Email Resmi
             </label>
             <input 
@@ -248,12 +244,12 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               placeholder="nama@instansi.com" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-2.5 rounded-xl border border-ink/15 bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:ring-2 focus:ring-moss-600 focus:border-transparent transition-all"
+              className="w-full px-4 py-2.5 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
             />
           </div>
 
           <div>
-            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5">
+            <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5 font-bold">
               Kata Sandi (Min. 8 Karakter)
             </label>
             <input 
@@ -262,31 +258,31 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               placeholder="••••••••" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-2.5 rounded-xl border border-ink/15 bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:ring-2 focus:ring-moss-600 focus:border-transparent transition-all"
+              className="w-full px-4 py-2.5 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
             />
           </div>
 
-          <div className="flex items-center gap-2 pt-1 text-xs text-graphite">
-            <ShieldCheck className="w-4 h-4 text-moss-600 shrink-0" />
+          <div className="flex items-center gap-2 pt-1 text-xs text-graphite font-mono">
+            <ShieldCheck className="w-4 h-4 text-moss-700 shrink-0" />
             <span>Data terenkripsi dan diverifikasi oleh jaringan lumbung lokal.</span>
           </div>
 
           <button 
             type="submit" 
             disabled={isLoading} 
-            className="w-full mt-2 bg-moss-800 hover:bg-moss-900 text-paper font-medium py-3.5 px-5 rounded-full shadow-md transition-all flex items-center justify-center gap-2 group disabled:opacity-70 cursor-pointer"
+            className="nb-btn-ochre w-full mt-3 py-3.5 px-5 rounded-xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center justify-center gap-2 group disabled:opacity-70 cursor-pointer"
           >
-            <Sparkles className="w-4 h-4 text-ochre-400" />
+            <Sparkles className="w-4 h-4 text-ink" />
             <span>{isLoading ? 'Mendaftarkan Akun...' : 'Konfirmasi Registrasi'}</span>
           </button>
         </form>
 
-        <div className="mt-6 pt-5 border-t border-ink/10 flex items-center justify-between text-xs text-graphite">
+        <div className="mt-6 pt-5 border-t-2 border-ink/10 flex items-center justify-between text-xs text-graphite">
           <span>Sudah memiliki akun terdaftar?</span>
           <button 
             type="button"
             onClick={onSwitchToLogin} 
-            className="font-semibold text-moss-700 hover:text-moss-900 underline underline-offset-4 transition-colors cursor-pointer"
+            className="font-bold text-moss-800 hover:text-ink underline underline-offset-4 transition-colors cursor-pointer"
           >
             Masuk di Sini
           </button>
