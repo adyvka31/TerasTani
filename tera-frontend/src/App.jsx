@@ -4,10 +4,10 @@
  */
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Sprout } from 'lucide-react';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import TerasChatbot from './components/common/TerasChatbot';
+import { TerasMark } from './components/common/TerasLogo';
 
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
@@ -33,8 +33,8 @@ function ScrollToTop() {
 function PageLoader() {
   return (
     <div className="min-h-screen bg-paper flex flex-col items-center justify-center p-6 text-ink paper-grain">
-      <div className="w-14 h-14 rounded-2xl bg-moss-900 text-paper flex items-center justify-center mb-4 border-2 border-ink shadow-[4px_4px_0px_0px_#171715] animate-pulse">
-        <Sprout className="w-7 h-7 text-ochre-400" />
+      <div className="mb-4 animate-pulse">
+        <TerasMark size={52} />
       </div>
       <div className="font-display text-2xl tracking-tight">
         Teras<span className="font-editorial-italic text-moss-700">Tani</span>

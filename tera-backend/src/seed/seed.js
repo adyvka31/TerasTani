@@ -7,6 +7,12 @@ const { pool, testConnection } = require('../config/db.config');
 const bcrypt = require('bcryptjs');
 
 async function seed() {
+  if (!process.env.DATABASE_URL) {
+    console.error('❌ [SEEDER]: DATABASE_URL belum diatur di tera-backend/.env.');
+    console.error('👉 Silakan buka file tera-backend/.env dan masukkan connection string database PostgreSQL/Supabase Anda.');
+    process.exit(1);
+  }
+
   console.log('🌱 [SEEDER]: Menghubungkan ke PostgreSQL...');
   const isConnected = await testConnection();
   if (!isConnected) {

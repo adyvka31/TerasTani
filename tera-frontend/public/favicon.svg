@@ -1,8 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <rect width="48" height="48" rx="12" fill="#122B1E" />
-  <path d="M24 10C24 10 27.5 16 32 18C36.5 20 38 24 38 24C38 24 33 25 29 23C26.5 21.75 25 19 24 17C23 19 21.5 21.75 19 23C15 25 10 24 10 24C10 24 11.5 20 16 18C20.5 16 24 10 24 10Z" fill="#C48E3E" opacity="0.9" />
-  <path d="M24 15V38" stroke="#F4F0E8" stroke-width="2.5" stroke-linecap="round" />
-  <path d="M24 28C27 25 32 26 34 29" stroke="#72B890" stroke-width="2" stroke-linecap="round" />
-  <path d="M24 32C21 29 16 30 14 33" stroke="#72B890" stroke-width="2" stroke-linecap="round" />
-  <circle cx="24" cy="9.5" r="2.5" fill="#FAF9F6" />
+  <!-- 2D Tactile Physical Shadow -->
+  <rect x="5" y="5" width="38" height="38" rx="10" fill="#171715" />
+  <!-- Main Botanical Deep Moss Tile -->
+  <rect x="3" y="3" width="38" height="38" rx="10" fill="#0B1912" stroke="#171715" stroke-width="2" />
+  <!-- Precision Registration Compass Ticks -->
+  <path d="M7 7H10M7 7V10" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M37 37H34M37 37V34" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round" />
+  <!-- Terasering Agricultural Terraces -->
+  <path d="M10 33C14 31 18 31 22 32.5C26 34 30 33.5 34 31" stroke="#2F6C4C" stroke-width="1.75" stroke-linecap="round" />
+  <path d="M12 28.5C16 26.5 20 27 24 28C28 29 31 27.5 33 26.5" stroke="#6F9E83" stroke-width="1.75" stroke-linecap="round" />
+  <!-- Sprouting Living Canopy -->
+  <path d="M22 25.5C18 24 15 20 16.5 15.5C20.5 16 22.5 19.5 22.5 23" fill="#FBBF24" stroke="#171715" stroke-width="1.25" stroke-linejoin="round" />
+  <path d="M22 24.5C22 18.5 27.5 13 32 13.5C32.5 18 29 23 23 25" fill="#389B63" stroke="#171715" stroke-width="1.25" stroke-linejoin="round" />
+  <path d="M23 23.5C25.5 19.5 28.5 16.5 31 15" stroke="#287C4D" stroke-width="1" stroke-linecap="round" />
+  <!-- Central Germination Core -->
+  <circle cx="22" cy="26" r="2" fill="#F59E0B" stroke="#171715" stroke-width="1" />
+  <path d="M22 27.5V34" stroke="#FBBF24" stroke-width="1.5" stroke-linecap="round" />
 </svg>

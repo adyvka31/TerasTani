@@ -3,6 +3,7 @@
  * Telemetry ribbon, cluster selector, quick action modal trigger, notifications, and profile
  */
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Sun, 
   Droplets, 
@@ -15,6 +16,7 @@ import {
   LogOut 
 } from 'lucide-react';
 import { dashboardApi } from '../../api/dashboard.api';
+import TerasLogo from '../common/TerasLogo';
 
 export default function Header({
   user,
@@ -82,14 +84,12 @@ export default function Header({
             <span className="block w-5 h-0.5 bg-ink"></span>
           </button>
 
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-ink">
-              TerasTani
+          <Link to="/home" className="flex items-center gap-2 group cursor-pointer" aria-label="TerasTani Beranda">
+            <TerasLogo size="sm" showTagline={false} />
+            <span className="hidden sm:inline font-mono text-[9px] uppercase font-bold tracking-wider text-ochre-700 bg-ochre-100 border border-ochre-300 px-2 py-0.5 rounded-full shadow-[1px_1px_0px_0px_#171715]">
+              v2.4
             </span>
-            <span className="hidden sm:inline font-mono text-[10px] uppercase font-bold tracking-widest text-ochre-600 bg-ochre-100 border border-ochre-300 px-2 py-0.5 rounded-full">
-              Komersial v2.4
-            </span>
-          </div>
+          </Link>
         </div>
 
         {/* Center: Live Environmental Telemetry */}

@@ -1,6 +1,7 @@
 /**
  * App Layout Sidebar (Tactile Neo-Brutalism & Botanical Luxury)
  */
+import { Link } from 'react-router-dom';
 import { 
   Activity, 
   Bot, 
@@ -12,6 +13,7 @@ import {
   Truck, 
   ShieldCheck 
 } from 'lucide-react';
+import TerasLogo from '../common/TerasLogo';
 
 export default function Sidebar({
   user,
@@ -39,6 +41,18 @@ export default function Sidebar({
 
         <div className="relative z-10 space-y-6">
           
+          {/* Brand Identity Header in Sidebar */}
+          <div className="pb-4 border-b border-white/10">
+            <Link to="/home" className="flex items-center group cursor-pointer" aria-label="TerasTani Beranda">
+              <TerasLogo 
+                size="sm" 
+                variant="dark" 
+                tagline="Konsolidasi Panen Komunal" 
+                className="transition-transform group-hover:-translate-y-0.5"
+              />
+            </Link>
+          </div>
+
           {/* User Profile Monogram Header Card */}
           <div className="p-4 rounded-2xl bg-moss-900 border-2 border-white/15 shadow-[4px_4px_0px_0px_#F59E0B]">
             <div className="flex items-center gap-3">

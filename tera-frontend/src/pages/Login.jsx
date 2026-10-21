@@ -18,6 +18,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import heroHarvestImage from '../assets/editorial_harvest_hero.jpg';
+import TerasLogo from '../components/common/TerasLogo';
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -115,18 +116,12 @@ export default function Login() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
           {/* Brand Monogram & Home Link */}
-          <Link to="/home" className="flex items-center gap-3.5 group cursor-pointer">
-            <div className="w-10 h-10 rounded-xl bg-moss-900 text-paper flex items-center justify-center border-2 border-ink shadow-[2.5px_2.5px_0px_0px_#171715] transition-transform group-hover:-translate-y-0.5">
-              <Sprout className="h-5 w-5 text-ochre-400" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-display font-medium text-2xl tracking-tight text-ink leading-none">
-                Teras<span className="font-editorial-italic font-normal text-moss-700">Tani</span>
-              </span>
-              <span className="font-mono text-[9px] uppercase tracking-widest text-graphite mt-0.5 hidden sm:block">
-                Portal Otentikasi Terintegrasi
-              </span>
-            </div>
+          <Link to="/home" className="flex items-center group cursor-pointer" aria-label="TerasTani Beranda">
+            <TerasLogo 
+              size="md" 
+              tagline="Portal Otentikasi Terintegrasi" 
+              className="transition-transform group-hover:-translate-y-0.5"
+            />
           </Link>
 
           {/* Network Live Telemetry Pill */}

@@ -28,6 +28,10 @@ pool.on('error', (err) => {
  * @returns {Promise<boolean>}
  */
 async function testConnection() {
+  if (!env.DATABASE_URL) {
+    console.error('❌ [DATABASE CONNECTION CHECK FAILED]: DATABASE_URL belum diisi pada tera-backend/.env');
+    return false;
+  }
   try {
     const client = await pool.connect();
     const result = await client.query('SELECT NOW()');

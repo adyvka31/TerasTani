@@ -26,6 +26,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // High-resolution local editorial photographic assets
 import heroHarvestImage from '../assets/editorial_harvest_hero.jpg';
 import communalCrateImage from '../assets/communal_crate.jpg';
+import TerasLogo, { TerasMark } from '../components/common/TerasLogo';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -1208,76 +1209,74 @@ export default function Home() {
       />
 
       {/* 1. Header / Architectural Editorial Navigation */}
-      <nav className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-paper/95 backdrop-blur-md border-b-2 border-ink shadow-[0_4px_24px_rgba(23,23,21,0.08)] py-0.5' 
-          : 'bg-paper/95 backdrop-blur-md border-b-2 border-ink py-0'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={`flex justify-between items-center transition-all duration-300 ${isScrolled ? 'h-16' : 'h-20'}`}>
-            {/* Logo Monogram */}
-            <div className="flex items-center gap-4">
-              <Link to="/home" className="flex items-center gap-3 group">
-                <div className="w-10 h-10 rounded-xl bg-moss-900 text-paper flex items-center justify-center border-2 border-ink shadow-[2.5px_2.5px_0px_0px_#171715] transition-transform group-hover:-translate-y-0.5">
-                  <Sprout className="h-5 w-5 text-ochre-400" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-display font-medium text-2xl tracking-tight text-ink">
-                    Teras<span className="font-editorial-italic font-normal text-moss-700">Tani</span>
-                  </span>
-                  <span className="hidden sm:block font-mono text-[9px] uppercase tracking-widest text-graphite -mt-1">
-                    Komunal &bull; Presisi &bull; Terdistribusi
-                  </span>
-                </div>
-              </Link>
-            </div>
+      <nav className="sticky top-0 z-40 w-full bg-paper/95 backdrop-blur-md border-b-2 border-ink transition-all">
+        {/* Subtle Top Reading Progress Bar */}
+        <div id="scroll-progress" className="h-[2px] w-full bg-gradient-to-r from-leaf-500 via-ochre-400 to-moss-900 origin-left scale-x-0"></div>
 
-            {/* Desktop Navigation Links with 2D Tactile Hover States & Active Indicator */}
-            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 font-mono text-xs uppercase tracking-wider text-graphite shrink-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 sm:h-18">
+            {/* Brand Logo & Wordmark */}
+            <Link to="/home" className="flex items-center gap-3 group cursor-pointer" aria-label="TerasTani Beranda">
+              <TerasMark size={36} className="transition-transform group-hover:-translate-y-0.5" />
+              <div className="flex flex-col justify-center leading-none">
+                <span className="font-display font-bold text-xl sm:text-2xl tracking-tight text-ink">
+                  Teras<span className="font-editorial-italic font-normal text-moss-700">Tani</span>
+                </span>
+                <span className="font-mono text-[9px] uppercase tracking-wider text-graphite/80 hidden sm:block mt-1 font-semibold">
+                  Agrikultur Presisi Komunal
+                </span>
+              </div>
+            </Link>
+
+            {/* Desktop Navigation Links - Clean, Elegant & Uncluttered */}
+            <div className="hidden lg:flex items-center gap-1 xl:gap-2 font-sans text-xs tracking-normal font-medium text-graphite shrink-0">
               {[
-                { href: '#paradoks', id: 'paradoks', label: 'Paradoks' },
-                { href: '#simulator', id: 'simulator', label: 'Engine AI' },
+                { href: '#paradoks', id: 'paradoks', label: 'Paradoks Pangan' },
+                { href: '#simulator', id: 'simulator', label: 'Simulator AI' },
                 { href: '#fitur', id: 'fitur', label: 'Kapabilitas' },
                 { href: '#cara-kerja', id: 'cara-kerja', label: 'Alur Panen' },
-                { href: '#edukasi', id: 'edukasi', label: 'Jurnal' },
-              ].map((item) => (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  onClick={(e) => scrollToSection(e, item.href)}
-                  className={`px-3 py-1.5 rounded-lg transition-all whitespace-nowrap ${
-                    activeSection === item.id
-                      ? 'border-2 border-ink bg-moss-900 text-paper shadow-[2px_2px_0px_0px_#171715] font-bold'
-                      : 'border border-transparent hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715]'
-                  }`}
-                >
-                  {item.label}
-                </a>
-              ))}
+                { href: '#edukasi', id: 'edukasi', label: 'Jurnal Agronomi' },
+              ].map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <a
+                    key={item.id}
+                    href={item.href}
+                    onClick={(e) => scrollToSection(e, item.href)}
+                    className={`px-3 py-1.5 rounded-lg transition-all whitespace-nowrap text-[13px] ${
+                      isActive
+                        ? 'border-2 border-ink bg-moss-900 text-paper font-semibold shadow-[2px_2px_0px_0px_#171715]'
+                        : 'border border-transparent hover:border-ink/30 hover:bg-ivory hover:text-ink'
+                    }`}
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
             </div>
 
-            {/* Direct CTA Triggers in Neo-Brutalist 2D Style */}
+            {/* Action Buttons - Neat & Proportional */}
             <div className="hidden lg:flex items-center gap-3 shrink-0">
               <Link 
                 to="/login" 
-                className="nb-btn px-4 py-2 rounded-xl bg-paper text-ink font-mono text-xs uppercase tracking-wider font-semibold cursor-pointer whitespace-nowrap inline-block"
+                className="px-4 py-2 rounded-xl text-xs font-sans font-semibold text-graphite hover:text-ink hover:bg-ivory transition-colors cursor-pointer"
               >
                 Masuk
               </Link>
               
               <Link 
                 to="/register" 
-                className="nb-btn-ochre px-5 py-2.5 rounded-xl font-mono text-xs uppercase tracking-wider font-bold cursor-pointer whitespace-nowrap flex items-center gap-2 group"
+                className="px-4.5 py-2 rounded-xl bg-ochre-400 text-ink font-sans text-xs font-bold border-2 border-ink shadow-[2px_2px_0px_0px_#171715] hover:bg-ochre-300 hover:shadow-[3px_3px_0px_0px_#171715] active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Daftar Sekarang</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 text-ink" />
+                <ArrowRight className="w-3.5 h-3.5 text-ink" />
               </Link>
             </div>
 
             {/* Mobile/Tablet Menu Trigger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 border-2 border-ink bg-ivory rounded-xl shadow-[2px_2px_0px_0px_#171715] active:translate-x-0.5 active:translate-y-0.5 text-ink focus:outline-none"
+              className="lg:hidden p-2 rounded-xl border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] active:translate-x-0.5 active:translate-y-0.5 text-ink focus:outline-none cursor-pointer"
               aria-label="Toggle Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -1285,28 +1284,40 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu with 2D Styling */}
+        {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-b-2 border-ink bg-paper px-6 py-6 space-y-4 animate-in slide-in-from-top-2 duration-200">
-            <div className="flex flex-col space-y-2 font-mono text-xs uppercase tracking-wider text-graphite">
-              <a href="#paradoks" onClick={(e) => { scrollToSection(e, '#paradoks'); setMobileMenuOpen(false); }} className="py-2 px-3 rounded-lg hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] whitespace-nowrap transition-all">Paradoks Pangan</a>
-              <a href="#simulator" onClick={(e) => { scrollToSection(e, '#simulator'); setMobileMenuOpen(false); }} className="py-2 px-3 rounded-lg hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] whitespace-nowrap transition-all">Engine AI</a>
-              <a href="#fitur" onClick={(e) => { scrollToSection(e, '#fitur'); setMobileMenuOpen(false); }} className="py-2 px-3 rounded-lg hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] whitespace-nowrap transition-all">Kapabilitas</a>
-              <a href="#cara-kerja" onClick={(e) => { scrollToSection(e, '#cara-kerja'); setMobileMenuOpen(false); }} className="py-2 px-3 rounded-lg hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] whitespace-nowrap transition-all">Alur Panen</a>
-              <a href="#edukasi" onClick={(e) => { scrollToSection(e, '#edukasi'); setMobileMenuOpen(false); }} className="py-2 px-3 rounded-lg hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] whitespace-nowrap transition-all">Jurnal Agronomi</a>
+          <div className="lg:hidden border-b-2 border-ink bg-paper px-6 py-5 space-y-3 animate-in slide-in-from-top-2 duration-200">
+            <div className="flex flex-col space-y-1 font-sans text-sm font-medium text-graphite">
+              {[
+                { href: '#paradoks', id: 'paradoks', label: 'Paradoks Pangan' },
+                { href: '#simulator', id: 'simulator', label: 'Simulator AI' },
+                { href: '#fitur', id: 'fitur', label: 'Kapabilitas' },
+                { href: '#cara-kerja', id: 'cara-kerja', label: 'Alur Panen' },
+                { href: '#edukasi', id: 'edukasi', label: 'Jurnal Agronomi' },
+              ].map((item) => (
+                <a 
+                  key={item.id}
+                  href={item.href} 
+                  onClick={(e) => { scrollToSection(e, item.href); setMobileMenuOpen(false); }} 
+                  className="py-2 px-3 rounded-lg hover:bg-ivory hover:text-ink whitespace-nowrap transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
             </div>
-            <div className="pt-4 border-t-2 border-ink flex flex-col gap-3">
+
+            <div className="pt-3 border-t border-ink/10 flex flex-col gap-2.5">
               <Link 
                 to="/login" 
                 onClick={() => setMobileMenuOpen(false)} 
-                className="nb-btn w-full py-2.5 text-xs font-mono uppercase tracking-wider text-ink bg-white rounded-xl text-center inline-block"
+                className="w-full py-2.5 text-xs font-sans font-semibold text-ink bg-white border border-ink/20 rounded-xl text-center inline-block"
               >
-                Masuk ke Akun
+                Masuk
               </Link>
               <Link 
                 to="/register" 
                 onClick={() => setMobileMenuOpen(false)} 
-                className="nb-btn-ochre w-full py-3 rounded-xl text-xs font-mono uppercase tracking-wider font-bold flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-xl text-xs font-sans font-bold bg-ochre-400 text-ink border-2 border-ink shadow-[2px_2px_0px_0px_#171715] flex items-center justify-center gap-1.5"
               >
                 <span>Daftar Sekarang</span>
                 <ArrowRight className="w-3.5 h-3.5 text-ink" />
@@ -2799,21 +2810,18 @@ export default function Home() {
           <div className="footer-content grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b-2 border-white/10">
             {/* Brand Manifesto Column */}
             <div className="md:col-span-5 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/10 border-2 border-white/20 flex items-center justify-center shadow-[2px_2px_0px_0px_#171715]">
-                  <Sprout className="footer-sprout-icon h-5 w-5 text-ochre-400" />
-                </div>
-                <span className="font-display font-medium text-2xl tracking-tight text-paper">
-                  Teras<span className="font-editorial-italic font-normal text-leaf-300">Tani</span>
-                </span>
-              </div>
+              <TerasLogo 
+                size="md" 
+                variant="dark" 
+                tagline="Gerakan Ketahanan Pangan Komunal Terdesentralisasi"
+              />
               
               <p className="text-xs text-paper/70 max-w-sm leading-relaxed">
                 Infrastruktur digital pertama di Indonesia yang memberdayakan pekarangan warga kota menjadi lumbung pangan komunal terintegrasi AI dan rantai pasok industri.
               </p>
 
               <div className="pt-2 font-mono text-[11px] text-paper/50">
-                Inisiasi Gerakan Ketahanan Pangan Komunal Terdesentralisasi.
+                Arsitektur Pangan Berkelanjutan &bull; Terdaftar Komunal 2026.
               </div>
             </div>
 
