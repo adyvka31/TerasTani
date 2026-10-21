@@ -63,107 +63,141 @@ export default function Dashboard() {
   // Household farming plots state (from Supabase land_calculations)
   const [userCalculations, setUserCalculations] = useState([]);
 
+  // System & individual feature loading states
+  const [isLoadingSystem, setIsLoadingSystem] = useState(true);
+  const [isLoadingGamification, setIsLoadingGamification] = useState(true);
+  const [isLoadingWallet, setIsLoadingWallet] = useState(true);
+  const [isLoadingHarvests, setIsLoadingHarvests] = useState(true);
+  const [isLoadingPlots, setIsLoadingPlots] = useState(true);
+
   // Fetch initial data from Backend
   useEffect(() => {
     let isMounted = true;
 
     async function loadSystemData() {
-      try {
-        // 0. User Profile (XP & Balance from Database)
-        const pRes = await authApi.getProfile();
-        if (isMounted && pRes.data) {
-          if (pRes.data.xp_points !== undefined) {
-            setUserXP(Number(pRes.data.xp_points));
+      // 0. User Profile (XP & Balance from Database) & Clusters
+      const fetchProfileAndClusters = async () => {
+        try {
+          const [pRes, cRes] = await Promise.allSettled([
+            authApi.getProfile(),
+            dashboardApi.getClusters(),
+          ]);
+          if (isMounted) {
+            if (pRes.status === 'fulfilled' && pRes.value?.data) {
+              if (pRes.value.data.xp_points !== undefined) {
+                setUserXP(Number(pRes.value.data.xp_points));
+              }
+              if (pRes.value.data.wallet_balance !== undefined) {
+                setWalletBalance(parseFloat(pRes.value.data.wallet_balance));
+              }
+            }
+            if (cRes.status === 'fulfilled' && cRes.value?.data && cRes.value.data.length > 0) {
+              setClusters(cRes.value.data);
+              setActiveCluster(cRes.value.data[0]);
+            }
           }
-          if (pRes.data.wallet_balance !== undefined) {
-            setWalletBalance(parseFloat(pRes.data.wallet_balance));
+        } catch (e) {
+          console.warn('Profile/Cluster fetch note:', e);
+        } finally {
+          if (isMounted) setIsLoadingSystem(false);
+        }
+      };
+
+      // 1. Wallet Details & Transactions
+      const fetchWallet = async () => {
+        try {
+          const wRes = await dashboardApi.getWalletDetails();
+          if (isMounted && wRes.data) {
+            setWalletDetails(wRes.data);
+            setWalletBalance(parseFloat(wRes.data.balance || 0));
           }
+        } catch (e) {
+          console.warn('Wallet data fallback:', e);
+        } finally {
+          if (isMounted) setIsLoadingWallet(false);
         }
-      } catch (e) {
-        console.warn('Profile fetch note:', e);
-      }
+      };
 
-      try {
-        // 1. Clusters
-        const cRes = await dashboardApi.getClusters();
-        if (isMounted && cRes.data && cRes.data.length > 0) {
-          setClusters(cRes.data);
-          setActiveCluster(cRes.data[0]);
-        }
-      } catch (e) {
-        console.warn('Using default clusters fallback:', e);
-      }
-
-      try {
-        // 2. Wallet
-        const wRes = await dashboardApi.getWalletDetails();
-        if (isMounted && wRes.data) {
-          setWalletDetails(wRes.data);
-          setWalletBalance(parseFloat(wRes.data.balance || 0));
-        }
-      } catch (e) {
-        console.warn('Wallet data fallback:', e);
-      }
-
-      try {
-        // 3. Missions & Leaderboard
-        const [mRes, lRes] = await Promise.all([
-          dashboardApi.getMissions(),
-          dashboardApi.getLeaderboard(),
-        ]);
-        if (isMounted) {
-          if (mRes.data) {
-            setMissions(mRes.data);
-            const completed = mRes.data
-              .filter((m) => m.is_completed)
-              .map((m) => m.id);
-            setClaimedQuests(completed);
+      // 2. Missions & Leaderboard
+      const fetchGamification = async () => {
+        try {
+          const [mRes, lRes] = await Promise.all([
+            dashboardApi.getMissions(),
+            dashboardApi.getLeaderboard(),
+          ]);
+          if (isMounted) {
+            if (mRes.data) {
+              setMissions(mRes.data);
+              const completed = mRes.data
+                .filter((m) => m.is_completed)
+                .map((m) => m.id);
+              setClaimedQuests(completed);
+            }
+            if (lRes.data) setLeaderboard(lRes.data);
           }
-          if (lRes.data) setLeaderboard(lRes.data);
+        } catch (e) {
+          console.warn('Gamification data fallback:', e);
+        } finally {
+          if (isMounted) setIsLoadingGamification(false);
         }
-      } catch (e) {
-        console.warn('Gamification data fallback:', e);
-      }
+      };
 
-      try {
-        // 4. Harvest Submissions (Supabase)
-        const hRes = await dashboardApi.getMyHarvests();
-        if (isMounted && hRes.data && hRes.data.length > 0) {
-          setRecentTickets(hRes.data);
-          const latest = hRes.data[0];
-          const cropPrices = {
-            'Selada Romaine Super': 28500,
-            'Pakcoy Hijau Nauli': 24000,
-            'Bayam Jepang Horenso': 35000,
-            'Daun Mint & Basil Segar': 45000,
-          };
-          const unitPrice = cropPrices[latest.crop_name] || 28500;
-          const weight = parseFloat(latest.claimed_weight_kg || 0);
-          setDepositTicket({
-            id: latest.id,
-            batchId: latest.qr_ticket_code,
-            crop: latest.crop_name,
-            weight,
-            cluster: latest.village_name ? `Hub ${latest.rw_number || 'RW'} ${latest.village_name}` : 'Hub RW 07 Rawasari',
-            timestamp: new Date(latest.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + new Date(latest.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
-            escrowValuation: Math.round(weight * unitPrice),
-            qualityGrade: latest.ai_quality_grade ? latest.ai_quality_grade.replace('GRADE_', 'Grade ').replace('_', ' ') : 'Grade A',
-            status: latest.status,
-          });
+      // 3. Harvest Submissions (Supabase)
+      const fetchHarvests = async () => {
+        try {
+          const hRes = await dashboardApi.getMyHarvests();
+          if (isMounted && hRes.data && hRes.data.length > 0) {
+            setRecentTickets(hRes.data);
+            const latest = hRes.data[0];
+            const cropPrices = {
+              'Selada Romaine Super': 28500,
+              'Pakcoy Hijau Nauli': 24000,
+              'Bayam Jepang Horenso': 35000,
+              'Daun Mint & Basil Segar': 45000,
+            };
+            const unitPrice = cropPrices[latest.crop_name] || 28500;
+            const weight = parseFloat(latest.claimed_weight_kg || 0);
+            setDepositTicket({
+              id: latest.id,
+              batchId: latest.qr_ticket_code,
+              crop: latest.crop_name,
+              weight,
+              cluster: latest.village_name ? `Hub ${latest.rw_number || 'RW'} ${latest.village_name}` : 'Hub RW 07 Rawasari',
+              timestamp: new Date(latest.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + new Date(latest.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
+              escrowValuation: Math.round(weight * unitPrice),
+              qualityGrade: latest.ai_quality_grade ? latest.ai_quality_grade.replace('GRADE_', 'Grade ').replace('_', ' ') : 'Grade A',
+              status: latest.status,
+            });
+          }
+        } catch (e) {
+          console.warn('Harvest history fetch fallback:', e);
+        } finally {
+          if (isMounted) setIsLoadingHarvests(false);
         }
-      } catch (e) {
-        console.warn('Harvest history fetch fallback:', e);
-      }
+      };
 
-      try {
-        // 5. User Land Calculations / Household Plots (Supabase)
-        const calcRes = await dashboardApi.getUserCalculations();
-        if (isMounted && calcRes.data) {
-          setUserCalculations(calcRes.data);
+      // 4. User Land Calculations / Household Plots (Supabase)
+      const fetchPlots = async () => {
+        try {
+          const calcRes = await dashboardApi.getUserCalculations();
+          if (isMounted && calcRes.data) {
+            setUserCalculations(calcRes.data);
+          }
+        } catch (e) {
+          console.warn('User calculations fetch fallback:', e);
+        } finally {
+          if (isMounted) setIsLoadingPlots(false);
         }
-      } catch (e) {
-        console.warn('User calculations fetch fallback:', e);
-      }
+      };
+
+      // Run parallel fetches for instant loading
+      await Promise.allSettled([
+        fetchProfileAndClusters(),
+        fetchWallet(),
+        fetchGamification(),
+        fetchHarvests(),
+        fetchPlots(),
+      ]);
     }
 
     loadSystemData();
@@ -325,6 +359,7 @@ export default function Dashboard() {
         onOpenClusterModal={() => setIsClusterModalOpen(true)}
         onOpenQuickAction={handleQuickAction}
         onOpenLogoutModal={() => setIsLogoutModalOpen(true)}
+        isLoadingSystem={isLoadingSystem}
       />
 
       {/* Main Workspace Layout (Sidebar + Active Tab Content) */}
@@ -361,6 +396,7 @@ export default function Dashboard() {
               pendingEscrow={walletDetails?.pendingEscrow || 0}
               recentTickets={recentTickets}
               transactions={walletDetails?.transactions || []}
+              isLoadingPlots={isLoadingPlots}
             />
           )}
 
@@ -394,6 +430,7 @@ export default function Dashboard() {
               recentTickets={recentTickets}
               onGenerateTicket={handleGenerateTicket}
               onOpenQRModal={() => setIsQRModalOpen(true)}
+              isLoading={isLoadingHarvests}
             />
           )}
 
@@ -404,6 +441,7 @@ export default function Dashboard() {
               totalWithdrawn={walletDetails?.totalWithdrawn}
               transactions={walletDetails?.transactions || []}
               onOpenWithdrawModal={() => setIsWithdrawModalOpen(true)}
+              isLoading={isLoadingWallet}
             />
           )}
 
@@ -415,6 +453,7 @@ export default function Dashboard() {
               claimedQuests={claimedQuests}
               onClaimQuest={handleClaimQuest}
               leaderboard={leaderboard}
+              isLoading={isLoadingGamification}
             />
           )}
 

@@ -11,6 +11,7 @@ export default function FinanceTab({
   totalWithdrawn = 0,
   transactions = [],
   onOpenWithdrawModal,
+  isLoading = false,
 }) {
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
@@ -107,7 +108,13 @@ export default function FinanceTab({
           </span>
         </div>
 
-        {transactions.length === 0 ? (
+        {isLoading ? (
+          <div className="p-10 text-center text-graphite font-mono text-xs bg-ivory rounded-2xl border-2 border-dashed border-ink/20 flex flex-col items-center justify-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-moss-700 animate-ping"></span>
+            <span className="text-ink font-bold">Memuat Buku Kas Escrow...</span>
+            <span className="text-[11px] text-graphite">Sinkronisasi riwayat transaksi & penarikan saldo</span>
+          </div>
+        ) : transactions.length === 0 ? (
           <div className="p-8 text-center text-graphite font-sans text-xs bg-ivory rounded-2xl border-2 border-dashed border-ink/20 space-y-2">
             <Clock className="w-8 h-8 mx-auto text-graphite/40" />
             <p className="font-bold text-ink">Belum ada riwayat transaksi finansial</p>

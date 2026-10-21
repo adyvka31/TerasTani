@@ -27,6 +27,7 @@ export default function Header({
   onOpenClusterModal,
   onOpenQuickAction,
   onOpenLogoutModal,
+  isLoadingSystem = false,
 }) {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -86,9 +87,16 @@ export default function Header({
 
           <Link to="/home" className="flex items-center gap-2 group cursor-pointer" aria-label="TerasTani Beranda">
             <TerasLogo size="sm" showTagline={false} />
-            <span className="hidden sm:inline font-mono text-[9px] uppercase font-bold tracking-wider text-ochre-700 bg-ochre-100 border border-ochre-300 px-2 py-0.5 rounded-full shadow-[1px_1px_0px_0px_#171715]">
-              v2.4
-            </span>
+            {isLoadingSystem ? (
+              <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase font-bold tracking-wider text-moss-800 bg-moss-100 border border-moss-300 px-2 py-0.5 rounded-full animate-pulse shadow-[1px_1px_0px_0px_#171715]">
+                <span className="w-1.5 h-1.5 rounded-full bg-moss-700 animate-ping"></span>
+                <span>Sinkronisasi...</span>
+              </span>
+            ) : (
+              <span className="hidden sm:inline font-mono text-[9px] uppercase font-bold tracking-wider text-ochre-700 bg-ochre-100 border border-ochre-300 px-2 py-0.5 rounded-full shadow-[1px_1px_0px_0px_#171715]">
+                v2.4
+              </span>
+            )}
           </Link>
         </div>
 
@@ -97,7 +105,7 @@ export default function Header({
           <div className="flex items-center gap-2 pr-4 border-r border-ink/20">
             <span className="w-2 h-2 rounded-full bg-leaf-500 animate-ping"></span>
             <span className="font-bold text-graphite uppercase tracking-wider text-[11px]">
-              Sensor RW Terpadu
+              {isLoadingSystem ? 'Sinkronisasi Sensor...' : 'Sensor RW Terpadu'}
             </span>
           </div>
 
