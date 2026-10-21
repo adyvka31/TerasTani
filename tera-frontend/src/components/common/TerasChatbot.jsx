@@ -116,7 +116,7 @@ Silakan pilih topik saran cepat di bawah atau ketikkan pertanyaan Anda secara la
     title: 'Benchmark Harga Pasar Komunal',
     answer: `Patokan harga komunal terverifikasi TerasTani hari ini:
 
-• **Selada Romaine Super**: Rp 28.000 – Rp 32.000 / kg (Grade A)
+• **Selada Romaine Super**: Rpt 28.000 – Rp 32.000 / kg (Grade A)
 • **Pakcoy Nauli**: Rp 14.000 – Rp 18.000 / kg (Grade A)
 • **Bayam Jepang (Horenso)**: Rp 35.000 – Rp 42.000 / kg
 • **Kangkung Hidroponik**: Rp 12.000 – Rp 15.000 / kg
