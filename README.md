@@ -39,20 +39,6 @@ Buka [http://localhost:5173/login](http://localhost:5173/login) dan gunakan tomb
 
 ---
 
-## 🎯 Pemetaan Rubrik Penilaian Kompetisi
-
-Berikut adalah pembuktian kesesuaian arsitektur teknis dan desain antarmuka TerasTani terhadap standar penilaian juri:
-
-| Pilar Evaluasi | Kriteria Rubrik Juri | Implementasi Nyata di TerasTani | Status & Bukti Teknis |
-| :--- | :--- | :--- | :---: |
-| **Source Code** | **Pemeliharaan (Maintainability)**<br/>*Seberapa mudah web ini dirawat dan dikembangkan lebih lanjut di kemudian hari?* | - **Monorepo Standar Enterprise**: Menggunakan `pnpm-workspace.yaml` terpadu dengan perintah terpusat (`pnpm dev`, `pnpm build`, `pnpm lint`, `pnpm test`).<br/>- **Clean Layered Architecture (Backend)**: Pemisahan tegas Controller, Service, Repository (DAL), Middleware, dan Config.<br/>- **Feature-Sliced Architecture (Frontend)**: Komponen modular terisolasi (`components/common`, `components/layout`, `features/dashboard`, `hooks/useAuth`).<br/>- **Zero ESLint Errors**: Skrip `pnpm lint` bersih 0 error & 0 warning (standar React 19 & Fast Refresh). | ✅ **100% Sempurna**<br/>`pnpm lint` (0 error)<br/>`pnpm test` (0 error) |
-| **Source Code** | **Dokumentasi**<br/>*Apakah dokumentasi pengembangan web tersusun lengkap dan rapi?* | - **Dokumentasi Monorepo Terstruktur**: Master `README.md`, `tera-frontend/README.md`, dan `tera-backend/README.md`.<br/>- **Diagram Arsitektur Mermaid**: Alir client-middleware-service, pipeline keamanan JWT, dan Entity Relationship Diagram (ERD).<br/>- **Panduan Setup Cepat**: 1-langkah instalasi, template `.env.example`, seeding data idempoten, dan diagnostik `/health`.<br/>- **Tabel RESTful API**: Format method, endpoint, status kode, dan proteksi Bearer token. | ✅ **100% Sempurna**<br/>Lengkap di 3 README & ERD |
-| **Desain Antarmuka** | **Estetika (Aesthetics)**<br/>*Apakah tampilan web menarik dan nyaman dipandang?* | - **Tactile Editorial Neo-Brutalism & Botanical Luxury**: Perpaduan tipografi monumental (*Fraunces / Editorial Serif*), font monospace telemetri (*JetBrains Mono*), dan font sans (*Plus Jakarta Sans*).<br/>- **Palet Warna Alami & Taktil**: Nuansa kanopi hutan (*Botanical Moss* `#0B1912`), kuning keemasan panen (*Harvest Ochre* `#DEAB42`), dan latar kertas taktil (*Paper/Ivory* `#FAF9F6`).<br/>- **Animasi Halus & Dinamis**: Momentum scrolling ultra-lembut (*Lenis*), parallax scroll bertingkat (*GSAP ScrollTrigger*), dan micro-interactions stempel sertifikasi Grade A. | ✅ **100% Sempurna**<br/>Desain Unik, Mewah & Presisi |
-| **Desain Antarmuka** | **Pengalaman Pengguna (UX)**<br/>*Seberapa nyaman pengguna saat berinteraksi dengan web tersebut?* | - **1-Click Evaluator Login**: Tombol kredensial demo sekali klik untuk memudahkan juri langsung menguji akun Admin, Warga, atau Distributor.<br/>- **Instant Dual-Perspective Role Switcher**: Pengalih peran instan di sidebar dasbor (`Warga` $\leftrightarrow$ `Distributor`) tanpa repot logout-login.<br/>- **Otomasi Scroll-to-Top**: Pergantian rute selalu mulus dan mendarat di posisi atas `(0, 0)`, mencegah halaman tersangkut di bawah.<br/>- **Interaktivitas Instan**: Simulator kalkulator lahan real-time, scanner Computer Vision dengan progress SPAD, dan generator tiket timbang QR. | ✅ **100% Sempurna**<br/>Alur Interaksi Tanpa Hambatan |
-| **Desain Antarmuka** | **Konsistensi**<br/>*Apakah desain web seragam di seluruh halamannya?* | - **Design Tokens Seragam**: Semua halaman (`/home`, `/login`, `/register`, `/dashboard`, modal, tab) berbagi batas garis 2px ink (`border-2 border-ink`), bayangan solid 2D (`shadow-[4px_4px_0px_0px_#171715]`), dan border radius yang harmonis.<br/>- **Pola Komponen Konsisten**: Tombol standar (`nb-btn`, `nb-btn-moss`, `nb-btn-ochre`), modal dialog dengan *soft-dimming* 2px blur, dan format mata uang Rupiah terpusat (`formatIDR`). | ✅ **100% Sempurna**<br/>Konsisten di Seluruh Halaman |
-
----
-
 ## 📋 Daftar Isi
 1. [Pemetaan Rubrik Penilaian Kompetisi](#-pemetaan-rubrik-penilaian-kompetisi)
 2. [Arsitektur Sistem (Enterprise Architecture)](#-arsitektur-sistem-enterprise-architecture)
