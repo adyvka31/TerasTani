@@ -10,44 +10,55 @@ export default function DistributorFleetTab() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadFleets();
-  }, []);
+    let isMounted = true;
 
-  const loadFleets = async () => {
-    try {
-      setIsLoading(true);
-      const res = await dashboardApi.getMyFleets();
-      setFleets(res.data || []);
-    } catch {
-      // Fallback display
-      setFleets([
-        {
-          id: '1',
-          vehicle_plate: 'B 9481 TTA',
-          driver_name: 'Budi Santoso',
-          driver_phone: '081234567890',
-          rw_number: 'RW07',
-          village_name: 'Rawasari',
-          pickup_time: 'Hari Ini, 14:30 WIB',
-          status: 'SIAP ANGKUT',
-          cargo: '480 kg Selada',
-        },
-        {
-          id: '2',
-          vehicle_plate: 'B 9102 KMY',
-          driver_name: 'Ahmad Fauzi',
-          driver_phone: '081398765432',
-          rw_number: 'RW04',
-          village_name: 'Cempaka Baru',
-          pickup_time: 'Hari Ini, 15:45 WIB',
-          status: 'ANTRIAN RUTE',
-          cargo: '650 kg Pakcoy',
+    async function fetchFleets() {
+      try {
+        const res = await dashboardApi.getMyFleets();
+        if (isMounted) {
+          setFleets(res.data || []);
         }
-      ]);
-    } finally {
-      setIsLoading(false);
+      } catch {
+        // Fallback display
+        if (isMounted) {
+          setFleets([
+            {
+              id: '1',
+              vehicle_plate: 'B 9481 TTA',
+              driver_name: 'Budi Santoso',
+              driver_phone: '081234567890',
+              rw_number: 'RW07',
+              village_name: 'Rawasari',
+              pickup_time: 'Hari Ini, 14:30 WIB',
+              status: 'SIAP ANGKUT',
+              cargo: '480 kg Selada',
+            },
+            {
+              id: '2',
+              vehicle_plate: 'B 9102 KMY',
+              driver_name: 'Ahmad Fauzi',
+              driver_phone: '081398765432',
+              rw_number: 'RW04',
+              village_name: 'Cempaka Baru',
+              pickup_time: 'Hari Ini, 15:45 WIB',
+              status: 'ANTRIAN RUTE',
+              cargo: '650 kg Pakcoy',
+            }
+          ]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
     }
-  };
+
+    fetchFleets();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
@@ -71,34 +82,41 @@ export default function DistributorFleetTab() {
           Jadwal Operasional Armada Logistik Cold Chain
         </span>
         
-        <div className="space-y-3">
-          {fleets.map((fleet, idx) => (
-            <div 
-              key={fleet.id || idx}
-              className={`p-4 rounded-xl border-2 flex items-center justify-between ${
-                fleet.status === 'SIAP ANGKUT' || fleet.status === 'SCHEDULED'
-                  ? 'bg-leaf-50 border-leaf-300'
-                  : 'bg-ivory border-ink/15'
-              }`}
-            >
-              <div>
-                <span className="font-bold text-ink block text-sm">
-                  Titik Kumpul &bull; Hub {fleet.rw_number || 'RW'} {fleet.village_name || ''} ({fleet.vehicle_plate})
-                </span>
-                <span className="text-graphite text-[11px]">
-                  Driver: {fleet.driver_name} &bull; Penjemputan: {typeof fleet.pickup_time === 'string' && fleet.pickup_time.includes('T') ? new Date(fleet.pickup_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : fleet.pickup_time}
+        {isLoading ? (
+          <div className="py-8 text-center text-graphite flex items-center justify-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-moss-700 animate-ping"></span>
+            <span>Memuat data armada logistik...</span>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {fleets.map((fleet, idx) => (
+              <div 
+                key={fleet.id || idx}
+                className={`p-4 rounded-xl border-2 flex items-center justify-between ${
+                  fleet.status === 'SIAP ANGKUT' || fleet.status === 'SCHEDULED'
+                    ? 'bg-leaf-50 border-leaf-300'
+                    : 'bg-ivory border-ink/15'
+                }`}
+              >
+                <div>
+                  <span className="font-bold text-ink block text-sm">
+                    Titik Kumpul &bull; Hub {fleet.rw_number || 'RW'} {fleet.village_name || ''} ({fleet.vehicle_plate})
+                  </span>
+                  <span className="text-graphite text-[11px]">
+                    Driver: {fleet.driver_name} &bull; Penjemputan: {typeof fleet.pickup_time === 'string' && fleet.pickup_time.includes('T') ? new Date(fleet.pickup_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : fleet.pickup_time}
+                  </span>
+                </div>
+                <span className={`px-3 py-1 rounded font-bold text-[10px] ${
+                  fleet.status === 'SIAP ANGKUT' || fleet.status === 'SCHEDULED'
+                    ? 'bg-leaf-600 text-white'
+                    : 'bg-paper border border-ink/20 text-graphite'
+                }`}>
+                  {fleet.status || 'SCHEDULED'}
                 </span>
               </div>
-              <span className={`px-3 py-1 rounded font-bold text-[10px] ${
-                fleet.status === 'SIAP ANGKUT' || fleet.status === 'SCHEDULED'
-                  ? 'bg-leaf-600 text-white'
-                  : 'bg-paper border border-ink/20 text-graphite'
-              }`}>
-                {fleet.status || 'SCHEDULED'}
-              </span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

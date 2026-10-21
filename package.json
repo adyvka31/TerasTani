@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently \"pnpm -C tera-frontend dev\" \"pnpm -C tera-backend dev\"",
     "build": "pnpm -C tera-frontend build",
-    "lint": "pnpm -C tera-frontend lint"
+    "lint": "pnpm -C tera-frontend lint",
+    "test": "pnpm -C tera-backend test"
   },
   "keywords": [],
   "author": "",

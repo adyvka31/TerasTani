@@ -34,6 +34,8 @@ export default function Home() {
   const [interactiveRole, setInteractiveRole] = useState('warga'); // 'warga' | 'distributor'
   const [landPreset, setLandPreset] = useState('balkon'); // 'balkon' | 'pekarangan' | 'rooftop'
   const [sliderLandArea, setSliderLandArea] = useState(12);
+  const [activeSection, setActiveSection] = useState('hero');
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const lenisRef = useRef(null);
   const mainContainerRef = useRef(null);
@@ -106,7 +108,15 @@ export default function Home() {
 
   const currentPreset = presets[landPreset];
 
-  // Silky-Smooth Momentum Scrolling & Non-Destructive Editorial Motion System
+  // Refresh ScrollTrigger calculations on dynamic user tab toggle with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 120);
+    return () => clearTimeout(timer);
+  }, [interactiveRole]);
+
+  // Silky-Smooth Momentum Scrolling & Continuous Motion System
   useEffect(() => {
     // 1. Initialize Lenis for buttery-smooth luxury scrolling momentum
     const lenis = new Lenis({
@@ -130,11 +140,63 @@ export default function Home() {
     gsap.ticker.add(updateLenis);
     gsap.ticker.lagSmoothing(0);
 
-    // 2. Safe, Non-Destructive GSAP Orchestration (Cards are NEVER hidden)
+    // 2. Safe, Dynamic GSAP Scroll-Driven Orchestration
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
+      // Top reading progress indicator tracks page scroll seamlessly
+      gsap.to("#scroll-progress", {
+        scaleX: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: mainContainerRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.1
+        }
+      });
+
+      // Track navbar scroll threshold
+      ScrollTrigger.create({
+        start: 40,
+        end: 999999,
+        onUpdate: (self) => {
+          setIsScrolled(self.scroll() > 40);
+        }
+      });
+
+      // Active Section Observers for Navbar Indicator
+      const sectionIds = ['paradoks', 'simulator', 'fitur', 'cara-kerja', 'dampak', 'edukasi', 'kalkulator'];
+      sectionIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          ScrollTrigger.create({
+            trigger: el,
+            start: 'top 50%',
+            end: 'bottom 50%',
+            onEnter: () => setActiveSection(id),
+            onEnterBack: () => setActiveSection(id),
+          });
+        }
+      });
+
+      if (heroContainerRef.current) {
+        ScrollTrigger.create({
+          trigger: heroContainerRef.current,
+          start: 'top top',
+          end: 'bottom 60%',
+          onEnter: () => setActiveSection('hero'),
+          onEnterBack: () => setActiveSection('hero'),
+        });
+      }
+
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Nav Entrance Slide-Down Animation
+        gsap.fromTo("nav",
+          { y: -25, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+        );
+
         // Subtle ambient floating physics on hero badges
         if (heroBadgeOneRef.current) {
           gsap.to(heroBadgeOneRef.current, {
@@ -155,15 +217,29 @@ export default function Home() {
           });
         }
 
-        // Top reading progress indicator
-        gsap.to("#scroll-progress", {
-          scaleX: 1,
+        // Hero Intro Entrance Animation
+        gsap.fromTo(".hero-intro-elem",
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            stagger: 0.1,
+            ease: "power3.out",
+            delay: 0.05
+          }
+        );
+
+        // Hero Text Parallax Scrub as user scrolls down
+        gsap.to(".hero-text-container", {
+          yPercent: -20,
+          opacity: 0.35,
           ease: "none",
           scrollTrigger: {
-            trigger: mainContainerRef.current,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0.1
+            trigger: heroContainerRef.current,
+            start: "top 75%",
+            end: "bottom top",
+            scrub: 0.6
           }
         });
 
@@ -172,26 +248,171 @@ export default function Home() {
           gsap.fromTo(heroImageRef.current, 
             { yPercent: 0, scale: 1.0 },
             {
-              yPercent: 8,
-              scale: 1.04,
+              yPercent: 12,
+              scale: 1.08,
               ease: "none",
               scrollTrigger: {
                 trigger: heroContainerRef.current,
                 start: "top top",
                 end: "bottom top",
-                scrub: 0.6
+                scrub: 0.8
               }
             }
           );
         }
 
-        // Crate Image Subtle Parallax Reveal
+        // Hero Badges Dynamic Floating & Offset Scrub
+        if (heroBadgeOneRef.current && heroContainerRef.current) {
+          gsap.to(heroBadgeOneRef.current, {
+            yPercent: -45,
+            xPercent: -8,
+            rotate: -4,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroContainerRef.current,
+              start: "top 65%",
+              end: "bottom top",
+              scrub: 0.8
+            }
+          });
+        }
+
+        if (heroBadgeTwoRef.current && heroContainerRef.current) {
+          gsap.to(heroBadgeTwoRef.current, {
+            yPercent: -55,
+            xPercent: 8,
+            rotate: 3,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroContainerRef.current,
+              start: "top 65%",
+              end: "bottom top",
+              scrub: 0.8
+            }
+          });
+        }
+
+        // Hero HUD Bar Micro-Drift
+        gsap.to(".hero-hud-bar", {
+          yPercent: -6,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroContainerRef.current,
+            start: "top center",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        // Hero Metrics Cards: Entrance (once) + Alternating Wave Scrub
+        gsap.fromTo(".hero-metric-card",
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".hero-metrics-container",
+              start: "top 88%",
+              once: true
+            }
+          }
+        );
+
+        gsap.to(".hero-metric-card-odd", {
+          yPercent: -12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero-metrics-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".hero-metric-card-even", {
+          yPercent: 12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero-metrics-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        // ==========================================
+        // CHAPTER 02: PARADOKS PANGAN
+        // ==========================================
+        gsap.fromTo(".paradox-watermark",
+          { yPercent: -20, opacity: 0.02 },
+          {
+            yPercent: 30,
+            opacity: 0.05,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#paradoks",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1
+            }
+          }
+        );
+
+        // Chapter 02 Header Text Staggered Slide-Up Entrance
+        gsap.fromTo("#paradoks .chapter-header-text > *",
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: "#paradoks",
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+
+        // Chapter 02 Header Parallax Drift (Applied to outer container)
+        gsap.to("#paradoks .chapter-header-anim", {
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#paradoks",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        if (crateContainerRef.current) {
+          gsap.fromTo(crateContainerRef.current,
+            { opacity: 0, y: 35 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.85,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: crateContainerRef.current,
+                start: "top 88%",
+                once: true
+              }
+            }
+          );
+        }
+
         if (crateImageRef.current && crateContainerRef.current) {
           gsap.fromTo(crateImageRef.current, 
-            { scale: 1.05, yPercent: -3 },
+            { scale: 1.06, yPercent: -6 },
             {
               scale: 1.0,
-              yPercent: 5,
+              yPercent: 8,
               ease: "none",
               scrollTrigger: {
                 trigger: crateContainerRef.current,
@@ -203,303 +424,762 @@ export default function Home() {
           );
         }
 
-        // Hero Section: Real Metrics Cards Reveal (Bottom of Hero)
-        gsap.fromTo(".hero-metric-card",
-          { y: 35, opacity: 0.2, scale: 0.98 },
+        gsap.to(".crate-floating-tag", {
+          yPercent: -18,
+          ease: "none",
+          scrollTrigger: {
+            trigger: crateContainerRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.6
+          }
+        });
+
+        gsap.fromTo(".paradox-card",
+          { opacity: 0, y: 35 },
           {
-            y: 0,
             opacity: 1,
-            scale: 1,
-            duration: 0.75,
-            stagger: 0.1,
-            ease: "power3.out",
-            immediateRender: false,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.12,
+            ease: "power2.out",
             scrollTrigger: {
-              trigger: ".hero-metrics-container",
+              trigger: ".paradox-cards-container",
               start: "top 85%",
               once: true
             }
           }
         );
 
-        // Chapter 02: Header & Photographic Crate Reveal
-        gsap.fromTo("#paradoks .chapter-header-anim",
-          { y: 30, opacity: 0.2 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.75,
-            ease: "power3.out",
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: "#paradoks",
-              start: "top 80%",
-              once: true
-            }
-          }
-        );
-
-        // Chapter 02: Paradox Dilemma Cards (3-Column Stagger)
-        gsap.fromTo(".paradox-card",
-          { y: 38, opacity: 0.2, scale: 0.98 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.8,
-            stagger: 0.12,
-            ease: "power3.out",
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: ".paradox-cards-container",
-              start: "top 82%",
-              once: true
-            }
-          }
-        );
-
-        // Chapter 03: Section Header Reveal
-        gsap.fromTo("#simulator .chapter-header-anim",
-          { y: 30, opacity: 0.2 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.75,
-            ease: "power3.out",
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: "#simulator",
-              start: "top 80%",
-              once: true
-            }
-          }
-        );
-
-        // Chapter 03: Interactive AI Console Box Reveal
-        gsap.fromTo(".simulator-console-box",
-          { y: 36, opacity: 0.2, scale: 0.985 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.85,
-            ease: "power3.out",
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: ".simulator-console-box",
-              start: "top 82%",
-              once: true
-            }
-          }
-        );
-
-        // Chapter 04: Header Reveal
-        gsap.fromTo("#fitur .chapter-header-anim",
-          { y: 30, opacity: 0.2 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.75,
-            ease: "power3.out",
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: "#fitur",
-              start: "top 80%",
-              once: true
-            }
-          }
-        );
-
-        // Chapter 04: Core Capability Panels Stagger
-        if (capabilitiesRef.current) {
-          gsap.fromTo(".capability-panel", 
-            { y: 38, opacity: 0.2, scale: 0.98 },
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              duration: 0.8,
-              stagger: 0.12,
-              ease: "power3.out",
-              immediateRender: false,
-              scrollTrigger: {
-                trigger: ".capabilities-grid",
-                start: "top 82%",
-                once: true
-              }
-            }
-          );
-        }
-
-        // Chapter 05: Header Reveal
-        gsap.fromTo("#cara-kerja .chapter-header-anim",
-          { y: 30, opacity: 0.2 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.75,
-            ease: "power3.out",
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: "#cara-kerja",
-              start: "top 80%",
-              once: true
-            }
-          }
-        );
-
-        // Chapter 05: Closed-Loop Connecting Progress Line (Scrub)
-        gsap.to("#workflow-progress-line", {
-          scaleX: 1,
+        gsap.to(".paradox-card-1", {
+          yPercent: -14,
           ease: "none",
           scrollTrigger: {
-            trigger: ".workflow-cards-container",
-            start: "top 85%",
-            end: "bottom 85%",
-            scrub: 0.4
+            trigger: ".paradox-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
           }
         });
 
-        // Chapter 05: Workflow Step Cards (5-Step Stagger)
-        gsap.fromTo(".workflow-card", 
-          { y: 38, opacity: 0.2, scale: 0.98 },
+        gsap.to(".paradox-card-2", {
+          yPercent: 2,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".paradox-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".paradox-card-3", {
+          yPercent: -20,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".paradox-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        // ==========================================
+        // CHAPTER 03: SIMULATOR ENGINE AI
+        // ==========================================
+        gsap.fromTo(".simulator-watermark",
+          { yPercent: -20 },
           {
-            y: 0,
+            yPercent: 30,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#simulator",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1
+            }
+          }
+        );
+
+        // Chapter 03 Header Text Staggered Slide-Up Entrance
+        gsap.fromTo(["#simulator .chapter-header-text > *", "#simulator .chapter-header-toggle"],
+          { opacity: 0, y: 35 },
+          {
             opacity: 1,
-            scale: 1,
-            duration: 0.75,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: "#simulator",
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+
+        // Chapter 03 Header Parallax Drift
+        gsap.to("#simulator .chapter-header-anim", {
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#simulator",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.fromTo(".simulator-console-box",
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".simulator-console-box",
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+
+        gsap.to(".simulator-left-col", {
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".simulator-console-box",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".simulator-right-col", {
+          yPercent: 8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".simulator-console-box",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".simulator-glow-orb", {
+          scale: 1.3,
+          xPercent: -20,
+          yPercent: 20,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".simulator-console-box",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1
+          }
+        });
+
+        // ==========================================
+        // CHAPTER 04: KAPABILITAS INTI
+        // ==========================================
+        gsap.fromTo(".capabilities-watermark",
+          { yPercent: -20 },
+          {
+            yPercent: 30,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#fitur",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1
+            }
+          }
+        );
+
+        // Chapter 04 Header Text Staggered Slide-Up Entrance
+        gsap.fromTo("#fitur .chapter-header-text > *",
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: "#fitur",
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+
+        // Chapter 04 Header Parallax Drift
+        gsap.to("#fitur .chapter-header-anim", {
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#fitur",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        // Entrance on inner capability-panel cards (separate from outer parallax wrappers)
+        gsap.fromTo(".capability-panel",
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
             stagger: 0.1,
-            ease: "power3.out",
-            immediateRender: false,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".capabilities-grid",
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+
+        gsap.to(".capability-panel-1", {
+          yPercent: -12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".capabilities-grid",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".capability-panel-2", {
+          yPercent: 8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".capabilities-grid",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".capability-panel-3", {
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".capabilities-grid",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".capability-panel-4", {
+          yPercent: 12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".capabilities-grid",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".capability-icon", {
+          rotate: 15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".capabilities-grid",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1
+          }
+        });
+
+        // ==========================================
+        // CHAPTER 05: ALUR SIKLUS TERTUTUP (CARA KERJA)
+        // ==========================================
+        gsap.fromTo(".workflow-watermark",
+          { yPercent: -20 },
+          {
+            yPercent: 30,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#cara-kerja",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1
+            }
+          }
+        );
+
+        // Chapter 05 Header Text Staggered Slide-Up Entrance
+        gsap.fromTo(["#cara-kerja .chapter-header-text > *", "#cara-kerja .chapter-header-desc > *"],
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: "#cara-kerja",
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+
+        // Chapter 05 Header Parallax Drift
+        gsap.to("#cara-kerja .chapter-header-anim", {
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#cara-kerja",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.fromTo("#workflow-progress-line",
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            ease: "none",
             scrollTrigger: {
               trigger: ".workflow-cards-container",
-              start: "top 82%",
+              start: "top 80%",
+              end: "bottom 60%",
+              scrub: 0.3
+            }
+          }
+        );
+
+        gsap.fromTo(".workflow-card", 
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".workflow-cards-container",
+              start: "top 85%",
               once: true
             }
           }
         );
 
-        // Chapter 06: Header Reveal
-        gsap.fromTo("#dampak .chapter-header-anim",
-          { y: 30, opacity: 0.2 },
+        gsap.to(".workflow-card-odd", {
+          yPercent: -14,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".workflow-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".workflow-card-even", {
+          yPercent: 8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".workflow-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        // ==========================================
+        // CHAPTER 06: DAMPAK & SUARA DARI KOMUNITAS
+        // ==========================================
+        gsap.fromTo(".dampak-watermark",
+          { yPercent: -20 },
           {
-            y: 0,
-            opacity: 1,
-            duration: 0.75,
-            ease: "power3.out",
-            immediateRender: false,
+            yPercent: 30,
+            ease: "none",
             scrollTrigger: {
               trigger: "#dampak",
-              start: "top 80%",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1
+            }
+          }
+        );
+
+        gsap.to(".dampak-glow-orb", {
+          xPercent: 35,
+          yPercent: -25,
+          scale: 1.3,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#dampak",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1
+          }
+        });
+
+        // Chapter 06 Header Text Staggered Slide-Up Entrance
+        gsap.fromTo("#dampak .chapter-header-text > *",
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: "#dampak",
+              start: "top 85%",
               once: true
             }
           }
         );
 
-        // Chapter 06: Community Testimonial Cards
+        // Chapter 06 Header Parallax Drift
+        gsap.to("#dampak .chapter-header-anim", {
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#dampak",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
         gsap.fromTo(".testimonial-card", 
-          { y: 40, opacity: 0.2, scale: 0.98 },
+          { opacity: 0, y: 35 },
           {
-            y: 0,
             opacity: 1,
-            scale: 1,
-            duration: 0.8,
-            stagger: 0.14,
-            ease: "power3.out",
-            immediateRender: false,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.12,
+            ease: "power2.out",
             scrollTrigger: {
               trigger: ".testimonial-cards-container",
-              start: "top 82%",
+              start: "top 85%",
               once: true
             }
           }
         );
 
-        // Chapter 07: Header Reveal
-        gsap.fromTo("#edukasi .chapter-header-anim",
-          { y: 30, opacity: 0.2 },
+        gsap.to(".testimonial-card-1", {
+          yPercent: -14,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".testimonial-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".testimonial-card-2", {
+          yPercent: 8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".testimonial-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".testimonial-card-3", {
+          yPercent: -12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".testimonial-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        // ==========================================
+        // CHAPTER 07: EDUKASI & JURNAL RISET
+        // ==========================================
+        gsap.fromTo(".edukasi-watermark",
+          { yPercent: -20 },
           {
-            y: 0,
-            opacity: 1,
-            duration: 0.75,
-            ease: "power3.out",
-            immediateRender: false,
+            yPercent: 30,
+            ease: "none",
             scrollTrigger: {
               trigger: "#edukasi",
-              start: "top 80%",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1
+            }
+          }
+        );
+
+        // Chapter 07 Header Text Staggered Slide-Up Entrance
+        gsap.fromTo(["#edukasi .chapter-header-text > *", "#edukasi .chapter-header-desc > *"],
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: "#edukasi",
+              start: "top 85%",
               once: true
             }
           }
         );
 
-        // Chapter 07: Curated Journal Magazine Cards
+        // Chapter 07 Header Parallax Drift
+        gsap.to("#edukasi .chapter-header-anim", {
+          yPercent: -8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#edukasi",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
         gsap.fromTo(".journal-card", 
-          { y: 40, opacity: 0.2, scale: 0.98 },
+          { opacity: 0, y: 35 },
           {
-            y: 0,
             opacity: 1,
-            scale: 1,
-            duration: 0.8,
+            y: 0,
+            duration: 0.85,
             stagger: 0.12,
-            ease: "power3.out",
-            immediateRender: false,
+            ease: "power2.out",
             scrollTrigger: {
               trigger: ".journal-cards-container",
-              start: "top 82%",
+              start: "top 85%",
               once: true
             }
           }
         );
 
-        // Chapter 08: Left Flank Architectural Density Cards Slide
+        gsap.to(".journal-card-1", {
+          yPercent: -14,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".journal-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".journal-card-2", {
+          yPercent: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".journal-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".journal-card-3", {
+          yPercent: -16,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".journal-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".journal-card-img", {
+          yPercent: 12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".journal-cards-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        // ==========================================
+        // CHAPTER 08: KALKULATOR ESTIMASI LAHAN
+        // ==========================================
+        gsap.fromTo(".kalkulator-watermark",
+          { yPercent: -20 },
+          {
+            yPercent: 30,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#kalkulator",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1
+            }
+          }
+        );
+
+        gsap.to(".calc-coord-left", {
+          yPercent: -50,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#kalkulator",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.to(".calc-coord-right", {
+          yPercent: 50,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#kalkulator",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
         gsap.fromTo(".calc-left-col > div", 
-          { x: -30, opacity: 0.2 },
+          { opacity: 0, y: 30 },
           {
-            x: 0,
             opacity: 1,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: "power3.out",
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: "#kalkulator-grid",
-              start: "top 82%",
-              once: true
-            }
-          }
-        );
-
-        // Chapter 08: Main Center Interactive Calculator Box Rise
-        gsap.fromTo(".calc-center-col", 
-          { y: 38, opacity: 0.2, scale: 0.985 },
-          {
             y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.85,
-            ease: "power3.out",
-            immediateRender: false,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: "power2.out",
             scrollTrigger: {
               trigger: "#kalkulator-grid",
-              start: "top 82%",
+              start: "top 85%",
               once: true
             }
           }
         );
 
-        // Chapter 08: Right Flank Logistics Cards Slide
-        gsap.fromTo(".calc-right-col > div", 
-          { x: 30, opacity: 0.2 },
+        gsap.to(".calc-left-col", {
+          yPercent: -14,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#kalkulator-grid",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        // Chapter 08 Header Text Staggered Slide-Up Entrance
+        gsap.fromTo("#kalkulator .chapter-header-text > *",
+          { opacity: 0, y: 30 },
           {
-            x: 0,
             opacity: 1,
+            y: 0,
             duration: 0.8,
-            stagger: 0.1,
-            ease: "power3.out",
-            immediateRender: false,
+            stagger: 0.12,
+            ease: "power2.out",
             scrollTrigger: {
               trigger: "#kalkulator-grid",
-              start: "top 82%",
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+
+        gsap.fromTo(".calc-center-col", 
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: "#kalkulator-grid",
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+
+        gsap.fromTo(".calc-right-col > div", 
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: "#kalkulator-grid",
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+
+        gsap.to(".calc-right-col", {
+          yPercent: 12,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#kalkulator-grid",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.8
+          }
+        });
+
+        gsap.fromTo(".calc-mobile-card",
+          { opacity: 0, y: 25 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.75,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".calc-mobile-card",
+              start: "top 90%",
+              once: true
+            }
+          }
+        );
+
+        // ==========================================
+        // FOOTER
+        // ==========================================
+        gsap.fromTo("footer .footer-content",
+          { opacity: 0, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: "footer",
+              start: "top 90%",
+              once: true
+            }
+          }
+        );
+
+        gsap.fromTo(".footer-sprout-icon",
+          { rotate: -20, scale: 0.8 },
+          {
+            rotate: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: "back.out(1.5)",
+            scrollTrigger: {
+              trigger: "footer",
+              start: "top 85%",
               once: true
             }
           }
@@ -528,9 +1208,13 @@ export default function Home() {
       />
 
       {/* 1. Header / Architectural Editorial Navigation */}
-      <nav className="sticky top-0 z-40 w-full bg-paper/95 backdrop-blur-md border-b-2 border-ink transition-colors">
+      <nav className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-paper/95 backdrop-blur-md border-b-2 border-ink shadow-[0_4px_24px_rgba(23,23,21,0.08)] py-0.5' 
+          : 'bg-paper/95 backdrop-blur-md border-b-2 border-ink py-0'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          <div className={`flex justify-between items-center transition-all duration-300 ${isScrolled ? 'h-16' : 'h-20'}`}>
             {/* Logo Monogram */}
             <div className="flex items-center gap-4">
               <Link to="/home" className="flex items-center gap-3 group">
@@ -548,13 +1232,28 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Desktop Navigation Links with 2D Tactile Hover States */}
-            <div className="hidden lg:flex items-center gap-2 xl:gap-3 font-mono text-xs uppercase tracking-wider text-graphite shrink-0">
-              <a href="#paradoks" onClick={(e) => scrollToSection(e, '#paradoks')} className="px-3 py-1.5 rounded-lg border border-transparent hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] transition-all whitespace-nowrap">Paradoks</a>
-              <a href="#simulator" onClick={(e) => scrollToSection(e, '#simulator')} className="px-3 py-1.5 rounded-lg border border-transparent hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] transition-all whitespace-nowrap">Engine AI</a>
-              <a href="#fitur" onClick={(e) => scrollToSection(e, '#fitur')} className="px-3 py-1.5 rounded-lg border border-transparent hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] transition-all whitespace-nowrap">Kapabilitas</a>
-              <a href="#cara-kerja" onClick={(e) => scrollToSection(e, '#cara-kerja')} className="px-3 py-1.5 rounded-lg border border-transparent hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] transition-all whitespace-nowrap">Alur Panen</a>
-              <a href="#edukasi" onClick={(e) => scrollToSection(e, '#edukasi')} className="px-3 py-1.5 rounded-lg border border-transparent hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715] transition-all whitespace-nowrap">Jurnal</a>
+            {/* Desktop Navigation Links with 2D Tactile Hover States & Active Indicator */}
+            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 font-mono text-xs uppercase tracking-wider text-graphite shrink-0">
+              {[
+                { href: '#paradoks', id: 'paradoks', label: 'Paradoks' },
+                { href: '#simulator', id: 'simulator', label: 'Engine AI' },
+                { href: '#fitur', id: 'fitur', label: 'Kapabilitas' },
+                { href: '#cara-kerja', id: 'cara-kerja', label: 'Alur Panen' },
+                { href: '#edukasi', id: 'edukasi', label: 'Jurnal' },
+              ].map((item) => (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  onClick={(e) => scrollToSection(e, item.href)}
+                  className={`px-3 py-1.5 rounded-lg transition-all whitespace-nowrap ${
+                    activeSection === item.id
+                      ? 'border-2 border-ink bg-moss-900 text-paper shadow-[2px_2px_0px_0px_#171715] font-bold'
+                      : 'border border-transparent hover:border-2 hover:border-ink hover:bg-ivory hover:text-ink hover:shadow-[2px_2px_0px_0px_#171715]'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              ))}
             </div>
 
             {/* Direct CTA Triggers in Neo-Brutalist 2D Style */}
@@ -624,60 +1323,62 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
-          {/* Eyebrow & Chapter Header in 2D Neo-Brutalist Frame */}
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b-2 border-ink/15">
-            <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-lg border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] font-mono text-xs uppercase tracking-widest text-ink">
-              <span className="w-2 h-2 rounded-full bg-ochre-500"></span>
-              <span>The Architecture of Urban Nourishment &bull; Vol. 01</span>
-            </div>
-            <div className="hidden sm:inline-flex items-center font-mono text-xs text-graphite px-3 py-1.5 rounded-lg border border-ink/20 bg-paper">
-              [ Terdesentralisasi &bull; Model AI Mikroklimat &bull; Logistik QR ]
-            </div>
-          </div>
-
-          {/* Monumental Headline */}
-          <div className="max-w-5xl mb-10">
-            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-normal leading-[1.05] tracking-tight text-ink text-balance-editorial">
-              Ubah Lahan Sempit Menjadi <br className="hidden md:block"/>
-              <span className="font-editorial-italic font-light text-moss-800">Hasil Panen Komunal</span> Berlimpah.
-            </h1>
-          </div>
-
-          {/* Subtitle & Value Proposition Grid */}
-          <div className="grid lg:grid-cols-12 gap-8 items-start mb-14">
-            <div className="lg:col-span-8">
-              <p className="text-lg md:text-xl text-graphite font-normal leading-relaxed max-w-2xl">
-                Kalkulasi kebutuhan tanam mikro dengan AI presisi, kumpulkan hasil panen warga secara terstandar di lumbung komunitas, dan pasok langsung ke distributor industri dalam satu rantai nilai yang adil, transparan, dan menguntungkan.
-              </p>
+          <div className="hero-text-container">
+            {/* Eyebrow & Chapter Header in 2D Neo-Brutalist Frame */}
+            <div className="hero-intro-elem flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b-2 border-ink/15">
+              <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-lg border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] font-mono text-xs uppercase tracking-widest text-ink">
+                <span className="w-2 h-2 rounded-full bg-ochre-500"></span>
+                <span>The Architecture of Urban Nourishment &bull; Vol. 01</span>
+              </div>
+              <div className="hidden sm:inline-flex items-center font-mono text-xs text-graphite px-3 py-1.5 rounded-lg border border-ink/20 bg-paper">
+                [ Terdesentralisasi &bull; Model AI Mikroklimat &bull; Logistik QR ]
+              </div>
             </div>
 
-            {/* Quick Dual Conversion Buttons in 2D Neo-Brutalist Style */}
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3.5">
-              <Link 
-                to="/register?role=user"
-                className="nb-btn-moss w-full px-7 py-4 rounded-2xl flex items-center justify-between group cursor-pointer shadow-[5px_5px_0px_0px_#171715]"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-ochre-400">
-                    <Sprout className="w-4 h-4" />
+            {/* Monumental Headline */}
+            <div className="hero-intro-elem max-w-5xl mb-10">
+              <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-normal leading-[1.05] tracking-tight text-ink text-balance-editorial">
+                Ubah Lahan Sempit Menjadi <br className="hidden md:block"/>
+                <span className="font-editorial-italic font-light text-moss-800">Hasil Panen Komunal</span> Berlimpah.
+              </h1>
+            </div>
+
+            {/* Subtitle & Value Proposition Grid */}
+            <div className="grid lg:grid-cols-12 gap-8 items-start mb-14">
+              <div className="hero-intro-elem lg:col-span-8">
+                <p className="text-lg md:text-xl text-graphite font-normal leading-relaxed max-w-2xl">
+                  Kalkulasi kebutuhan tanam mikro dengan AI presisi, kumpulkan hasil panen warga secara terstandar di lumbung komunitas, dan pasok langsung ke distributor industri dalam satu rantai nilai yang adil, transparan, dan menguntungkan.
+                </p>
+              </div>
+
+              {/* Quick Dual Conversion Buttons in 2D Neo-Brutalist Style */}
+              <div className="hero-intro-elem lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3.5">
+                <Link 
+                  to="/register?role=user"
+                  className="nb-btn-moss w-full px-7 py-4 rounded-2xl flex items-center justify-between group cursor-pointer shadow-[5px_5px_0px_0px_#171715]"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-ochre-400">
+                      <Sprout className="w-4 h-4" />
+                    </div>
+                    <span className="font-mono text-xs uppercase tracking-wider font-bold">Mulai Bertani (Warga)</span>
                   </div>
-                  <span className="font-mono text-xs uppercase tracking-wider font-bold">Mulai Bertani (Warga)</span>
-                </div>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1 text-ochre-400" />
-              </Link>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1 text-ochre-400" />
+                </Link>
 
-              <Link 
-                to="/register?role=distributor"
-                className="nb-btn w-full px-7 py-4 bg-paper hover:bg-ivory text-ink rounded-2xl font-medium text-sm flex items-center justify-between group cursor-pointer shadow-[5px_5px_0px_0px_#171715]"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-ink/5 border border-ink/15 flex items-center justify-center text-graphite group-hover:text-ink">
-                    <Tractor className="w-4 h-4" />
+                <Link 
+                  to="/register?role=distributor"
+                  className="nb-btn w-full px-7 py-4 bg-paper hover:bg-ivory text-ink rounded-2xl font-medium text-sm flex items-center justify-between group cursor-pointer shadow-[5px_5px_0px_0px_#171715]"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-ink/5 border border-ink/15 flex items-center justify-center text-graphite group-hover:text-ink">
+                      <Tractor className="w-4 h-4" />
+                    </div>
+                    <span className="font-mono text-xs uppercase tracking-wider font-bold">Portal Distributor Resmi</span>
                   </div>
-                  <span className="font-mono text-xs uppercase tracking-wider font-bold">Portal Distributor Resmi</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-graphite group-hover:text-ink transition-transform group-hover:translate-x-1" />
-              </Link>
+                  <ChevronRight className="w-4 h-4 text-graphite group-hover:text-ink transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -765,7 +1466,7 @@ export default function Home() {
             </div>
 
             {/* Bottom HUD Bar embedded in Hero frame with 2D Border */}
-            <div className="relative z-10 px-5 py-4 sm:px-8 sm:py-5 md:px-10 md:py-6 bg-moss-950 border-t-2 border-ink flex flex-col md:flex-row md:items-center justify-between gap-3 text-paper text-xs font-mono">
+            <div className="hero-hud-bar relative z-10 px-5 py-4 sm:px-8 sm:py-5 md:px-10 md:py-6 bg-moss-950 border-t-2 border-ink flex flex-col md:flex-row md:items-center justify-between gap-3 text-paper text-xs font-mono">
               <div className="flex items-center gap-2.5">
                 <span className="w-2 h-2 rounded-full bg-ochre-400 shrink-0"></span>
                 <span className="text-paper/90 break-words">
@@ -783,48 +1484,64 @@ export default function Home() {
 
           {/* Real Metrics Ticker Bar in Interactive 2D Neo-Brutalist Cards */}
           <div className="hero-metrics-container mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171715] transition-all">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-graphite">Total Panen</span>
-                <span className="font-mono text-[10px] bg-ivory px-2 py-0.5 rounded border border-ink/20 font-bold">[ TONASE ]</span>
+            <div className="hero-metric-card-odd">
+              <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171715] transition-all h-full flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-graphite">Total Panen</span>
+                    <span className="font-mono text-[10px] bg-ivory px-2 py-0.5 rounded border border-ink/20 font-bold">[ TONASE ]</span>
+                  </div>
+                  <div className="font-display text-4xl md:text-5xl text-ink font-normal">
+                    14.8 <span className="text-base font-sans font-normal text-graphite">Ton</span>
+                  </div>
+                </div>
+                <span className="text-xs text-graphite/80 mt-2 block border-t border-ink/10 pt-2">Terserap habis oleh distributor resmi</span>
               </div>
-              <div className="font-display text-4xl md:text-5xl text-ink font-normal">
-                14.8 <span className="text-base font-sans font-normal text-graphite">Ton</span>
-              </div>
-              <span className="text-xs text-graphite/80 mt-2 block border-t border-ink/10 pt-2">Terserap habis oleh distributor resmi</span>
             </div>
 
-            <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171715] transition-all">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-graphite">Keluarga Mitra</span>
-                <span className="font-mono text-[10px] bg-ivory px-2 py-0.5 rounded border border-ink/20 font-bold">[ 14 KLASTER ]</span>
+            <div className="hero-metric-card-even">
+              <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171715] transition-all h-full flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-graphite">Keluarga Mitra</span>
+                    <span className="font-mono text-[10px] bg-ivory px-2 py-0.5 rounded border border-ink/20 font-bold">[ 14 KLASTER ]</span>
+                  </div>
+                  <div className="font-display text-4xl md:text-5xl text-ink font-normal">
+                    680+ <span className="text-base font-sans font-normal text-graphite">RT</span>
+                  </div>
+                </div>
+                <span className="text-xs text-graphite/80 mt-2 block border-t border-ink/10 pt-2">Aktif menanam di 14 klaster perumahan</span>
               </div>
-              <div className="font-display text-4xl md:text-5xl text-ink font-normal">
-                680+ <span className="text-base font-sans font-normal text-graphite">RT</span>
-              </div>
-              <span className="text-xs text-graphite/80 mt-2 block border-t border-ink/10 pt-2">Aktif menanam di 14 klaster perumahan</span>
             </div>
 
-            <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#C9942B] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#C9942B] transition-all">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-graphite">Kenaikan Margin</span>
-                <span className="font-mono text-[10px] bg-ochre-100 text-ochre-800 px-2 py-0.5 rounded border border-ochre-500 font-bold">[ PROFIT ]</span>
+            <div className="hero-metric-card-odd">
+              <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#C9942B] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#C9942B] transition-all h-full flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-graphite">Kenaikan Margin</span>
+                    <span className="font-mono text-[10px] bg-ochre-100 text-ochre-800 px-2 py-0.5 rounded border border-ochre-500 font-bold">[ PROFIT ]</span>
+                  </div>
+                  <div className="font-display text-4xl md:text-5xl text-moss-700 font-normal">
+                    +42%
+                  </div>
+                </div>
+                <span className="text-xs text-graphite/80 mt-2 block border-t border-ink/10 pt-2">Dibandingkan menjual secara eceran</span>
               </div>
-              <div className="font-display text-4xl md:text-5xl text-moss-700 font-normal">
-                +42%
-              </div>
-              <span className="text-xs text-graphite/80 mt-2 block border-t border-ink/10 pt-2">Dibandingkan menjual secara eceran</span>
             </div>
 
-            <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171715] transition-all">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-graphite">Akurasi Prediksi</span>
-                <span className="font-mono text-[10px] bg-leaf-100 text-moss-900 px-2 py-0.5 rounded border border-leaf-400 font-bold">[ MODEL AI ]</span>
+            <div className="hero-metric-card-even">
+              <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171715] transition-all h-full flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-graphite">Akurasi Prediksi</span>
+                    <span className="font-mono text-[10px] bg-leaf-100 text-moss-900 px-2 py-0.5 rounded border border-leaf-400 font-bold">[ MODEL AI ]</span>
+                  </div>
+                  <div className="font-display text-4xl md:text-5xl text-ink font-normal">
+                    98.4%
+                  </div>
+                </div>
+                <span className="text-xs text-graphite/80 mt-2 block border-t border-ink/10 pt-2">Kesesuaian bobot fisik & mutu Grade A</span>
               </div>
-              <div className="font-display text-4xl md:text-5xl text-ink font-normal">
-                98.4%
-              </div>
-              <span className="text-xs text-graphite/80 mt-2 block border-t border-ink/10 pt-2">Kesesuaian bobot fisik & mutu Grade A</span>
             </div>
           </div>
 
@@ -832,14 +1549,19 @@ export default function Home() {
       </section>
 
       {/* 3. Chapter 02: Paradoks Pangan Perkotaan (The Problem vs Solution Narrative) */}
-      <section id="paradoks" className="py-24 md:py-32 bg-ivory border-y-2 border-ink relative pattern-drafting-dots">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="paradoks" className="py-24 md:py-32 bg-ivory border-y-2 border-ink relative pattern-drafting-dots overflow-hidden">
+        {/* Dynamic Editorial Watermark Numeral */}
+        <div className="paradox-watermark absolute top-4 right-8 font-display font-light text-[140px] sm:text-[200px] lg:text-[260px] leading-none text-ink/[0.03] select-none pointer-events-none">
+          02
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           {/* Top Header Row: Manifesto Left, Real Photograph Top Right */}
           <div className="chapter-header-anim grid lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-12 md:mb-16">
             
             {/* Left: Chapter Eyebrow & Provocative Editorial Manifesto */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="chapter-header-text lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-ink bg-paper shadow-[2px_2px_0px_0px_#171715] font-mono text-xs uppercase tracking-widest text-ink">
                 <span className="w-2 h-2 rounded-full bg-ochre-500"></span>
                 <span>Chapter 02 &mdash; Paradoks Pangan Perkotaan</span>
@@ -867,7 +1589,7 @@ export default function Home() {
                 />
                 
                 {/* Floating Tag overlay on the photograph with 2D style */}
-                <div className="absolute bottom-3 left-3 right-3 p-3.5 rounded-xl bg-paper/95 backdrop-blur-md border-2 border-ink shadow-[3px_3px_0px_0px_#171715]">
+                <div className="crate-floating-tag absolute bottom-3 left-3 right-3 p-3.5 rounded-xl bg-paper/95 backdrop-blur-md border-2 border-ink shadow-[3px_3px_0px_0px_#171715]">
                   <div className="flex items-center justify-between font-mono text-[10px] text-moss-900 font-bold mb-0.5">
                     <span>KONSOLIDASI BATCH #042</span>
                     <span className="bg-ochre-400 text-ink px-1.5 py-0.5 rounded border border-ink font-bold">RW 07 &bull; SIAP DISTRIBUSI</span>
@@ -885,71 +1607,77 @@ export default function Home() {
           <div className="paradox-cards-container grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Card 1: Fakta Rantai Pasok */}
-            <div className="paradox-card p-6 md:p-8 rounded-3xl bg-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#171715] transition-all flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-moss-900 font-bold bg-moss-100 px-2.5 py-1 rounded-md border-2 border-ink shadow-[1.5px_1.5px_0px_0px_#171715]">
-                    Fakta Rantai Pasok
-                  </span>
-                  <span className="font-mono text-xs text-graphite font-bold">01 / DILEMA</span>
+            <div className="paradox-card-1">
+              <div className="paradox-card p-6 md:p-8 rounded-3xl bg-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#171715] transition-all flex flex-col justify-between h-full">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-moss-900 font-bold bg-moss-100 px-2.5 py-1 rounded-md border-2 border-ink shadow-[1.5px_1.5px_0px_0px_#171715]">
+                      Fakta Rantai Pasok
+                    </span>
+                    <span className="font-mono text-xs text-graphite font-bold">01 / DILEMA</span>
+                  </div>
+                  <h3 className="font-display text-xl font-normal text-ink">
+                    Kesenjangan Kuota Minimum
+                  </h3>
+                  <p className="text-xs md:text-sm text-graphite leading-relaxed">
+                    Supermarket dan distributor butuh minimal <strong>300–500 kg per pengiriman</strong> dengan standar kesegaran terukur. Sementara satu rumah rata-rata hanya menghasilkan <strong>5–15 kg</strong>.
+                  </p>
                 </div>
-                <h3 className="font-display text-xl font-normal text-ink">
-                  Kesenjangan Kuota Minimum
-                </h3>
-                <p className="text-xs md:text-sm text-graphite leading-relaxed">
-                  Supermarket dan distributor butuh minimal <strong>300–500 kg per pengiriman</strong> dengan standar kesegaran terukur. Sementara satu rumah rata-rata hanya menghasilkan <strong>5–15 kg</strong>.
-                </p>
-              </div>
 
-              <div className="pt-4 border-t-2 border-ink/10 flex items-center justify-between font-mono text-[11px] text-graphite">
-                <span>Distributor: <strong className="text-ink bg-ivory px-2 py-0.5 rounded border border-ink/20">300-500 kg</strong></span>
-                <span>Warga: <strong className="text-ink bg-ivory px-2 py-0.5 rounded border border-ink/20">5-15 kg</strong></span>
+                <div className="pt-4 border-t-2 border-ink/10 flex items-center justify-between font-mono text-[11px] text-graphite">
+                  <span>Distributor: <strong className="text-ink bg-ivory px-2 py-0.5 rounded border border-ink/20">300-500 kg</strong></span>
+                  <span>Warga: <strong className="text-ink bg-ivory px-2 py-0.5 rounded border border-ink/20">5-15 kg</strong></span>
+                </div>
               </div>
             </div>
 
             {/* Card 2: Masalah Tradisional */}
-            <div className="paradox-card p-6 md:p-8 rounded-3xl bg-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#C9942B] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#C9942B] transition-all flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-ochre-800 font-bold bg-ochre-100 px-2.5 py-1 rounded-md border-2 border-ink shadow-[1.5px_1.5px_0px_0px_#171715]">
-                    Kelemahan Tradisional
-                  </span>
-                  <span className="font-mono text-xs text-graphite font-bold">02 / KENDALA</span>
+            <div className="paradox-card-2">
+              <div className="paradox-card p-6 md:p-8 rounded-3xl bg-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#C9942B] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#C9942B] transition-all flex flex-col justify-between h-full">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-ochre-800 font-bold bg-ochre-100 px-2.5 py-1 rounded-md border-2 border-ink shadow-[1.5px_1.5px_0px_0px_#171715]">
+                      Kelemahan Tradisional
+                    </span>
+                    <span className="font-mono text-xs text-graphite font-bold">02 / KENDALA</span>
+                  </div>
+                  <h3 className="font-display text-xl font-normal text-ink">
+                    Sains Nihil & Spekulasi Panen
+                  </h3>
+                  <p className="text-xs md:text-sm text-graphite leading-relaxed">
+                    Tanpa algoritma AI dan kepastian pasar, penanaman dilakukan spekulatif. Saat panen tiba, tidak ada pembeli yang mau mengambil partai kecil, membuat hasil panen membusuk sia-sia.
+                  </p>
                 </div>
-                <h3 className="font-display text-xl font-normal text-ink">
-                  Sains Nihil & Spekulasi Panen
-                </h3>
-                <p className="text-xs md:text-sm text-graphite leading-relaxed">
-                  Tanpa algoritma AI dan kepastian pasar, penanaman dilakukan spekulatif. Saat panen tiba, tidak ada pembeli yang mau mengambil partai kecil, membuat hasil panen membusuk sia-sia.
-                </p>
-              </div>
 
-              <div className="pt-4 border-t-2 border-ink/10 flex items-center gap-2 font-mono text-[11px] text-ochre-800 font-bold">
-                <span className="w-2 h-2 rounded-full bg-ochre-600"></span>
-                <span>Risiko: Terbuang tanpa nilai ekonomi</span>
+                <div className="pt-4 border-t-2 border-ink/10 flex items-center gap-2 font-mono text-[11px] text-ochre-800 font-bold">
+                  <span className="w-2 h-2 rounded-full bg-ochre-600"></span>
+                  <span>Risiko: Terbuang tanpa nilai ekonomi</span>
+                </div>
               </div>
             </div>
 
             {/* Card 3: Solusi TerasTani */}
-            <div className="paradox-card p-6 md:p-8 rounded-3xl bg-moss-900 text-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#C9942B] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#DEAB42] transition-all flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-moss-950 font-bold bg-ochre-400 px-2.5 py-1 rounded-md border-2 border-ink shadow-[1.5px_1.5px_0px_0px_#171715]">
-                    Solusi TerasTani
-                  </span>
-                  <span className="font-mono text-xs text-ochre-300 font-bold">03 / TEROBOSAN</span>
+            <div className="paradox-card-3">
+              <div className="paradox-card p-6 md:p-8 rounded-3xl bg-moss-900 text-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#C9942B] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#DEAB42] transition-all flex flex-col justify-between h-full">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-moss-950 font-bold bg-ochre-400 px-2.5 py-1 rounded-md border-2 border-ink shadow-[1.5px_1.5px_0px_0px_#171715]">
+                      Solusi TerasTani
+                    </span>
+                    <span className="font-mono text-xs text-ochre-300 font-bold">03 / TEROBOSAN</span>
+                  </div>
+                  <h3 className="font-display text-xl font-normal text-paper">
+                    Agregasi Lumbung Terpadu
+                  </h3>
+                  <p className="text-xs md:text-sm text-paper/80 leading-relaxed">
+                    Ratusan setoran mikro dikonsolidasikan otomatis di Titik Lumbung RW menjadi kuota tonase komersial yang dijemput langsung oleh armada rantai dingin distributor terikat kontrak.
+                  </p>
                 </div>
-                <h3 className="font-display text-xl font-normal text-paper">
-                  Agregasi Lumbung Terpadu
-                </h3>
-                <p className="text-xs md:text-sm text-paper/80 leading-relaxed">
-                  Ratusan setoran mikro dikonsolidasikan otomatis di Titik Lumbung RW menjadi kuota tonase komersial yang dijemput langsung oleh armada rantai dingin distributor terikat kontrak.
-                </p>
-              </div>
 
-              <div className="pt-4 border-t-2 border-moss-800 flex items-center gap-2 font-mono text-[11px] text-ochre-300 font-bold">
-                <span className="w-2 h-2 rounded-full bg-ochre-400"></span>
-                <span>Garansi: 100% Hasil Terikat Kontrak Off-taker</span>
+                <div className="pt-4 border-t-2 border-moss-800 flex items-center gap-2 font-mono text-[11px] text-ochre-300 font-bold">
+                  <span className="w-2 h-2 rounded-full bg-ochre-400"></span>
+                  <span>Garansi: 100% Hasil Terikat Kontrak Off-taker</span>
+                </div>
               </div>
             </div>
 
@@ -959,12 +1687,17 @@ export default function Home() {
       </section>
 
       {/* 4. Chapter 03: The AI Simulator & Precision Farming Console (The Product Showcase) */}
-      <section id="simulator" className="py-24 md:py-36 bg-paper relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="simulator" className="py-24 md:py-36 bg-paper relative overflow-hidden">
+        {/* Dynamic Editorial Watermark Numeral */}
+        <div className="simulator-watermark absolute top-6 right-8 font-display font-light text-[140px] sm:text-[200px] lg:text-[260px] leading-none text-ink/[0.03] select-none pointer-events-none">
+          03
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           {/* Section Header */}
           <div className="chapter-header-anim flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 pb-6 border-b-2 border-ink/15">
-            <div>
+            <div className="chapter-header-text">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] font-mono text-xs uppercase tracking-widest text-ink mb-3">
                 <span className="w-2 h-2 rounded-full bg-moss-600"></span>
                 <span>Chapter 03 &mdash; Simulator Interaktif Engine AI</span>
@@ -976,7 +1709,7 @@ export default function Home() {
             </div>
             
             {/* Dual Role Perspective Toggle in Neo-Brutalist Style */}
-            <div className="inline-flex p-1.5 rounded-2xl bg-paper border-2 border-ink shadow-[3.5px_3.5px_0px_0px_#171715] self-start md:self-end">
+            <div className="chapter-header-toggle inline-flex p-1.5 rounded-2xl bg-paper border-2 border-ink shadow-[3.5px_3.5px_0px_0px_#171715] self-start md:self-end">
               <button
                 onClick={() => setInteractiveRole('warga')}
                 className={`px-5 py-2.5 rounded-xl font-mono text-xs uppercase tracking-wider transition-all cursor-pointer ${
@@ -1005,7 +1738,7 @@ export default function Home() {
             <div className="simulator-console-box bg-paper rounded-[2.5rem] border-2 border-ink p-6 md:p-12 shadow-[8px_8px_0px_0px_#171715] md:shadow-[12px_12px_0px_0px_#171715] grid lg:grid-cols-12 gap-10 items-stretch">
               
               {/* Left Column: Preset Selectors & Controls */}
-              <div className="lg:col-span-5 space-y-6">
+              <div className="simulator-left-col lg:col-span-5 space-y-6">
                 <div>
                   <span className="font-mono text-xs uppercase tracking-wider text-graphite block mb-3 font-bold">
                     1. Pilih Tipe Area Lahan Anda:
@@ -1066,8 +1799,8 @@ export default function Home() {
               </div>
 
               {/* Right Column: Live Output Result Card with 2D Accent */}
-              <div className="lg:col-span-7 bg-moss-900 text-paper rounded-3xl p-8 md:p-10 flex flex-col justify-between border-2 border-ink shadow-[6px_6px_0px_0px_#C9942B] relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-80 h-80 bg-leaf-400/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="simulator-right-col lg:col-span-7 bg-moss-900 text-paper rounded-3xl p-8 md:p-10 flex flex-col justify-between border-2 border-ink shadow-[6px_6px_0px_0px_#C9942B] relative overflow-hidden">
+                <div className="simulator-glow-orb absolute top-0 right-0 w-80 h-80 bg-leaf-400/10 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div>
                   <div className="flex items-center justify-between pb-6 border-b-2 border-white/10 mb-8">
@@ -1146,7 +1879,7 @@ export default function Home() {
             /* DISTRIBUTOR VIEW: Enterprise Procurement & Batch Reserve Simulator */
             <div className="simulator-console-box bg-moss-950 text-paper rounded-[2.5rem] border-2 border-ink p-6 md:p-12 shadow-[10px_10px_0px_0px_#C9942B] grid lg:grid-cols-12 gap-10 items-stretch">
               
-              <div className="lg:col-span-6 space-y-6">
+              <div className="simulator-left-col lg:col-span-6 space-y-6">
                 <span className="font-mono text-xs uppercase tracking-widest text-ochre-300 block font-bold">
                   Dasbor Pengadaan Logistik Komunal
                 </span>
@@ -1177,7 +1910,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="lg:col-span-6 bg-white/5 rounded-2xl p-8 border-2 border-white/20 flex flex-col justify-between shadow-[4px_4px_0px_0px_#171715]">
+              <div className="simulator-right-col lg:col-span-6 bg-white/5 rounded-2xl p-8 border-2 border-white/20 flex flex-col justify-between shadow-[4px_4px_0px_0px_#171715]">
                 <div>
                   <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-white/10">
                     <span className="font-mono text-xs uppercase tracking-wider text-paper/60">Parameter Kontrak Dagang</span>
@@ -1220,19 +1953,27 @@ export default function Home() {
 
         </div>
       </section>
+
       {/* 5. Chapter 04: The 4 Core Capabilities (Asymmetric Architectural Grid in 2D Neo-Brutalist Style) */}
-      <section id="fitur" ref={capabilitiesRef} className="py-24 md:py-36 bg-ivory border-y-2 border-ink relative blueprint-grid">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="fitur" ref={capabilitiesRef} className="py-24 md:py-36 bg-ivory border-y-2 border-ink relative blueprint-grid overflow-hidden">
+        {/* Dynamic Editorial Watermark Numeral */}
+        <div className="capabilities-watermark absolute top-6 right-8 font-display font-light text-[140px] sm:text-[200px] lg:text-[260px] leading-none text-ink/[0.03] select-none pointer-events-none">
+          04
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           <div className="chapter-header-anim max-w-3xl mx-auto text-center mb-16 pb-6 border-b-2 border-ink/15 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-ink bg-paper shadow-[2px_2px_0px_0px_#171715] font-mono text-xs uppercase tracking-widest text-ink mb-4">
-              <span className="w-2 h-2 rounded-full bg-moss-600"></span>
-              <span>Chapter 04 &mdash; Kapabilitas Inti Platform</span>
+            <div className="chapter-header-text flex flex-col items-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-ink bg-paper shadow-[2px_2px_0px_0px_#171715] font-mono text-xs uppercase tracking-widest text-ink mb-4">
+                <span className="w-2 h-2 rounded-full bg-moss-600"></span>
+                <span>Chapter 04 &mdash; Kapabilitas Inti Platform</span>
+              </div>
+              <h2 className="font-display text-3xl sm:text-5xl font-normal text-ink text-balance-editorial">
+                Arsitektur Empat Pilar yang Menghubungkan <br />
+                <span className="font-editorial-italic font-light text-moss-800">Petani Mikro dengan Industri Besar.</span>
+              </h2>
             </div>
-            <h2 className="font-display text-3xl sm:text-5xl font-normal text-ink text-balance-editorial">
-              Arsitektur Empat Pilar yang Menghubungkan <br />
-              <span className="font-editorial-italic font-light text-moss-800">Petani Mikro dengan Industri Besar.</span>
-            </h2>
           </div>
 
           {/* Asymmetric Grid: Feature 1 is a wide focal card, Features 2 & 3 are complementary panels, Feature 4 is a wide bar */}
@@ -1242,63 +1983,67 @@ export default function Home() {
             <div className="grid lg:grid-cols-12 gap-6">
               
               {/* Feature 1: Kalkulator Tani AI (Focal Card) */}
-              <div className="capability-panel lg:col-span-7 bg-moss-900 text-paper rounded-[2rem] p-8 md:p-10 border-2 border-ink shadow-[6px_6px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[9px_9px_0px_0px_#171715] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="font-mono text-xs font-bold text-moss-950 bg-ochre-400 border-2 border-ink px-3 py-1 rounded-md shadow-[1.5px_1.5px_0px_0px_#171715]">
-                      PILAR 01 &bull; ENGINE PREP
-                    </span>
-                    <Sun className="w-5 h-5 text-ochre-400" />
+              <div className="capability-panel-1 lg:col-span-7">
+                <div className="capability-panel bg-moss-900 text-paper rounded-[2rem] p-8 md:p-10 border-2 border-ink shadow-[6px_6px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[9px_9px_0px_0px_#171715] transition-all flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="font-mono text-xs font-bold text-moss-950 bg-ochre-400 border-2 border-ink px-3 py-1 rounded-md shadow-[1.5px_1.5px_0px_0px_#171715]">
+                        PILAR 01 &bull; ENGINE PREP
+                      </span>
+                      <Sun className="capability-icon w-5 h-5 text-ochre-400" />
+                    </div>
+                    <h3 className="font-display text-3xl font-normal text-paper mb-3">
+                      Kalkulator Tani AI & Sensor Mikroklimat
+                    </h3>
+                    <p className="text-sm text-paper/70 leading-relaxed max-w-xl mb-8">
+                      Algoritma mikroklimat memetakan intensitas sinar matahari di balkon Anda terhadap kebutuhan foton tanaman. Menghasilkan kalender penyiraman adaptif, takaran nutrisi AB Mix presisi, dan prediksi tanggal petik dengan deviasi waktu kurang dari 2 hari.
+                    </p>
                   </div>
-                  <h3 className="font-display text-3xl font-normal text-paper mb-3">
-                    Kalkulator Tani AI & Sensor Mikroklimat
-                  </h3>
-                  <p className="text-sm text-paper/70 leading-relaxed max-w-xl mb-8">
-                    Algoritma mikroklimat memetakan intensitas sinar matahari di balkon Anda terhadap kebutuhan foton tanaman. Menghasilkan kalender penyiraman adaptif, takaran nutrisi AB Mix presisi, dan prediksi tanggal petik dengan deviasi waktu kurang dari 2 hari.
-                  </p>
-                </div>
 
-                <div className="grid grid-cols-3 gap-3 pt-6 border-t-2 border-white/10 font-mono text-xs">
-                  <div className="bg-moss-950 rounded-xl p-3 border-2 border-moss-700 shadow-[2px_2px_0px_0px_#171715]">
-                    <span className="text-[10px] text-paper/50 block">Optimasi Lahan</span>
-                    <span className="font-bold text-paper">+300% Hasil/m²</span>
-                  </div>
-                  <div className="bg-moss-950 rounded-xl p-3 border-2 border-moss-700 shadow-[2px_2px_0px_0px_#171715]">
-                    <span className="text-[10px] text-paper/50 block">Efisiensi Air</span>
-                    <span className="font-bold text-dew-300">Hemat 85%</span>
-                  </div>
-                  <div className="bg-moss-950 rounded-xl p-3 border-2 border-moss-700 shadow-[2px_2px_0px_0px_#171715]">
-                    <span className="text-[10px] text-paper/50 block">Kalibrasi Hama</span>
-                    <span className="font-bold text-leaf-300">Preventif Dini</span>
+                  <div className="grid grid-cols-3 gap-3 pt-6 border-t-2 border-white/10 font-mono text-xs">
+                    <div className="bg-moss-950 rounded-xl p-3 border-2 border-moss-700 shadow-[2px_2px_0px_0px_#171715]">
+                      <span className="text-[10px] text-paper/50 block">Optimasi Lahan</span>
+                      <span className="font-bold text-paper">+300% Hasil/m²</span>
+                    </div>
+                    <div className="bg-moss-950 rounded-xl p-3 border-2 border-moss-700 shadow-[2px_2px_0px_0px_#171715]">
+                      <span className="text-[10px] text-paper/50 block">Efisiensi Air</span>
+                      <span className="font-bold text-dew-300">Hemat 85%</span>
+                    </div>
+                    <div className="bg-moss-950 rounded-xl p-3 border-2 border-moss-700 shadow-[2px_2px_0px_0px_#171715]">
+                      <span className="text-[10px] text-paper/50 block">Kalibrasi Hama</span>
+                      <span className="font-bold text-leaf-300">Preventif Dini</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Feature 2: Validasi Cerdas AI (Computer Vision Inspection) */}
-              <div className="capability-panel lg:col-span-5 bg-paper rounded-[2rem] p-8 md:p-10 border-2 border-ink shadow-[6px_6px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[9px_9px_0px_0px_#171715] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="font-mono text-xs font-bold text-moss-900 bg-moss-100 border-2 border-ink px-3 py-1 rounded-md shadow-[1.5px_1.5px_0px_0px_#171715]">
-                      PILAR 02 &bull; COMPUTER VISION
-                    </span>
-                    <ScanLine className="w-5 h-5 text-moss-700" />
+              <div className="capability-panel-2 lg:col-span-5">
+                <div className="capability-panel bg-paper rounded-[2rem] p-8 md:p-10 border-2 border-ink shadow-[6px_6px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[9px_9px_0px_0px_#171715] transition-all flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="font-mono text-xs font-bold text-moss-900 bg-moss-100 border-2 border-ink px-3 py-1 rounded-md shadow-[1.5px_1.5px_0px_0px_#171715]">
+                        PILAR 02 &bull; COMPUTER VISION
+                      </span>
+                      <ScanLine className="capability-icon w-5 h-5 text-moss-700" />
+                    </div>
+                    <h3 className="font-display text-2xl font-normal text-ink mb-3">
+                      Validasi Mutu Cerdas AI
+                    </h3>
+                    <p className="text-xs text-graphite leading-relaxed mb-6">
+                      Cukup ambil foto tanaman sebelum dipetik. Sistem *Computer Vision* menganalisis klorofil, bercak daun, dan kerapatan biomassa. Seketika menerbitkan sertifikat digital Grade A dan kode QR unik setoran panen.
+                    </p>
                   </div>
-                  <h3 className="font-display text-2xl font-normal text-ink mb-3">
-                    Validasi Mutu Cerdas AI
-                  </h3>
-                  <p className="text-xs text-graphite leading-relaxed mb-6">
-                    Cukup ambil foto tanaman sebelum dipetik. Sistem *Computer Vision* menganalisis klorofil, bercak daun, dan kerapatan biomassa. Seketika menerbitkan sertifikat digital Grade A dan kode QR unik setoran panen.
-                  </p>
-                </div>
 
-                <div className="p-4 rounded-xl bg-ivory border-2 border-ink font-mono text-xs text-graphite space-y-1 shadow-[2px_2px_0px_0px_#171715]">
-                  <div className="flex justify-between">
-                    <span>Akurasi Klasifikasi:</span>
-                    <span className="font-bold text-moss-800">98.4%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Waktu Proses Scan:</span>
-                    <span className="font-bold text-moss-800">&lt; 1.2 Detik</span>
+                  <div className="p-4 rounded-xl bg-ivory border-2 border-ink font-mono text-xs text-graphite space-y-1 shadow-[2px_2px_0px_0px_#171715]">
+                    <div className="flex justify-between">
+                      <span>Akurasi Klasifikasi:</span>
+                      <span className="font-bold text-moss-800">98.4%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Waktu Proses Scan:</span>
+                      <span className="font-bold text-moss-800">&lt; 1.2 Detik</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1309,53 +2054,57 @@ export default function Home() {
             <div className="grid lg:grid-cols-12 gap-6">
               
               {/* Feature 3: Lumbung Komunitas RW */}
-              <div className="capability-panel lg:col-span-5 bg-paper rounded-[2rem] p-8 md:p-10 border-2 border-ink shadow-[6px_6px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[9px_9px_0px_0px_#171715] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="font-mono text-xs font-bold text-moss-900 bg-moss-100 border-2 border-ink px-3 py-1 rounded-md shadow-[1.5px_1.5px_0px_0px_#171715]">
-                      PILAR 03 &bull; AGREGASI
-                    </span>
-                    <Users className="w-5 h-5 text-moss-700" />
+              <div className="capability-panel-3 lg:col-span-5">
+                <div className="capability-panel bg-paper rounded-[2rem] p-8 md:p-10 border-2 border-ink shadow-[6px_6px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[9px_9px_0px_0px_#171715] transition-all flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="font-mono text-xs font-bold text-moss-900 bg-moss-100 border-2 border-ink px-3 py-1 rounded-md shadow-[1.5px_1.5px_0px_0px_#171715]">
+                        PILAR 03 &bull; AGREGASI
+                      </span>
+                      <Users className="capability-icon w-5 h-5 text-moss-700" />
+                    </div>
+                    <h3 className="font-display text-2xl font-normal text-ink mb-3">
+                      Lumbung Komunitas & Titik Kumpul RW
+                    </h3>
+                    <p className="text-xs text-graphite leading-relaxed mb-6">
+                      Mengubah setoran kecil 5 kg dari puluhan rumah tangga menjadi satu lot partai besar (500–1.500 kg). Mengubah warga kota dari penjual eceran yang rentan menjadi konsorsium penyuplai berdaya tawar tinggi.
+                    </p>
                   </div>
-                  <h3 className="font-display text-2xl font-normal text-ink mb-3">
-                    Lumbung Komunitas & Titik Kumpul RW
-                  </h3>
-                  <p className="text-xs text-graphite leading-relaxed mb-6">
-                    Mengubah setoran kecil 5 kg dari puluhan rumah tangga menjadi satu lot partai besar (500–1.500 kg). Mengubah warga kota dari penjual eceran yang rentan menjadi konsorsium penyuplai berdaya tawar tinggi.
-                  </p>
-                </div>
 
-                <div className="p-4 rounded-xl bg-ivory border-2 border-ink font-mono text-xs text-graphite flex items-center justify-between shadow-[2px_2px_0px_0px_#171715]">
-                  <span>Titik Lumbung Terdaftar:</span>
-                  <span className="font-bold text-moss-800">28 RW Aktif</span>
+                  <div className="p-4 rounded-xl bg-ivory border-2 border-ink font-mono text-xs text-graphite flex items-center justify-between shadow-[2px_2px_0px_0px_#171715]">
+                    <span>Titik Lumbung Terdaftar:</span>
+                    <span className="font-bold text-moss-800">28 RW Aktif</span>
+                  </div>
                 </div>
               </div>
 
               {/* Feature 4: Jaringan Distributor Terikat */}
-              <div className="capability-panel lg:col-span-7 bg-paper rounded-[2rem] p-8 md:p-10 border-2 border-ink shadow-[6px_6px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[9px_9px_0px_0px_#171715] transition-all flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="font-mono text-xs font-bold text-moss-900 bg-moss-100 border-2 border-ink px-3 py-1 rounded-md shadow-[1.5px_1.5px_0px_0px_#171715]">
-                      PILAR 04 &bull; PASAR TERJAMIN
-                    </span>
-                    <Building2 className="w-5 h-5 text-moss-700" />
+              <div className="capability-panel-4 lg:col-span-7">
+                <div className="capability-panel bg-paper rounded-[2rem] p-8 md:p-10 border-2 border-ink shadow-[6px_6px_0px_0px_#171715] hover:-translate-y-1 hover:shadow-[9px_9px_0px_0px_#171715] transition-all flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="font-mono text-xs font-bold text-moss-900 bg-moss-100 border-2 border-ink px-3 py-1 rounded-md shadow-[1.5px_1.5px_0px_0px_#171715]">
+                        PILAR 04 &bull; PASAR TERJAMIN
+                      </span>
+                      <Building2 className="capability-icon w-5 h-5 text-moss-700" />
+                    </div>
+                    <h3 className="font-display text-2xl sm:text-3xl font-normal text-ink mb-3">
+                      Rantai Pasok Industri & Kontrak Off-Taker
+                    </h3>
+                    <p className="text-sm text-graphite leading-relaxed max-w-xl mb-6">
+                      Kerja sama terikat dengan jaringan supermarket, katering industri, dan restoran sehat. Distributor mendapatkan pasokan segar yang dipanen di hari yang sama, sementara warga mendapatkan kepastian penyerapan 100% dan pencairan dana langsung.
+                    </p>
                   </div>
-                  <h3 className="font-display text-2xl sm:text-3xl font-normal text-ink mb-3">
-                    Rantai Pasok Industri & Kontrak Off-Taker
-                  </h3>
-                  <p className="text-sm text-graphite leading-relaxed max-w-xl mb-6">
-                    Kerja sama terikat dengan jaringan supermarket, katering industri, dan restoran sehat. Distributor mendapatkan pasokan segar yang dipanen di hari yang sama, sementara warga mendapatkan kepastian penyerapan 100% dan pencairan dana langsung.
-                  </p>
-                </div>
 
-                <div className="grid grid-cols-2 gap-3 pt-4 border-t-2 border-ink/10 font-mono text-xs text-graphite">
-                  <div>
-                    <span className="text-[10px] text-graphite/60 block">Sistem Pembayaran</span>
-                    <span className="font-bold text-ink">Escrow Digital Otomatis</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-graphite/60 block">Jarak Rata-rata</span>
-                    <span className="font-bold text-ink">&lt; 8 km dari Lumbung</span>
+                  <div className="grid grid-cols-2 gap-3 pt-4 border-t-2 border-ink/10 font-mono text-xs text-graphite">
+                    <div>
+                      <span className="text-[10px] text-graphite/60 block">Sistem Pembayaran</span>
+                      <span className="font-bold text-ink">Escrow Digital Otomatis</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-graphite/60 block">Jarak Rata-rata</span>
+                      <span className="font-bold text-ink">&lt; 8 km dari Lumbung</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1368,12 +2117,17 @@ export default function Home() {
       </section>
 
       {/* 6. Chapter 05: The Closed-Loop Workflow (Step-by-Step Timeline in 2D Cards) */}
-      <section id="cara-kerja" className="py-24 md:py-36 bg-paper relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="cara-kerja" className="py-24 md:py-36 bg-paper relative overflow-hidden">
+        {/* Dynamic Editorial Watermark Numeral */}
+        <div className="workflow-watermark absolute top-6 left-8 font-display font-light text-[140px] sm:text-[200px] lg:text-[260px] leading-none text-ink/[0.03] select-none pointer-events-none">
+          05
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           <div className="chapter-header-anim grid lg:grid-cols-12 gap-8 items-end mb-8">
             {/* Left Column: Contextual Editorial Description */}
-            <div className="lg:col-span-5 order-2 lg:order-1">
+            <div className="chapter-header-desc lg:col-span-5 order-2 lg:order-1">
               <p className="text-graphite text-sm sm:text-base leading-relaxed">
                 Rantai nilai terintegrasi penuh yang menyederhanakan siklus agrikultur perkotaan. Mulai dari pemetaan foton balkon secara otomatis, pemantauan kesehatan daun berkamera AI, agregasi kuota di Titik Lumbung RW, hingga pencairan dana hasil panen via sistem escrow transparan.
               </p>
@@ -1384,7 +2138,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Title and Badge (Aligned Right) */}
-            <div className="lg:col-span-7 lg:text-right order-1 lg:order-2 flex flex-col lg:items-end">
+            <div className="chapter-header-text lg:col-span-7 lg:text-right order-1 lg:order-2 flex flex-col lg:items-end">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] font-mono text-xs uppercase tracking-widest text-ink mb-3">
                 <span className="w-2 h-2 rounded-full bg-moss-600"></span>
                 <span>Chapter 05 &mdash; Alur Siklus Tertutup</span>
@@ -1436,29 +2190,32 @@ export default function Home() {
                 desc: 'Truk distributor mengambil pasokan. Pembayaran ditransfer langsung ke dompet digital warga secara transparan.',
                 icon: Tractor
               }
-            ].map((workflow) => {
+            ].map((workflow, idx) => {
               const IconComponent = workflow.icon;
+              const isOdd = idx % 2 === 0;
               return (
                 <div 
                   key={workflow.step} 
-                  className="workflow-card bg-paper rounded-2xl p-6 border-2 border-ink shadow-[4px_4px_0px_0px_#171715] hover:-translate-y-1.5 hover:shadow-[7px_7px_0px_0px_#171715] transition-all flex flex-col justify-between"
+                  className={`workflow-card-wrapper ${isOdd ? 'workflow-card-odd' : 'workflow-card-even'}`}
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="font-mono text-xs font-bold text-ink bg-ochre-400 border-2 border-ink px-2 py-0.5 rounded shadow-[1.5px_1.5px_0px_0px_#171715]">
-                        LANGKAH {workflow.step}
-                      </span>
-                      <div className="p-1.5 rounded-lg border border-ink/20 bg-ivory">
-                        <IconComponent className="w-4 h-4 text-ink" />
+                  <div className="workflow-card bg-paper rounded-2xl p-6 border-2 border-ink shadow-[4px_4px_0px_0px_#171715] hover:-translate-y-1.5 hover:shadow-[7px_7px_0px_0px_#171715] transition-all flex flex-col justify-between h-full">
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="font-mono text-xs font-bold text-ink bg-ochre-400 border-2 border-ink px-2 py-0.5 rounded shadow-[1.5px_1.5px_0px_0px_#171715]">
+                          LANGKAH {workflow.step}
+                        </span>
+                        <div className="p-1.5 rounded-lg border border-ink/20 bg-ivory">
+                          <IconComponent className="w-4 h-4 text-ink workflow-step-icon" />
+                        </div>
                       </div>
+                      <h3 className="font-display text-lg font-normal text-ink mb-2">{workflow.title}</h3>
+                      <p className="text-xs text-graphite leading-relaxed">{workflow.desc}</p>
                     </div>
-                    <h3 className="font-display text-lg font-normal text-ink mb-2">{workflow.title}</h3>
-                    <p className="text-xs text-graphite leading-relaxed">{workflow.desc}</p>
-                  </div>
 
-                  <div className="pt-4 border-t-2 border-ink/10 mt-6 font-mono text-[10px] text-graphite font-bold flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-leaf-400"></span>
-                    <span>Terverifikasi AI</span>
+                    <div className="pt-4 border-t-2 border-ink/10 mt-6 font-mono text-[10px] text-graphite font-bold flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-leaf-400"></span>
+                      <span>Terverifikasi AI</span>
+                    </div>
                   </div>
                 </div>
               );
@@ -1470,98 +2227,111 @@ export default function Home() {
 
       {/* 7. Chapter 06: Civic Proof & Community Voices in 2D Neo-Brutalist Cards */}
       <section id="dampak" className="py-24 md:py-36 bg-moss-900 text-paper relative overflow-hidden border-b-2 border-ink pattern-dark-constellation">
+        {/* Dynamic Architectural Watermark Numeral */}
+        <div className="dampak-watermark absolute top-4 right-8 font-display font-light text-[140px] sm:text-[200px] lg:text-[260px] leading-none text-ochre-400/[0.04] select-none pointer-events-none">
+          06
+        </div>
+
         {/* Subtle ambient lighting */}
-        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-moss-600/15 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="dampak-glow-orb absolute top-0 right-1/4 w-[500px] h-[500px] bg-moss-600/15 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           
           <div className="chapter-header-anim max-w-3xl mx-auto text-center mb-16 pb-6 border-b-2 border-white/10 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-white/30 bg-moss-950 font-mono text-xs uppercase tracking-widest text-ochre-300 mb-4 shadow-[2px_2px_0px_0px_#C9942B]">
-              <span className="w-2 h-2 rounded-full bg-ochre-400"></span>
-              <span>Chapter 06 &mdash; Suara Dari Komunitas</span>
+            <div className="chapter-header-text flex flex-col items-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-white/30 bg-moss-950 font-mono text-xs uppercase tracking-widest text-ochre-300 mb-4 shadow-[2px_2px_0px_0px_#C9942B]">
+                <span className="w-2 h-2 rounded-full bg-ochre-400"></span>
+                <span>Chapter 06 &mdash; Suara Dari Komunitas</span>
+              </div>
+              <h2 className="font-display text-3xl sm:text-5xl font-normal text-paper leading-tight text-balance-editorial">
+                Dampak Ekonomi Nyata di <br />
+                <span className="font-editorial-italic font-light text-leaf-300">Pekarangan Rumah Warga.</span>
+              </h2>
             </div>
-            <h2 className="font-display text-3xl sm:text-5xl font-normal text-paper leading-tight text-balance-editorial">
-              Dampak Ekonomi Nyata di <br />
-              <span className="font-editorial-italic font-light text-leaf-300">Pekarangan Rumah Warga.</span>
-            </h2>
           </div>
 
           <div className="testimonial-cards-container grid md:grid-cols-3 gap-8">
             
             {/* Testimonial 1 */}
-            <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#C9942B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#DEAB42] transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-1 text-ochre-400 font-mono text-xs bg-moss-900 px-2.5 py-1 rounded-md border border-white/20">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i}>★</span>
-                    ))}
-                  </div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-ochre-300 bg-white/10 px-2 py-0.5 rounded border border-white/20 font-bold">VERIFIKASI WARGA</span>
-                </div>
-                <p className="text-sm text-paper/85 font-sans leading-relaxed mb-6 italic">
-                  &ldquo;Dulu hasil hidroponik di rooftop rumah cuma dibagi ke tetangga dekat karena bingung mau jual ke mana. Sekarang lewat Titik Lumbung RW 07, panen 35 kg selada saya langsung masuk ke kuota distributor hotel tiap bulan.&rdquo;
-                </p>
-              </div>
-              <div className="pt-4 border-t-2 border-white/10 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-moss-700 text-paper flex items-center justify-center font-display text-sm font-semibold border-2 border-white/40 shadow-[2px_2px_0px_0px_#171715]">
-                  BW
-                </div>
+            <div className="testimonial-card-1">
+              <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#C9942B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#DEAB42] transition-all flex flex-col justify-between h-full">
                 <div>
-                  <h4 className="text-xs font-semibold text-paper">Bambang Wicaksono</h4>
-                  <p className="text-[11px] text-paper/60 font-mono">Warga Kultivator &bull; Jakarta Pusat</p>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-1 text-ochre-400 font-mono text-xs bg-moss-900 px-2.5 py-1 rounded-md border border-white/20">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i}>★</span>
+                      ))}
+                    </div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-ochre-300 bg-white/10 px-2 py-0.5 rounded border border-white/20 font-bold">VERIFIKASI WARGA</span>
+                  </div>
+                  <p className="text-sm text-paper/85 font-sans leading-relaxed mb-6 italic">
+                    &ldquo;Dulu hasil hidroponik di rooftop rumah cuma dibagi ke tetangga dekat karena bingung mau jual ke mana. Sekarang lewat Titik Lumbung RW 07, panen 35 kg selada saya langsung masuk ke kuota distributor hotel tiap bulan.&rdquo;
+                  </p>
+                </div>
+                <div className="pt-4 border-t-2 border-white/10 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-moss-700 text-paper flex items-center justify-center font-display text-sm font-semibold border-2 border-white/40 shadow-[2px_2px_0px_0px_#171715]">
+                    BW
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-semibold text-paper">Bambang Wicaksono</h4>
+                    <p className="text-[11px] text-paper/60 font-mono">Warga Kultivator &bull; Jakarta Pusat</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Testimonial 2 */}
-            <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#C9942B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#DEAB42] transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-1 text-ochre-400 font-mono text-xs bg-moss-900 px-2.5 py-1 rounded-md border border-white/20">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i}>★</span>
-                    ))}
-                  </div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-ochre-300 bg-white/10 px-2 py-0.5 rounded border border-white/20 font-bold">VERIFIKASI RW</span>
-                </div>
-                <p className="text-sm text-paper/85 font-sans leading-relaxed mb-6 italic">
-                  &ldquo;Sebagai koordinator lumbung lingkungan, fitur validasi kamera AI sangat memudahkan kami menyortir kualitas daun tanpa perdebatan. Sayur yang lolos scan selalu diterima 100% oleh armada distributor.&rdquo;
-                </p>
-              </div>
-              <div className="pt-4 border-t-2 border-white/10 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-ochre-500 text-moss-950 flex items-center justify-center font-display text-sm font-semibold border-2 border-white/40 shadow-[2px_2px_0px_0px_#171715]">
-                  SR
-                </div>
+            <div className="testimonial-card-2">
+              <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#C9942B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#DEAB42] transition-all flex flex-col justify-between h-full">
                 <div>
-                  <h4 className="text-xs font-semibold text-paper">Siti Rahmawati</h4>
-                  <p className="text-[11px] text-paper/60 font-mono">Ketua Titik Lumbung RW 04 &bull; Bekasi</p>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-1 text-ochre-400 font-mono text-xs bg-moss-900 px-2.5 py-1 rounded-md border border-white/20">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i}>★</span>
+                      ))}
+                    </div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-ochre-300 bg-white/10 px-2 py-0.5 rounded border border-white/20 font-bold">VERIFIKASI RW</span>
+                  </div>
+                  <p className="text-sm text-paper/85 font-sans leading-relaxed mb-6 italic">
+                    &ldquo;Sebagai koordinator lumbung lingkungan, fitur validasi kamera AI sangat memudahkan kami menyortir kualitas daun tanpa perdebatan. Sayur yang lolos scan selalu diterima 100% oleh armada distributor.&rdquo;
+                  </p>
+                </div>
+                <div className="pt-4 border-t-2 border-white/10 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-ochre-500 text-moss-950 flex items-center justify-center font-display text-sm font-semibold border-2 border-white/40 shadow-[2px_2px_0px_0px_#171715]">
+                    SR
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-semibold text-paper">Siti Rahmawati</h4>
+                    <p className="text-[11px] text-paper/60 font-mono">Ketua Titik Lumbung RW 04 &bull; Bekasi</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Testimonial 3 */}
-            <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#C9942B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#DEAB42] transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-1 text-ochre-400 font-mono text-xs bg-moss-900 px-2.5 py-1 rounded-md border border-white/20">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i}>★</span>
-                    ))}
-                  </div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-ochre-300 bg-white/10 px-2 py-0.5 rounded border border-white/20 font-bold">VERIFIKASI MITRA</span>
-                </div>
-                <p className="text-sm text-paper/85 font-sans leading-relaxed mb-6 italic">
-                  &ldquo;Sebelum bermitra dengan TerasTani, kami harus mengambil sayur dari daerah pegunungan yang rawan macet logistik. Sekarang kami punya klaster panen di dalam kota yang dipanen pagi dan sampai di rak siang hari.&rdquo;
-                </p>
-              </div>
-              <div className="pt-4 border-t-2 border-white/10 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-leaf-400 text-moss-950 flex items-center justify-center font-display text-sm font-semibold border-2 border-white/40 shadow-[2px_2px_0px_0px_#171715]">
-                  HA
-                </div>
+            <div className="testimonial-card-3">
+              <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#C9942B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#DEAB42] transition-all flex flex-col justify-between h-full">
                 <div>
-                  <h4 className="text-xs font-semibold text-paper">Hendra Adiputra</h4>
-                  <p className="text-[11px] text-paper/60 font-mono">Direktur Pasokan PT Segar Retail</p>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-1 text-ochre-400 font-mono text-xs bg-moss-900 px-2.5 py-1 rounded-md border border-white/20">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i}>★</span>
+                      ))}
+                    </div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-ochre-300 bg-white/10 px-2 py-0.5 rounded border border-white/20 font-bold">VERIFIKASI MITRA</span>
+                  </div>
+                  <p className="text-sm text-paper/85 font-sans leading-relaxed mb-6 italic">
+                    &ldquo;Sebelum bermitra dengan TerasTani, kami harus mengambil sayur dari daerah pegunungan yang rawan macet logistik. Sekarang kami punya klaster panen di dalam kota yang dipanen pagi dan sampai di rak siang hari.&rdquo;
+                  </p>
+                </div>
+                <div className="pt-4 border-t-2 border-white/10 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-leaf-400 text-moss-950 flex items-center justify-center font-display text-sm font-semibold border-2 border-white/40 shadow-[2px_2px_0px_0px_#171715]">
+                    HA
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-semibold text-paper">Hendra Adiputra</h4>
+                    <p className="text-[11px] text-paper/60 font-mono">Direktur Pasokan PT Segar Retail</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1573,11 +2343,16 @@ export default function Home() {
 
       {/* 8. Chapter 07: Curated Knowledge Journal (Pusat Edukasi in 2D Magazine Style) */}
       <section id="edukasi" className="py-24 md:py-36 bg-paper relative border-b-2 border-ink">
+        {/* Dynamic Editorial Watermark Numeral */}
+        <div className="edukasi-watermark absolute top-4 right-8 font-display font-light text-[140px] sm:text-[200px] lg:text-[260px] leading-none text-ink/[0.03] select-none pointer-events-none">
+          07
+        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="chapter-header-anim grid lg:grid-cols-12 gap-8 items-end mb-16 pb-6 border-b-2 border-ink/15">
             {/* Left Column: Badge & Monumental Headline */}
-            <div className="lg:col-span-7">
+            <div className="chapter-header-text lg:col-span-7">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-ink bg-ivory font-mono text-xs uppercase tracking-widest text-ink mb-3 shadow-[2px_2px_0px_0px_#171715]">
                 <BookOpen className="w-3.5 h-3.5 text-moss-700" />
                 <span>Chapter 07 &mdash; Jurnal Agrikultur & Riset</span>
@@ -1589,7 +2364,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Editorial Description */}
-            <div className="lg:col-span-5">
+            <div className="chapter-header-desc lg:col-span-5">
               <p className="text-graphite text-sm sm:text-base leading-relaxed">
                 Kumpulan panduan teknis kurasi tim agronom TerasTani mengenai kalibrasi nutrisi AB Mix, pengaturan siklus sirkulasi pompa hidroponik, dan standarisasi parameter bobot daun segar agar panen lolos verifikasi mutu Grade A komersial.
               </p>
@@ -1603,97 +2378,103 @@ export default function Home() {
           <div className="journal-cards-container grid md:grid-cols-3 gap-8">
             
             {/* Article 1 */}
-            <article className="journal-card border-2 border-ink bg-paper rounded-3xl overflow-hidden shadow-[5px_5px_0px_0px_#171715] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#171715] transition-all group cursor-pointer flex flex-col justify-between">
-              <div>
-                <div className="h-56 bg-moss-900 relative overflow-hidden border-b-2 border-ink flex items-center justify-center p-6 text-center">
-                  <div className="absolute inset-0 bg-gradient-to-t from-moss-950 via-moss-900/60 to-transparent"></div>
-                  <div className="relative z-10">
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-ink bg-ochre-400 border border-ink px-2.5 py-0.5 rounded font-bold shadow-[1.5px_1.5px_0px_0px_#171715] inline-block mb-3">
-                      PANDUAN TEKNIS
-                    </span>
-                    <h3 className="font-display text-xl text-paper group-hover:text-ochre-300 transition-colors leading-snug">
-                      Sistem Hidroponik NFT untuk Balkon 3×2 Meter di Iklim Tropis
-                    </h3>
+            <div className="journal-card-1">
+              <article className="journal-card border-2 border-ink bg-paper rounded-3xl overflow-hidden shadow-[5px_5px_0px_0px_#171715] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#171715] transition-all group cursor-pointer flex flex-col justify-between h-full">
+                <div>
+                  <div className="journal-card-img h-56 bg-moss-900 relative overflow-hidden border-b-2 border-ink flex items-center justify-center p-6 text-center">
+                    <div className="absolute inset-0 bg-gradient-to-t from-moss-950 via-moss-900/60 to-transparent"></div>
+                    <div className="relative z-10">
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-ink bg-ochre-400 border border-ink px-2.5 py-0.5 rounded font-bold shadow-[1.5px_1.5px_0px_0px_#171715] inline-block mb-3">
+                        PANDUAN TEKNIS
+                      </span>
+                      <h3 className="font-display text-xl text-paper group-hover:text-ochre-300 transition-colors leading-snug">
+                        Sistem Hidroponik NFT untuk Balkon 3×2 Meter di Iklim Tropis
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-3 font-mono text-xs text-graphite mb-2">
+                      <span className="font-bold text-moss-800">Agronomi Modern</span>
+                      <span>&bull;</span>
+                      <span>6 Menit Baca</span>
+                    </div>
+                    <p className="text-xs text-graphite leading-relaxed">
+                      Trik mengatur sirkulasi pompa dan penangkal lumut pipa agar akar sayur tetap bersih dan menyerap oksigen maksimal.
+                    </p>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-3 font-mono text-xs text-graphite mb-2">
-                    <span className="font-bold text-moss-800">Agronomi Modern</span>
-                    <span>&bull;</span>
-                    <span>6 Menit Baca</span>
-                  </div>
-                  <p className="text-xs text-graphite leading-relaxed">
-                    Trik mengatur sirkulasi pompa dan penangkal lumut pipa agar akar sayur tetap bersih dan menyerap oksigen maksimal.
-                  </p>
+                <div className="px-6 pb-6 pt-2 border-t border-ink/10 flex items-center justify-between font-mono text-xs text-moss-800 font-bold group-hover:text-ink">
+                  <span>Baca Artikel Penuh</span>
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                 </div>
-              </div>
-              <div className="px-6 pb-6 pt-2 border-t border-ink/10 flex items-center justify-between font-mono text-xs text-moss-800 font-bold group-hover:text-ink">
-                <span>Baca Artikel Penuh</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-              </div>
-            </article>
+              </article>
+            </div>
 
             {/* Article 2 */}
-            <article className="journal-card border-2 border-ink bg-paper rounded-3xl overflow-hidden shadow-[5px_5px_0px_0px_#171715] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#171715] transition-all group cursor-pointer flex flex-col justify-between">
-              <div>
-                <div className="h-56 bg-moss-950 relative overflow-hidden border-b-2 border-ink flex items-center justify-center p-6 text-center">
-                  <div className="absolute inset-0 bg-gradient-to-t from-moss-950 via-moss-900/60 to-transparent"></div>
-                  <div className="relative z-10">
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-ink bg-leaf-300 border border-ink px-2.5 py-0.5 rounded font-bold shadow-[1.5px_1.5px_0px_0px_#171715] inline-block mb-3">
-                      MANAJEMEN NUTRISI
-                    </span>
-                    <h3 className="font-display text-xl text-paper group-hover:text-ochre-300 transition-colors leading-snug">
-                      Kalibrasi PPM & pH Air untuk Mencegah Daun Menguning
-                    </h3>
+            <div className="journal-card-2">
+              <article className="journal-card border-2 border-ink bg-paper rounded-3xl overflow-hidden shadow-[5px_5px_0px_0px_#171715] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#171715] transition-all group cursor-pointer flex flex-col justify-between h-full">
+                <div>
+                  <div className="journal-card-img h-56 bg-moss-950 relative overflow-hidden border-b-2 border-ink flex items-center justify-center p-6 text-center">
+                    <div className="absolute inset-0 bg-gradient-to-t from-moss-950 via-moss-900/60 to-transparent"></div>
+                    <div className="relative z-10">
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-ink bg-leaf-300 border border-ink px-2.5 py-0.5 rounded font-bold shadow-[1.5px_1.5px_0px_0px_#171715] inline-block mb-3">
+                        MANAJEMEN NUTRISI
+                      </span>
+                      <h3 className="font-display text-xl text-paper group-hover:text-ochre-300 transition-colors leading-snug">
+                        Kalibrasi PPM & pH Air untuk Mencegah Daun Menguning
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-3 font-mono text-xs text-graphite mb-2">
+                      <span className="font-bold text-moss-800">Kontrol Kualitas</span>
+                      <span>&bull;</span>
+                      <span>4 Menit Baca</span>
+                    </div>
+                    <p className="text-xs text-graphite leading-relaxed">
+                      Panduan praktis menjaga kepekatan AB Mix sesuai suhu siang hari di Jakarta dan Surabaya agar tidak terjadi tip burn.
+                    </p>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-3 font-mono text-xs text-graphite mb-2">
-                    <span className="font-bold text-moss-800">Kontrol Kualitas</span>
-                    <span>&bull;</span>
-                    <span>4 Menit Baca</span>
-                  </div>
-                  <p className="text-xs text-graphite leading-relaxed">
-                    Panduan praktis menjaga kepekatan AB Mix sesuai suhu siang hari di Jakarta dan Surabaya agar tidak terjadi tip burn.
-                  </p>
+                <div className="px-6 pb-6 pt-2 border-t border-ink/10 flex items-center justify-between font-mono text-xs text-moss-800 font-bold group-hover:text-ink">
+                  <span>Baca Artikel Penuh</span>
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                 </div>
-              </div>
-              <div className="px-6 pb-6 pt-2 border-t border-ink/10 flex items-center justify-between font-mono text-xs text-moss-800 font-bold group-hover:text-ink">
-                <span>Baca Artikel Penuh</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-              </div>
-            </article>
+              </article>
+            </div>
 
             {/* Article 3 */}
-            <article className="journal-card border-2 border-ink bg-paper rounded-3xl overflow-hidden shadow-[5px_5px_0px_0px_#171715] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#171715] transition-all group cursor-pointer flex flex-col justify-between">
-              <div>
-                <div className="h-56 bg-moss-800 relative overflow-hidden border-b-2 border-ink flex items-center justify-center p-6 text-center">
-                  <div className="absolute inset-0 bg-gradient-to-t from-moss-950 via-moss-900/60 to-transparent"></div>
-                  <div className="relative z-10">
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-ink bg-ochre-400 border border-ink px-2.5 py-0.5 rounded font-bold shadow-[1.5px_1.5px_0px_0px_#171715] inline-block mb-3">
-                      STANDARISASI PASAR
-                    </span>
-                    <h3 className="font-display text-xl text-paper group-hover:text-ochre-300 transition-colors leading-snug">
-                      Memahami Kriteria Sayur Grade A yang Diminati Supermarket
-                    </h3>
+            <div className="journal-card-3">
+              <article className="journal-card border-2 border-ink bg-paper rounded-3xl overflow-hidden shadow-[5px_5px_0px_0px_#171715] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#171715] transition-all group cursor-pointer flex flex-col justify-between h-full">
+                <div>
+                  <div className="journal-card-img h-56 bg-moss-800 relative overflow-hidden border-b-2 border-ink flex items-center justify-center p-6 text-center">
+                    <div className="absolute inset-0 bg-gradient-to-t from-moss-950 via-moss-900/60 to-transparent"></div>
+                    <div className="relative z-10">
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-ink bg-ochre-400 border border-ink px-2.5 py-0.5 rounded font-bold shadow-[1.5px_1.5px_0px_0px_#171715] inline-block mb-3">
+                        STANDARISASI PASAR
+                      </span>
+                      <h3 className="font-display text-xl text-paper group-hover:text-ochre-300 transition-colors leading-snug">
+                        Memahami Kriteria Sayur Grade A yang Diminati Supermarket
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-3 font-mono text-xs text-graphite mb-2">
+                      <span className="font-bold text-moss-800">Distribusi Komersial</span>
+                      <span>&bull;</span>
+                      <span>8 Menit Baca</span>
+                    </div>
+                    <p className="text-xs text-graphite leading-relaxed">
+                      Kupas tuntas parameter berat per bonggol, kematangan warna daun, dan metode pendinginan awal setelah sayur dipanen.
+                    </p>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-3 font-mono text-xs text-graphite mb-2">
-                    <span className="font-bold text-moss-800">Distribusi Komersial</span>
-                    <span>&bull;</span>
-                    <span>8 Menit Baca</span>
-                  </div>
-                  <p className="text-xs text-graphite leading-relaxed">
-                    Kupas tuntas parameter berat per bonggol, kematangan warna daun, dan metode pendinginan awal setelah sayur dipanen.
-                  </p>
+                <div className="px-6 pb-6 pt-2 border-t border-ink/10 flex items-center justify-between font-mono text-xs text-moss-800 font-bold group-hover:text-ink">
+                  <span>Baca Artikel Penuh</span>
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                 </div>
-              </div>
-              <div className="px-6 pb-6 pt-2 border-t border-ink/10 flex items-center justify-between font-mono text-xs text-moss-800 font-bold group-hover:text-ink">
-                <span>Baca Artikel Penuh</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-              </div>
-            </article>
+              </article>
+            </div>
 
           </div>
 
@@ -1702,15 +2483,20 @@ export default function Home() {
 
       {/* 9. Chapter 08: Flexible Yield Estimator & Conversion Moment in 2D Console Style */}
       <section id="kalkulator" className="py-24 md:py-36 bg-ivory border-b-2 border-ink relative blueprint-grid overflow-hidden">
+        {/* Dynamic Editorial Watermark Numeral */}
+        <div className="kalkulator-watermark absolute top-4 right-8 font-display font-light text-[140px] sm:text-[200px] lg:text-[260px] leading-none text-ink/[0.03] select-none pointer-events-none">
+          08
+        </div>
+
         {/* Subtle architectural vertical gridlines for neo-brutalist blueprint feel */}
         <div className="absolute inset-y-0 left-6 md:left-12 w-px border-l-2 border-dashed border-ink/10 pointer-events-none hidden xl:block" />
         <div className="absolute inset-y-0 right-6 md:right-12 w-px border-r-2 border-dashed border-ink/10 pointer-events-none hidden xl:block" />
         
         {/* Architectural coordinates on the sides */}
-        <div className="absolute top-12 left-8 font-mono text-[9px] uppercase tracking-widest text-ink/40 rotate-90 origin-top-left hidden xl:block select-none pointer-events-none">
+        <div className="calc-coord-left absolute top-12 left-8 font-mono text-[9px] uppercase tracking-widest text-ink/40 rotate-90 origin-top-left hidden xl:block select-none pointer-events-none">
           SYS // TERASTANI YIELD MODULAR CALC v2.4
         </div>
-        <div className="absolute bottom-12 right-8 font-mono text-[9px] uppercase tracking-widest text-ink/40 -rotate-90 origin-bottom-right hidden xl:block select-none pointer-events-none">
+        <div className="calc-coord-right absolute bottom-12 right-8 font-mono text-[9px] uppercase tracking-widest text-ink/40 -rotate-90 origin-bottom-right hidden xl:block select-none pointer-events-none">
           AGRONOMY SPECIFICATION &bull; PRECISION TELEMETRY
         </div>
 
@@ -1808,7 +2594,7 @@ export default function Home() {
             <div className="calc-center-col lg:col-span-6">
               <div className="bg-paper rounded-[2.5rem] border-2 border-ink p-8 md:p-12 shadow-[8px_8px_0px_0px_#171715] md:shadow-[12px_12px_0px_0px_#171715] h-full flex flex-col justify-between">
                 <div>
-                  <div className="text-center max-w-xl mx-auto mb-8">
+                  <div className="chapter-header-text text-center max-w-xl mx-auto mb-8">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-ink bg-ivory font-mono text-xs uppercase tracking-widest text-ink mb-3 shadow-[2px_2px_0px_0px_#171715]">
                       <span className="w-2 h-2 rounded-full bg-moss-600"></span>
                       <span>Chapter 08 &mdash; Kalkulator Estimasi Lahan</span>
@@ -1982,7 +2768,7 @@ export default function Home() {
 
           {/* Mobile/Tablet Supplemental Intelligence Grid (visible only on < lg) */}
           <div className="grid sm:grid-cols-2 gap-4 mt-8 lg:hidden">
-            <div className="bg-paper p-5 rounded-2xl border-2 border-ink shadow-[4px_4px_0px_0px_#171715]">
+            <div className="calc-mobile-card bg-paper p-5 rounded-2xl border-2 border-ink shadow-[4px_4px_0px_0px_#171715]">
               <div className="flex items-center gap-2 mb-2 font-mono text-xs font-bold text-moss-800">
                 <CheckCircle2 className="w-4 h-4 text-moss-600" />
                 <span>Rasio Lahan Vertikal: 1:18 Rumpun/m²</span>
@@ -1992,7 +2778,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-paper p-5 rounded-2xl border-2 border-ink shadow-[4px_4px_0px_0px_#C9942B]">
+            <div className="calc-mobile-card bg-paper p-5 rounded-2xl border-2 border-ink shadow-[4px_4px_0px_0px_#C9942B]">
               <div className="flex items-center gap-2 mb-2 font-mono text-xs font-bold text-ochre-800">
                 <ShieldCheck className="w-4 h-4 text-ochre-600" />
                 <span>Kontrak Off-Taker Resmi Rp 25.000/kg</span>
@@ -2007,15 +2793,15 @@ export default function Home() {
       </section>
 
       {/* 10. Editorial Luxury Footer in Neo-Brutalist Precision */}
-      <footer className="bg-moss-950 text-paper pt-20 pb-12 border-t-2 border-ink">
+      <footer className="bg-moss-950 text-paper pt-20 pb-12 border-t-2 border-ink overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b-2 border-white/10">
+          <div className="footer-content grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b-2 border-white/10">
             {/* Brand Manifesto Column */}
             <div className="md:col-span-5 space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-white/10 border-2 border-white/20 flex items-center justify-center shadow-[2px_2px_0px_0px_#171715]">
-                  <Sprout className="h-5 w-5 text-ochre-400" />
+                  <Sprout className="footer-sprout-icon h-5 w-5 text-ochre-400" />
                 </div>
                 <span className="font-display font-medium text-2xl tracking-tight text-paper">
                   Teras<span className="font-editorial-italic font-normal text-leaf-300">Tani</span>
@@ -2078,7 +2864,7 @@ export default function Home() {
           </div>
 
           {/* Bottom Legal & Copyright Bar */}
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-paper/50 gap-4">
+          <div className="footer-content pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-paper/50 gap-4">
             <div>
               &copy; {new Date().getFullYear()} TerasTani Nusantara Inc. Hak Cipta Dilindungi Undang-Undang.
             </div>

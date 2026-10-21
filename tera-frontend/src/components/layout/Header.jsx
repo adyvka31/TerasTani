@@ -18,7 +18,6 @@ import { dashboardApi } from '../../api/dashboard.api';
 
 export default function Header({
   user,
-  activeTab,
   activeCluster,
   currentWeather,
   isSidebarOpen,
@@ -32,20 +31,26 @@ export default function Header({
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    loadNotifications();
-  }, []);
+    let isMounted = true;
 
-  const loadNotifications = async () => {
-    try {
-      const res = await dashboardApi.getNotifications();
-      if (res.data) {
-        setNotifications(res.data.list || []);
-        setUnreadCount(res.data.unreadCount || 0);
+    async function fetchNotifications() {
+      try {
+        const res = await dashboardApi.getNotifications();
+        if (isMounted && res.data) {
+          setNotifications(res.data.list || []);
+          setUnreadCount(res.data.unreadCount || 0);
+        }
+      } catch {
+        // Fallback
       }
-    } catch {
-      // Fallback
     }
-  };
+
+    fetchNotifications();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleMarkRead = async (notifId) => {
     try {
@@ -70,6 +75,7 @@ export default function Header({
             onClick={onToggleSidebar}
             className="lg:hidden p-2 rounded-xl border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] hover:bg-white cursor-pointer"
             aria-label="Toggle menu"
+            aria-expanded={isSidebarOpen}
           >
             <span className="block w-5 h-0.5 bg-ink mb-1"></span>
             <span className="block w-5 h-0.5 bg-ink mb-1"></span>

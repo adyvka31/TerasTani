@@ -7,7 +7,7 @@ import { CROP_PARAMETERS } from '../../constants/app.constants';
 import { formatIDR } from '../../utils/formatters';
 import { dashboardApi } from '../../api/dashboard.api';
 
-export default function CalculatorTab({ userXP, setUserXP }) {
+export default function CalculatorTab({ setUserXP }) {
   const [calcPlotType, setCalcPlotType] = useState('balkon');
   const [calcCrop, setCalcCrop] = useState('selada');
   const [calcArea, setCalcArea] = useState(12);

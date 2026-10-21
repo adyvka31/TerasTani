@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import gsap from 'gsap';
 import { authApi } from '../api/auth.api';
 import { 
   ArrowLeft, 
@@ -38,6 +39,54 @@ export default function Register() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate();
+  const containerRef = useRef(null);
+
+  // Smooth neo-brutalist entrance animation when register page mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    const ctx = gsap.context(() => {
+      // 1. Navigation header slides down
+      gsap.fromTo(".reg-header",
+        { y: -30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }
+      );
+
+      // 2. Breadcrumb status bar fades in
+      gsap.fromTo(".reg-eyebrow",
+        { y: -15, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, delay: 0.1, ease: "power2.out" }
+      );
+
+      // 3. Left column (membership pass & benefits) glides in from left
+      gsap.fromTo(".reg-left-col",
+        { x: -40, opacity: 0, scale: 0.98 },
+        { x: 0, opacity: 1, scale: 1, duration: 0.85, delay: 0.15, ease: "power3.out" }
+      );
+
+      // 4. Right column (registration card) glides in from right
+      gsap.fromTo(".reg-right-col",
+        { x: 40, opacity: 0, scale: 0.98 },
+        { x: 0, opacity: 1, scale: 1, duration: 0.85, delay: 0.2, ease: "power3.out" }
+      );
+
+      // 5. Stagger form elements inside registration card
+      gsap.fromTo(".reg-form-elem",
+        { y: 18, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.05, delay: 0.35, ease: "power2.out" }
+      );
+
+      // 6. Footer bar fade in
+      gsap.fromTo(".reg-footer",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.8, delay: 0.5, ease: "power2.out" }
+      );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -87,12 +136,12 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-paper text-ink flex flex-col justify-between selection:bg-moss-800 selection:text-paper font-sans">
+    <div ref={containerRef} className="min-h-screen bg-paper text-ink flex flex-col justify-between selection:bg-moss-800 selection:text-paper font-sans overflow-x-hidden">
       
       {/* =========================================================================
           TOP EDITORIAL NAVIGATION BAR (STANDALONE PAGE HEADER)
           ========================================================================= */}
-      <header className="w-full bg-paper/95 backdrop-blur-md border-b-2 border-ink py-4 px-4 sm:px-8 z-30 sticky top-0">
+      <header className="reg-header w-full bg-paper/95 backdrop-blur-md border-b-2 border-ink py-4 px-4 sm:px-8 z-30 sticky top-0">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
           {/* Brand Monogram & Home Link */}
@@ -144,7 +193,7 @@ export default function Register() {
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 lg:py-16 flex-1">
         
         {/* Breadcrumb Eyebrow */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b-2 border-ink/15">
+        <div className="reg-eyebrow flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b-2 border-ink/15">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] font-mono text-xs uppercase tracking-widest text-ink">
             <span className="w-2 h-2 rounded-full bg-leaf-400"></span>
             <span>Chapter 00 &mdash; Formulir Registrasi Entitas Komunal</span>
@@ -159,7 +208,7 @@ export default function Register() {
           {/* =====================================================================
               LEFT COLUMN: Interactive Live ID Pass, Manifesto & Projected Yield
               ===================================================================== */}
-          <div className="lg:col-span-5 h-full bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 lg:p-12 border-2 border-ink shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative overflow-hidden">
+          <div className="reg-left-col lg:col-span-5 h-full bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 lg:p-12 border-2 border-ink shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative overflow-hidden">
             
             {/* Background Texture & Ambient Grain */}
             <div className="absolute inset-0 dark-grain opacity-40 pointer-events-none"></div>
@@ -313,12 +362,12 @@ export default function Register() {
               RIGHT COLUMN: Tactile 2D Neo-Brutalist Registration Form Card
               (Equal height with Left Column)
               ===================================================================== */}
-          <div className="lg:col-span-7 h-full bg-white border-2 border-ink rounded-[2.5rem] p-7 sm:p-10 lg:p-12 shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative reg-mark">
+          <div className="reg-right-col lg:col-span-7 h-full bg-white border-2 border-ink rounded-[2.5rem] p-7 sm:p-10 lg:p-12 shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative reg-mark">
             
             {/* Top Form Region */}
             <div>
               {/* Form Title & Eyebrow */}
-              <div className="mb-8">
+              <div className="reg-form-elem mb-8">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-ink bg-ivory font-mono text-[11px] uppercase tracking-widest text-ink mb-3 shadow-[2px_2px_0px_0px_#171715] font-bold">
                   <Award className="w-3.5 h-3.5 text-ochre-700" />
                   <span>Pendaftaran Kemitraan Komunal</span>
@@ -359,7 +408,7 @@ export default function Register() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 
                 {/* 1. Role Selection Cards */}
-                <div>
+                <div className="reg-form-elem">
                   <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-2.5 font-bold">
                     1. Tentukan Peran Entitas Anda <span className="text-ochre-700">*</span>
                   </label>
@@ -426,7 +475,7 @@ export default function Register() {
                 </div>
 
                 {/* 2. Full Name Input Field */}
-                <div>
+                <div className="reg-form-elem">
                   <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5 font-bold">
                     2. Nama Lengkap atau Nama Entitas Resmi <span className="text-ochre-700">*</span>
                   </label>
@@ -447,7 +496,7 @@ export default function Register() {
                 </div>
 
                 {/* 3. Email Input Field */}
-                <div>
+                <div className="reg-form-elem">
                   <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5 font-bold">
                     3. Alamat Email Aktif <span className="text-ochre-700">*</span>
                   </label>
@@ -468,7 +517,7 @@ export default function Register() {
                 </div>
 
                 {/* 4. Password Input Field with Interactive Strength Meter */}
-                <div>
+                <div className="reg-form-elem">
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="font-mono text-xs uppercase tracking-wider text-graphite font-bold">
                       4. Kata Sandi Keamanan <span className="text-ochre-700">*</span>
@@ -516,7 +565,7 @@ export default function Register() {
                 </div>
 
                 {/* 5. Terms & Integrity Pact Checkbox */}
-                <div className="pt-2">
+                <div className="reg-form-elem pt-2">
                   <label className="flex items-start gap-3 cursor-pointer select-none">
                     <input
                       type="checkbox"
@@ -534,7 +583,7 @@ export default function Register() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="nb-btn-ochre w-full py-4 rounded-xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-60 transition-all mt-4"
+                  className="reg-form-elem nb-btn-ochre w-full py-4 rounded-xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-60 transition-all mt-4"
                 >
                   <span>{isLoading ? 'Mendaftarkan Akun Anda...' : 'Selesaikan Pendaftaran Resmi'}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1 text-ink" />
@@ -543,7 +592,7 @@ export default function Register() {
             </div>
 
             {/* Switch to Login Page */}
-            <div className="mt-8 pt-6 border-t-2 border-ink/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-graphite">
+            <div className="reg-form-elem mt-8 pt-6 border-t-2 border-ink/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-graphite">
               <span>Sudah memiliki akun terdaftar?</span>
               <Link 
                 to="/login" 
@@ -562,7 +611,7 @@ export default function Register() {
       {/* =========================================================================
           PAGE FOOTER
           ========================================================================= */}
-      <footer className="w-full bg-paper border-t-2 border-ink py-6 px-4 sm:px-8">
+      <footer className="reg-footer w-full bg-paper border-t-2 border-ink py-6 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-graphite/80 gap-3">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-moss-700" />

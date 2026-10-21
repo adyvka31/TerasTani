@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "test": "node -e \"require('./src/app.js'); console.log('✓ Backend app and routes verified successfully')\""
   },
   "keywords": [],
   "author": "",

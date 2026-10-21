@@ -5,11 +5,9 @@ import { useState } from 'react';
 import { 
   Sparkles, 
   Wallet, 
-  TrendingUp, 
   Sprout, 
   ShieldCheck, 
   Award, 
-  Layers, 
   Plus, 
   Camera, 
   Droplets, 
@@ -29,7 +27,6 @@ export default function OverviewTab({
   setTimeOfDay,
   currentWeather,
   onSelectTab,
-  recentActivity = [],
 }) {
   const [recordedPlotNotice, setRecordedPlotNotice] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -41,7 +38,7 @@ export default function OverviewTab({
         await dashboardApi.getClusterLatestSensor(activeCluster.id);
       }
       setUserXP(userXP + 25);
-      setRecordedPlotNotice(`✓ Parameter nutrisi ${plotName} (pH ${phVal}, EC ${ecVal}) berhasil dicatat ke sensor Supabase! (+25 XP)`);
+      setRecordedPlotNotice(`✓ Parameter nutrisi ${plotName} (pH ${phVal}, EC ${ecVal}, Temp ${tempVal}°C) berhasil dicatat ke sensor Supabase! (+25 XP)`);
       setTimeout(() => setRecordedPlotNotice(false), 3500);
     } catch {
       setUserXP(userXP + 25);

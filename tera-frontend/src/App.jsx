@@ -2,8 +2,8 @@
  * Application Root Component
  * Configures React Router, Global Context Providers, Lazy Route Chunks, and Route Guards
  */
-import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Sprout } from 'lucide-react';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/layout/ProtectedRoute';
@@ -12,6 +12,22 @@ const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+
+/**
+ * Automatically resets scroll position to the top on every route change
+ * Prevents pages like /login and /register from opening clamped at the bottom
+ */
+function ScrollToTop() {
+  const { pathname, search } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname, search]);
+
+  return null;
+}
 
 function PageLoader() {
   return (
@@ -33,6 +49,7 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Default entrypoint redirects to /home */}

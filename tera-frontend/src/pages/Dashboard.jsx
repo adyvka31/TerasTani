@@ -3,7 +3,7 @@
  * Integrates layout components (Header, Sidebar), feature modules, and dialog overlays
  * Directly wired to Supabase Backend API
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import Header from '../components/layout/Header';
@@ -56,45 +56,53 @@ export default function Dashboard() {
   const [depositTicket, setDepositTicket] = useState(null);
 
   // Fetch initial data from Backend
-  const loadSystemData = useCallback(async () => {
-    try {
-      // 1. Clusters
-      const cRes = await dashboardApi.getClusters();
-      if (cRes.data && cRes.data.length > 0) {
-        setClusters(cRes.data);
-        setActiveCluster(cRes.data[0]);
-      }
-    } catch (e) {
-      console.warn('Using default clusters fallback:', e);
-    }
-
-    try {
-      // 2. Wallet
-      const wRes = await dashboardApi.getWalletDetails();
-      if (wRes.data) {
-        setWalletDetails(wRes.data);
-        setWalletBalance(parseFloat(wRes.data.balance || 0));
-      }
-    } catch (e) {
-      console.warn('Wallet data fallback:', e);
-    }
-
-    try {
-      // 3. Missions & Leaderboard
-      const [mRes, lRes] = await Promise.all([
-        dashboardApi.getMissions(),
-        dashboardApi.getLeaderboard(),
-      ]);
-      if (mRes.data) setMissions(mRes.data);
-      if (lRes.data) setLeaderboard(lRes.data);
-    } catch (e) {
-      console.warn('Gamification data fallback:', e);
-    }
-  }, []);
-
   useEffect(() => {
+    let isMounted = true;
+
+    async function loadSystemData() {
+      try {
+        // 1. Clusters
+        const cRes = await dashboardApi.getClusters();
+        if (isMounted && cRes.data && cRes.data.length > 0) {
+          setClusters(cRes.data);
+          setActiveCluster(cRes.data[0]);
+        }
+      } catch (e) {
+        console.warn('Using default clusters fallback:', e);
+      }
+
+      try {
+        // 2. Wallet
+        const wRes = await dashboardApi.getWalletDetails();
+        if (isMounted && wRes.data) {
+          setWalletDetails(wRes.data);
+          setWalletBalance(parseFloat(wRes.data.balance || 0));
+        }
+      } catch (e) {
+        console.warn('Wallet data fallback:', e);
+      }
+
+      try {
+        // 3. Missions & Leaderboard
+        const [mRes, lRes] = await Promise.all([
+          dashboardApi.getMissions(),
+          dashboardApi.getLeaderboard(),
+        ]);
+        if (isMounted) {
+          if (mRes.data) setMissions(mRes.data);
+          if (lRes.data) setLeaderboard(lRes.data);
+        }
+      } catch (e) {
+        console.warn('Gamification data fallback:', e);
+      }
+    }
+
     loadSystemData();
-  }, [loadSystemData]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   if (!user) return null;
 
@@ -179,7 +187,6 @@ export default function Dashboard() {
       {/* Top App Header & Telemetry */}
       <Header
         user={user}
-        activeTab={activeTab}
         activeCluster={activeCluster}
         currentWeather={currentWeather}
         isSidebarOpen={isSidebarOpen}

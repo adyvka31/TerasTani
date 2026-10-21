@@ -1,19 +1,10 @@
 /**
- * Global Authentication Context
+ * Global Authentication Context Provider
  * Manages user session, token storage, and evaluator role switching
  */
-import { createContext, useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { STORAGE_KEYS } from '../constants/storage.keys';
-
-export const AuthContext = createContext({
-  user: null,
-  token: null,
-  isAuthenticated: false,
-  isLoading: true,
-  login: () => {},
-  logout: () => {},
-  switchRole: () => {},
-});
+import { AuthContext } from './auth-context';
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem(STORAGE_KEYS.TOKEN));
@@ -25,11 +16,7 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
+  const [isLoading] = useState(false);
 
   const login = useCallback((newToken, newUser) => {
     localStorage.setItem(STORAGE_KEYS.TOKEN, newToken);
@@ -69,4 +56,4 @@ export function AuthProvider({ children }) {
   );
 }
 
-export default AuthContext;
+export default AuthProvider;

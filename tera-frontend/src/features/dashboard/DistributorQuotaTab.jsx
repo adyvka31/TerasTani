@@ -2,7 +2,7 @@
  * Dashboard Tab 7: Distributor Wholesale Quota Procurement
  */
 import { useState, useEffect } from 'react';
-import { TrendingUp, Check } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { dashboardApi } from '../../api/dashboard.api';
 import { formatIDR } from '../../utils/formatters';
 
@@ -11,13 +11,8 @@ export default function DistributorQuotaTab() {
   const [isLoading, setIsLoading] = useState(true);
   const [bookedMap, setBookedMap] = useState({});
 
-  useEffect(() => {
-    loadQuotas();
-  }, []);
-
   const loadQuotas = async () => {
     try {
-      setIsLoading(true);
       const res = await dashboardApi.getOpenQuotas();
       setQuotas(res.data || []);
     } catch (err) {
@@ -27,10 +22,40 @@ export default function DistributorQuotaTab() {
         { id: '2', cluster_name: 'Hub RW 04 Cempaka Baru', crop_name: 'Pakcoy Hijau Nauli', target_weight_kg: 650, collected_weight_kg: 310, price_per_kg: 24000 },
         { id: '3', cluster_name: 'Hub RW 02 Utan Panjang', crop_name: 'Bayam Jepang Horenso', target_weight_kg: 320, collected_weight_kg: 85, price_per_kg: 35000 }
       ]);
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function initQuotas() {
+      try {
+        const res = await dashboardApi.getOpenQuotas();
+        if (isMounted) {
+          setQuotas(res.data || []);
+        }
+      } catch (err) {
+        console.warn('Fallback local quotas:', err);
+        if (isMounted) {
+          setQuotas([
+            { id: '1', cluster_name: 'Hub RW 07 Rawasari', crop_name: 'Selada Romaine Super', target_weight_kg: 480, collected_weight_kg: 120, price_per_kg: 28500 },
+            { id: '2', cluster_name: 'Hub RW 04 Cempaka Baru', crop_name: 'Pakcoy Hijau Nauli', target_weight_kg: 650, collected_weight_kg: 310, price_per_kg: 24000 },
+            { id: '3', cluster_name: 'Hub RW 02 Utan Panjang', crop_name: 'Bayam Jepang Horenso', target_weight_kg: 320, collected_weight_kg: 85, price_per_kg: 35000 }
+          ]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    initQuotas();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleBookQuota = async (quota) => {
     try {
@@ -61,51 +86,58 @@ export default function DistributorQuotaTab() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
-        {quotas.map((item, idx) => {
-          const isBooked = bookedMap[item.id];
-          return (
-            <div key={item.id || idx} className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-4">
-              <div>
-                <span className="text-[10px] font-bold text-moss-900 bg-ivory px-2 py-0.5 rounded border border-ink/20 block w-fit mb-2">
-                  {item.rw_number ? `Hub ${item.rw_number} ${item.village_name || ''}` : (item.cluster_name || 'Hub RW 07 Rawasari')}
-                </span>
-                <h3 className="font-display text-2xl font-normal text-ink">{item.crop_name}</h3>
-                <div className="mt-4 space-y-1.5 text-graphite">
-                  <div className="flex justify-between">
-                    <span>Target Kuota:</span>
-                    <strong className="text-ink">{item.target_weight_kg} kg</strong>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Terkumpul:</span>
-                    <strong className="text-leaf-700">{item.collected_weight_kg || 0} kg</strong>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Harga Kontrak:</span>
-                    <strong className="text-ochre-700">{formatIDR(item.price_per_kg)} / kg</strong>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Status Kuota:</span>
-                    <strong className="text-moss-800">{item.status || 'OPEN'}</strong>
+      {isLoading ? (
+        <div className="py-12 text-center text-graphite flex items-center justify-center gap-2 font-mono text-xs">
+          <span className="w-2 h-2 rounded-full bg-moss-700 animate-ping"></span>
+          <span>Menghubungkan ke Bursa Pasokan Panen RW...</span>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
+          {quotas.map((item, idx) => {
+            const isBooked = bookedMap[item.id];
+            return (
+              <div key={item.id || idx} className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-4">
+                <div>
+                  <span className="text-[10px] font-bold text-moss-900 bg-ivory px-2 py-0.5 rounded border border-ink/20 block w-fit mb-2">
+                    {item.rw_number ? `Hub ${item.rw_number} ${item.village_name || ''}` : (item.cluster_name || 'Hub RW 07 Rawasari')}
+                  </span>
+                  <h3 className="font-display text-2xl font-normal text-ink">{item.crop_name}</h3>
+                  <div className="mt-4 space-y-1.5 text-graphite">
+                    <div className="flex justify-between">
+                      <span>Target Kuota:</span>
+                      <strong className="text-ink">{item.target_weight_kg} kg</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Terkumpul:</span>
+                      <strong className="text-leaf-700">{item.collected_weight_kg || 0} kg</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Harga Kontrak:</span>
+                      <strong className="text-ochre-700">{formatIDR(item.price_per_kg)} / kg</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Status Kuota:</span>
+                      <strong className="text-moss-800">{item.status || 'OPEN'}</strong>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <button
-                type="button"
-                onClick={() => handleBookQuota(item)}
-                className={`w-full py-3 rounded-xl uppercase tracking-wider font-bold transition-all cursor-pointer ${
-                  isBooked
-                    ? 'bg-leaf-200 text-leaf-900 border-2 border-leaf-500'
-                    : 'nb-btn-ochre shadow-[2px_2px_0px_0px_#171715]'
-                }`}
-              >
-                {isBooked ? '✓ Kuota Dipesan' : 'Kunci Booking Kuota Ini →'}
-              </button>
-            </div>
-          );
-        })}
-      </div>
+                <button
+                  type="button"
+                  onClick={() => handleBookQuota(item)}
+                  className={`w-full py-3 rounded-xl uppercase tracking-wider font-bold transition-all cursor-pointer ${
+                    isBooked
+                      ? 'bg-leaf-200 text-leaf-900 border-2 border-leaf-500'
+                      : 'nb-btn-ochre shadow-[2px_2px_0px_0px_#171715]'
+                  }`}
+                >
+                  {isBooked ? '✓ Kuota Dipesan' : 'Kunci Booking Kuota Ini →'}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
