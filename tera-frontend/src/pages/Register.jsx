@@ -54,34 +54,28 @@ export default function Register() {
         { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }
       );
 
-      // 2. Breadcrumb status bar fades in
-      gsap.fromTo(".reg-eyebrow",
-        { y: -15, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, delay: 0.1, ease: "power2.out" }
-      );
-
-      // 3. Left column (membership pass & benefits) glides in from left
+      // 2. Left column (membership pass & benefits) glides in from left
       gsap.fromTo(".reg-left-col",
         { x: -40, opacity: 0, scale: 0.98 },
+        { x: 0, opacity: 1, scale: 1, duration: 0.85, delay: 0.1, ease: "power3.out" }
+      );
+
+      // 3. Right column (registration card) glides in from right
+      gsap.fromTo(".reg-right-col",
+        { x: 40, opacity: 0, scale: 0.98 },
         { x: 0, opacity: 1, scale: 1, duration: 0.85, delay: 0.15, ease: "power3.out" }
       );
 
-      // 4. Right column (registration card) glides in from right
-      gsap.fromTo(".reg-right-col",
-        { x: 40, opacity: 0, scale: 0.98 },
-        { x: 0, opacity: 1, scale: 1, duration: 0.85, delay: 0.2, ease: "power3.out" }
-      );
-
-      // 5. Stagger form elements inside registration card
+      // 4. Stagger form elements inside registration card
       gsap.fromTo(".reg-form-elem",
         { y: 18, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, stagger: 0.05, delay: 0.35, ease: "power2.out" }
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.05, delay: 0.3, ease: "power2.out" }
       );
 
-      // 6. Footer bar fade in
+      // 5. Footer bar fade in
       gsap.fromTo(".reg-footer",
         { opacity: 0 },
-        { opacity: 1, duration: 0.8, delay: 0.5, ease: "power2.out" }
+        { opacity: 1, duration: 0.8, delay: 0.45, ease: "power2.out" }
       );
     }, containerRef);
 
@@ -139,7 +133,7 @@ export default function Register() {
     <div ref={containerRef} className="min-h-screen bg-paper text-ink flex flex-col justify-between selection:bg-moss-800 selection:text-paper font-sans overflow-x-hidden">
       
       {/* =========================================================================
-          TOP EDITORIAL NAVIGATION BAR (STANDALONE PAGE HEADER)
+          TOP EDITORIAL NAVIGATION BAR (STANDALONE PAGE NAVBAR)
           ========================================================================= */}
       <header className="reg-header w-full bg-paper/95 backdrop-blur-md border-b-2 border-ink py-4 px-4 sm:px-8 z-30 sticky top-0">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -188,22 +182,10 @@ export default function Register() {
       </header>
 
       {/* =========================================================================
-          MAIN EDITORIAL CONTENT GRID
+          MAIN 2-COLUMN SECTION (NO HEADER/EYEBROW DIVIDER ABOVE)
           ========================================================================= */}
-      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 lg:py-16 flex-1">
-        
-        {/* Breadcrumb Eyebrow */}
-        <div className="reg-eyebrow flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b-2 border-ink/15">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-ink bg-ivory shadow-[2px_2px_0px_0px_#171715] font-mono text-xs uppercase tracking-widest text-ink">
-            <span className="w-2 h-2 rounded-full bg-leaf-400"></span>
-            <span>Chapter 00 &mdash; Formulir Registrasi Entitas Komunal</span>
-          </div>
-          <div className="font-mono text-xs text-graphite hidden sm:block">
-            [ Skema Rantai Dingin Terdesentralisasi &bull; Standar ISO 22000 ]
-          </div>
-        </div>
-
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-stretch">
+      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex-1 flex flex-col justify-center">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-stretch my-auto">
           
           {/* =====================================================================
               LEFT COLUMN: Interactive Live ID Pass, Manifesto & Projected Yield
@@ -615,10 +597,10 @@ export default function Register() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-graphite/80 gap-3">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-moss-700" />
-            <span>Verifikasi Data Komunal &bull; Didampingi Koordinator RW Resmi &bull; Perlindungan Data Terenkripsi</span>
+            <span>Sertifikasi Standar Pangan Komunal Terdesentralisasi &bull; Kemitraan RW Resmi</span>
           </div>
           <div>
-            &copy; {new Date().getFullYear()} TerasTani Nusantara Inc. Hak Cipta Dilindungi.
+            &copy; {new Date().getFullYear()} TerasTani Nusantara Inc. Hak Cipta Dilindungi Undang-Undang.
           </div>
         </div>
       </footer>
