@@ -57,6 +57,9 @@ export default function Dashboard() {
   const [recentTickets, setRecentTickets] = useState([]);
   const [certifiedVisionData, setCertifiedVisionData] = useState(null);
 
+  // Household farming plots state (from Supabase land_calculations)
+  const [userCalculations, setUserCalculations] = useState([]);
+
   // Fetch initial data from Backend
   useEffect(() => {
     let isMounted = true;
@@ -126,6 +129,16 @@ export default function Dashboard() {
         }
       } catch (e) {
         console.warn('Harvest history fetch fallback:', e);
+      }
+
+      try {
+        // 5. User Land Calculations / Household Plots (Supabase)
+        const calcRes = await dashboardApi.getUserCalculations();
+        if (isMounted && calcRes.data) {
+          setUserCalculations(calcRes.data);
+        }
+      } catch (e) {
+        console.warn('User calculations fetch fallback:', e);
       }
     }
 
@@ -231,6 +244,26 @@ export default function Dashboard() {
     navigate('/home');
   };
 
+  const handleSaveCalculationSuccess = (newCalc) => {
+    setUserCalculations((prev) => [newCalc, ...prev]);
+  };
+
+  const handleDeleteCalculation = async (calcId) => {
+    if (!window.confirm('Hapus plot budidaya mandiri ini dari pemantauan dasbor?')) return;
+    try {
+      await dashboardApi.deleteCalculation(calcId);
+      setUserCalculations((prev) => prev.filter((c) => c.id !== calcId));
+    } catch (err) {
+      console.error('Gagal menghapus plot kalkulasi:', err);
+      setUserCalculations((prev) => prev.filter((c) => c.id !== calcId));
+    }
+  };
+
+  const handleSelectCropForVision = (cropName) => {
+    setDepositCrop(cropName);
+    setActiveTab('vision');
+  };
+
   return (
     <div className="min-h-screen bg-paper text-ink selection:bg-moss-800 selection:text-paper font-sans flex flex-col antialiased">
       
@@ -273,6 +306,9 @@ export default function Dashboard() {
               setTimeOfDay={setTimeOfDay}
               currentWeather={currentWeather}
               onSelectTab={setActiveTab}
+              userCalculations={userCalculations}
+              onDeleteCalculation={handleDeleteCalculation}
+              onSelectCropForVision={handleSelectCropForVision}
             />
           )}
 
@@ -280,6 +316,8 @@ export default function Dashboard() {
             <CalculatorTab
               userXP={userXP}
               setUserXP={setUserXP}
+              onSaveSuccess={handleSaveCalculationSuccess}
+              onSelectTab={setActiveTab}
             />
           )}
 

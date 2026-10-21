@@ -13,9 +13,13 @@ import {
   Droplets, 
   QrCode, 
   Activity,
-  Check
+  Check,
+  Trash2,
+  Building2,
+  Layers
 } from 'lucide-react';
 import { formatIDR } from '../../utils/formatters';
+import { LAND_CHARACTERISTICS } from '../../constants/app.constants';
 import { dashboardApi } from '../../api/dashboard.api';
 
 export default function OverviewTab({
@@ -27,6 +31,9 @@ export default function OverviewTab({
   setTimeOfDay,
   currentWeather,
   onSelectTab,
+  userCalculations = [],
+  onDeleteCalculation,
+  onSelectCropForVision,
 }) {
   const [recordedPlotNotice, setRecordedPlotNotice] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -236,173 +243,172 @@ export default function OverviewTab({
           </div>
         </div>
 
-        {/* 3 Plot Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          {/* Plot 1: Selada Romaine */}
-          <div className="p-5 rounded-2xl border-2 border-ink bg-ivory shadow-[4px_4px_0px_0px_#171715] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="font-mono text-[10px] uppercase font-bold text-moss-900 bg-white px-2 py-0.5 rounded border border-ink/20">
-                  Plot A &bull; Balkon Barat
-                </span>
-                <span className="font-mono text-[10px] text-leaf-700 font-bold bg-leaf-100 px-2 py-0.5 rounded border border-leaf-300">
-                  Hari 20 / 25
-                </span>
-              </div>
-              <h3 className="font-display text-xl font-normal text-ink">
-                Selada Romaine Super
-              </h3>
-              <p className="text-xs text-graphite mt-1 mb-4">
-                Kerapatan 320 lubang tanam NFT. Biomassa diproyeksikan 18.2 kg siap petik.
-              </p>
-
-              <div className="space-y-2 font-mono text-xs">
-                <div className="flex justify-between text-graphite">
-                  <span>Kemajuan Siklus:</span>
-                  <span className="font-bold text-ink">80% Selesai</span>
-                </div>
-                <div className="w-full h-2.5 rounded-full bg-paper border border-ink/20 overflow-hidden">
-                  <div className="h-full bg-leaf-500 rounded-full w-[80%]"></div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-ink/10 font-mono text-center text-xs">
-                <div className="p-1.5 rounded-lg bg-white border border-ink/10">
-                  <span className="text-[9px] text-graphite block">pH Air</span>
-                  <span className="font-bold text-ink">6.2</span>
-                </div>
-                <div className="p-1.5 rounded-lg bg-white border border-ink/10">
-                  <span className="text-[9px] text-graphite block">EC Nutrisi</span>
-                  <span className="font-bold text-ink">1.8</span>
-                </div>
-                <div className="p-1.5 rounded-lg bg-white border border-ink/10">
-                  <span className="text-[9px] text-graphite block">Suhu Air</span>
-                  <span className="font-bold text-ink">24°C</span>
-                </div>
-              </div>
+        {/* Dynamic Cultivation Plots Grid or Empty State */}
+        {(!userCalculations || userCalculations.length === 0) ? (
+          <div className="p-8 sm:p-12 text-center bg-ivory rounded-2xl border-2 border-dashed border-ink/25 space-y-3">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-paper border-2 border-ink flex items-center justify-center shadow-[3px_3px_0px_0px_#171715]">
+              <Sprout className="w-7 h-7 text-moss-800" />
             </div>
-
-            <button
-              type="button"
-              onClick={() => onSelectTab('vision')}
-              className="mt-5 w-full py-2.5 rounded-xl border-2 border-ink bg-white hover:bg-ochre-400 font-mono text-xs uppercase tracking-wider font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <Camera className="w-3.5 h-3.5" />
-              <span>Validasi Kamera AI</span>
-            </button>
-          </div>
-
-          {/* Plot 2: Pakcoy Hijau Nauli */}
-          <div className="p-5 rounded-2xl border-2 border-ink bg-ivory shadow-[4px_4px_0px_0px_#171715] flex flex-col justify-between">
+            <h3 className="font-mono text-sm sm:text-base font-bold text-ink">
+              anda belum ada menambahkan pemantauan plot taman mandiri
+            </h3>
+            <p className="text-xs text-graphite max-w-md mx-auto leading-relaxed">
+              Mulai dengan menyimulasikan pekarangan, balkon, atau rooftop Anda menggunakan Kalkulator Lahan AI. Simpan hasil simulasi untuk memulai pemantauan plot dan pencatatan nutrisi.
+            </p>
             <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="font-mono text-[10px] uppercase font-bold text-moss-900 bg-white px-2 py-0.5 rounded border border-ink/20">
-                  Plot B &bull; Pekarangan Depan
-                </span>
-                <span className="font-mono text-[10px] text-ochre-800 font-bold bg-ochre-100 px-2 py-0.5 rounded border border-ochre-300">
-                  Hari 14 / 21
-                </span>
-              </div>
-              <h3 className="font-display text-xl font-normal text-ink">
-                Pakcoy Hijau Nauli
-              </h3>
-              <p className="text-xs text-graphite mt-1 mb-4">
-                Sistem Dutch Bucket vertikal 200 lubang. Daun memasuki fase pembesaran kanopi.
-              </p>
-
-              <div className="space-y-2 font-mono text-xs">
-                <div className="flex justify-between text-graphite">
-                  <span>Kemajuan Siklus:</span>
-                  <span className="font-bold text-ink">66% Selesai</span>
-                </div>
-                <div className="w-full h-2.5 rounded-full bg-paper border border-ink/20 overflow-hidden">
-                  <div className="h-full bg-ochre-500 rounded-full w-[66%]"></div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-ink/10 font-mono text-center text-xs">
-                <div className="p-1.5 rounded-lg bg-white border border-ink/10">
-                  <span className="text-[9px] text-graphite block">pH Air</span>
-                  <span className="font-bold text-ink">6.4</span>
-                </div>
-                <div className="p-1.5 rounded-lg bg-white border border-ink/10">
-                  <span className="text-[9px] text-graphite block">EC Nutrisi</span>
-                  <span className="font-bold text-ink">2.0</span>
-                </div>
-                <div className="p-1.5 rounded-lg bg-white border border-ink/10">
-                  <span className="text-[9px] text-graphite block">Suhu Air</span>
-                  <span className="font-bold text-ink">25°C</span>
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={() => onSelectTab('calculator')}
+                className="nb-btn-ochre px-5 py-2.5 rounded-xl font-mono text-xs uppercase tracking-wider font-bold shadow-[3px_3px_0px_0px_#171715] inline-flex items-center gap-2 cursor-pointer mt-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Buka Kalkulator Lahan & Tambah Plot</span>
+              </button>
             </div>
-
-            <button
-              type="button"
-              disabled={isRecording}
-              onClick={() => handleRecordTelemetry('Plot B (Pakcoy)', 6.4, 2.0, 25)}
-              className="mt-5 w-full py-2.5 rounded-xl border-2 border-ink bg-white hover:bg-leaf-300 font-mono text-xs uppercase tracking-wider font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
-            >
-              <Droplets className="w-3.5 h-3.5" />
-              <span>{isRecording ? 'Menyimpan...' : 'Catat Nutrisi AB Mix (+25 XP)'}</span>
-            </button>
           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {userCalculations.map((calc, idx) => {
+              const landConfig = LAND_CHARACTERISTICS[calc.land_type] || LAND_CHARACTERISTICS.balkon;
+              const plotLetter = String.fromCharCode(65 + (idx % 26));
+              const plotLabel = `Plot ${plotLetter} • ${landConfig.label}`;
+              
+              // Continuous timeline calculations
+              const createdDate = calc.created_at ? new Date(calc.created_at) : new Date();
+              const diffMs = new Date() - createdDate;
+              const diffDays = Math.max(1, Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1);
+              const cycleDays = calc.planting_schedule?.cycle_days || 25;
+              const currentDay = Math.min(diffDays, cycleDays);
+              const progressPct = Math.min(100, Math.round((currentDay / cycleDays) * 100));
+              const isReadyForHarvest = currentDay >= cycleDays;
 
-          {/* Plot 3: Daun Mint & Basil */}
-          <div className="p-5 rounded-2xl border-2 border-ink bg-ivory shadow-[4px_4px_0px_0px_#171715] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="font-mono text-[10px] uppercase font-bold text-moss-900 bg-white px-2 py-0.5 rounded border border-ink/20">
-                  Plot C &bull; Rooftop Micro-Hub
-                </span>
-                <span className="font-mono text-[10px] text-moss-800 font-bold bg-moss-100 px-2 py-0.5 rounded border border-moss-300">
-                  Hari 30 / 35
-                </span>
-              </div>
-              <h3 className="font-display text-xl font-normal text-ink">
-                Herba Mint & Basil
-              </h3>
-              <p className="text-xs text-graphite mt-1 mb-4">
-                Aroma kuat untuk pasokan restoran hotel mitra distributor. Panen petik berkala.
-              </p>
+              // Continuous microclimate & telemetry values based on crop & land characteristics
+              const cropLower = (calc.recommended_crop || '').toLowerCase();
+              let basePH = 6.2;
+              let baseEC = 1.8;
+              if (cropLower.includes('pakcoy')) {
+                basePH = 6.4;
+                baseEC = 2.0;
+              } else if (cropLower.includes('bayam')) {
+                basePH = 6.5;
+                baseEC = 2.1;
+              } else if (cropLower.includes('mint') || cropLower.includes('basil') || cropLower.includes('herba')) {
+                basePH = 6.0;
+                baseEC = 1.7;
+              } else if (cropLower.includes('cabai')) {
+                basePH = 6.1;
+                baseEC = 2.3;
+              }
+              const tempOffset = landConfig.tempOffset || 0;
+              const currentTemp = (24.0 + tempOffset).toFixed(1);
 
-              <div className="space-y-2 font-mono text-xs">
-                <div className="flex justify-between text-graphite">
-                  <span>Kemajuan Siklus:</span>
-                  <span className="font-bold text-ink">85% Selesai</span>
-                </div>
-                <div className="w-full h-2.5 rounded-full bg-paper border border-ink/20 overflow-hidden">
-                  <div className="h-full bg-moss-700 rounded-full w-[85%]"></div>
-                </div>
-              </div>
+              const holes = calc.planting_schedule?.holes || Math.round(Number(calc.land_area_sqm) * landConfig.holesPerSqm);
+              const systemType = calc.planting_schedule?.system_type || landConfig.systemType;
 
-              <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-ink/10 font-mono text-center text-xs">
-                <div className="p-1.5 rounded-lg bg-white border border-ink/10">
-                  <span className="text-[9px] text-graphite block">pH Air</span>
-                  <span className="font-bold text-ink">6.0</span>
-                </div>
-                <div className="p-1.5 rounded-lg bg-white border border-ink/10">
-                  <span className="text-[9px] text-graphite block">EC Nutrisi</span>
-                  <span className="font-bold text-ink">1.7</span>
-                </div>
-                <div className="p-1.5 rounded-lg bg-white border border-ink/10">
-                  <span className="text-[9px] text-graphite block">Suhu Air</span>
-                  <span className="font-bold text-ink">23.5°C</span>
-                </div>
-              </div>
-            </div>
+              return (
+                <div 
+                  key={calc.id || idx} 
+                  className="p-5 rounded-2xl border-2 border-ink bg-ivory shadow-[4px_4px_0px_0px_#171715] flex flex-col justify-between transition-all hover:-translate-y-0.5"
+                >
+                  <div>
+                    {/* Header: Plot label & cycle day */}
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-mono text-[10px] uppercase font-bold text-moss-900 bg-white px-2 py-0.5 rounded border border-ink/20">
+                        {plotLabel}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded border ${
+                          isReadyForHarvest 
+                            ? 'bg-leaf-200 text-leaf-900 border-leaf-400' 
+                            : 'bg-leaf-100 text-leaf-700 border-leaf-300'
+                        }`}>
+                          {isReadyForHarvest ? 'Siap Petik' : `Hari ${currentDay} / ${cycleDays}`}
+                        </span>
+                        {onDeleteCalculation && (
+                          <button
+                            type="button"
+                            onClick={() => onDeleteCalculation(calc.id)}
+                            title="Hapus Plot Ini"
+                            className="text-graphite/60 hover:text-red-600 p-0.5 transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
 
-            <button
-              type="button"
-              onClick={() => onSelectTab('lumbung')}
-              className="mt-5 w-full py-2.5 rounded-xl border-2 border-ink bg-white hover:bg-ochre-400 font-mono text-xs uppercase tracking-wider font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <QrCode className="w-3.5 h-3.5" />
-              <span>Siapkan Tiket Setor</span>
-            </button>
+                    <h3 className="font-display text-xl font-normal text-ink">
+                      {calc.recommended_crop}
+                    </h3>
+                    <p className="text-xs text-graphite mt-1 mb-4 leading-relaxed">
+                      Sistem {systemType} ({holes} lubang tanam &bull; {calc.land_area_sqm} m²). Estimasi biomassa {calc.estimated_yield_kg} kg ({calc.sunlight_hours} jam matahari).
+                    </p>
+
+                    {/* Progress Bar */}
+                    <div className="space-y-2 font-mono text-xs">
+                      <div className="flex justify-between text-graphite">
+                        <span>Kemajuan Siklus:</span>
+                        <span className="font-bold text-ink">{progressPct}% Selesai</span>
+                      </div>
+                      <div className="w-full h-2.5 rounded-full bg-paper border border-ink/20 overflow-hidden">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            isReadyForHarvest ? 'bg-leaf-600' : 'bg-leaf-500'
+                          }`}
+                          style={{ width: `${progressPct}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Sensor Microclimate Telemetry Grid */}
+                    <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-ink/10 font-mono text-center text-xs">
+                      <div className="p-1.5 rounded-lg bg-white border border-ink/10">
+                        <span className="text-[9px] text-graphite block">pH Air</span>
+                        <span className="font-bold text-ink">{basePH}</span>
+                      </div>
+                      <div className="p-1.5 rounded-lg bg-white border border-ink/10">
+                        <span className="text-[9px] text-graphite block">EC Nutrisi</span>
+                        <span className="font-bold text-ink">{baseEC}</span>
+                      </div>
+                      <div className="p-1.5 rounded-lg bg-white border border-ink/10">
+                        <span className="text-[9px] text-graphite block">Suhu Air</span>
+                        <span className="font-bold text-ink">{currentTemp}°C</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="grid grid-cols-2 gap-2 mt-5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (onSelectCropForVision) {
+                          onSelectCropForVision(calc.recommended_crop);
+                        } else {
+                          onSelectTab('vision');
+                        }
+                      }}
+                      className="py-2.5 rounded-xl border-2 border-ink bg-white hover:bg-ochre-400 font-mono text-[11px] uppercase tracking-wider font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_#171715]"
+                    >
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>Validasi AI</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={isRecording}
+                      onClick={() => handleRecordTelemetry(plotLabel, basePH, baseEC, currentTemp)}
+                      className="py-2.5 rounded-xl border-2 border-ink bg-white hover:bg-leaf-300 font-mono text-[11px] uppercase tracking-wider font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-[2px_2px_0px_0px_#171715] disabled:opacity-50"
+                    >
+                      <Droplets className="w-3.5 h-3.5" />
+                      <span>{isRecording ? '...' : 'Catat (+25)'}</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-
-        </div>
+        )}
       </div>
 
       {/* Real-time Ledger Feed */}

@@ -23,6 +23,42 @@ export const CROP_PARAMETERS = {
   cabai: { name: 'Cabai Rawit Hidroponik', cycle: 65, pricePerKg: 62000, yieldPerSqm: 2.1, costPerSqm: 14000 },
 };
 
+export const LAND_CHARACTERISTICS = {
+  balkon: {
+    id: 'balkon',
+    label: 'Balkon Apartemen',
+    systemType: 'Vertical A-Frame NFT',
+    holesPerSqm: 32, // Struktur bertingkat vertikal mengoptimalkan tinggi dinding/railing
+    efficiencyFactor: 0.95, // Sudut insolasi terarah 1 bukaan balkon (efek bayangan parsial)
+    costFactor: 1.0,
+    optimalSun: '4 - 7 Jam',
+    tempOffset: 0.5,
+    description: 'Sistem rak vertikal bertingkat (32 lubang/m²). Mengoptimalkan tinggi dinding/railing balkon dengan efisiensi mikroklimat 0.95x.',
+  },
+  pekarangan: {
+    id: 'pekarangan',
+    label: 'Pekarangan Rumah',
+    systemType: 'Horizontal NFT Modular',
+    holesPerSqm: 28, // Meja datar modular horizontal standar
+    efficiencyFactor: 1.0, // Sirkulasi seimbang & pencahayaan difus merata
+    costFactor: 1.0,
+    optimalSun: '5 - 8 Jam',
+    tempOffset: 0,
+    description: 'Meja tanam NFT datar modular (28 lubang/m²). Sirkulasi udara alami ground-level optimal dengan efisiensi standar 1.00x.',
+  },
+  rooftop: {
+    id: 'rooftop',
+    label: 'Rooftop Komunal',
+    systemType: 'Multi-Tier Commercial Hydroponics',
+    holesPerSqm: 30, // Modul komersial multi-tier skala lumbung
+    efficiencyFactor: 1.08, // Penetrasi radiasi matahari penuh 360° tanpa bayangan gedung samping
+    costFactor: 1.05, // Tambahan insulasi pendinginan pipa/tandon terhadap pantulan panas dak beton
+    optimalSun: '7 - 10 Jam',
+    tempOffset: 2.2,
+    description: 'Instalasi dak terbuka komersial (30 lubang/m²). Insolasi matahari 360° menghasilkan efisiensi biomassa +8% (1.08x).',
+  },
+};
+
 export const WEATHER_MATRIX = {
   pagi: {
     temp: '25.8°C',

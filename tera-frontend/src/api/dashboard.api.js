@@ -36,6 +36,10 @@ export const dashboardApi = {
     const res = await apiClient.post('/api/v1/calculator', calcData);
     return res.data;
   },
+  deleteCalculation: async (id) => {
+    const res = await apiClient.delete(`/api/v1/calculator/${id}`);
+    return res.data;
+  },
 
   // 5. Vision AI Inspection
   analyzeVisionSample: async (sampleTypeOrPayload, cropName, estimatedWeightKg, visionMetrics) => {
