@@ -36,6 +36,7 @@ export default function LumbungTab({
     "Bayam Jepang Horenso": 35000,
     "Daun Mint & Basil Segar": 45000,
   },
+  isLoading = false,
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copiedBatch, setCopiedBatch] = useState(false);
@@ -242,14 +243,22 @@ export default function LumbungTab({
             <div className="flex items-center gap-1.5">
               <span className="inline-block w-2 h-2 rounded-full bg-leaf-500 animate-ping"></span>
               <span className="font-mono text-[11px] text-leaf-700 bg-leaf-100 px-2.5 py-0.5 rounded-full border border-leaf-300 font-bold">
-                {depositTicket?.status === "CONFIRMED"
+                {isLoading
+                  ? "Sinkronisasi..."
+                  : depositTicket?.status === "CONFIRMED"
                   ? "Telah Dikonfirmasi"
                   : "Siap Pindai di Lumbung"}
               </span>
             </div>
           </div>
 
-          {depositTicket ? (
+          {isLoading ? (
+            <div className="p-10 text-center text-graphite font-mono text-xs bg-white rounded-2xl border-2 border-dashed border-ink/20 flex flex-col items-center justify-center gap-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-moss-700 animate-ping"></span>
+              <span className="text-ink font-bold">Memeriksa Tiket Setor Aktif...</span>
+              <span className="text-[11px] text-graphite">Menghubungkan ke server database lumbung</span>
+            </div>
+          ) : depositTicket ? (
             <div className="p-5 rounded-2xl bg-white border-2 border-ink shadow-[4px_4px_0px_0px_#171715] text-center space-y-3.5">
               {/* Real Scannable QR Code */}
               <div className="flex justify-center">

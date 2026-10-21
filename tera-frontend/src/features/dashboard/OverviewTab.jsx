@@ -38,6 +38,7 @@ export default function OverviewTab({
   pendingEscrow = 0,
   recentTickets = [],
   transactions = [],
+  isLoadingPlots = false,
 }) {
   const [recordedPlotNotice, setRecordedPlotNotice] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -350,7 +351,13 @@ export default function OverviewTab({
         </div>
 
         {/* Dynamic Cultivation Plots Grid or Empty State */}
-        {(!userCalculations || userCalculations.length === 0) ? (
+        {isLoadingPlots ? (
+          <div className="p-10 text-center text-graphite font-mono text-xs bg-ivory rounded-2xl border-2 border-dashed border-ink/25 flex flex-col items-center justify-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-moss-700 animate-ping"></span>
+            <span className="text-ink font-bold">Memuat Unit Budidaya Mandiri...</span>
+            <span className="text-[11px] text-graphite">Mengambil pemantauan plot tanam dari database</span>
+          </div>
+        ) : (!userCalculations || userCalculations.length === 0) ? (
           <div className="p-8 sm:p-12 text-center bg-ivory rounded-2xl border-2 border-dashed border-ink/25 space-y-3">
             <div className="w-14 h-14 mx-auto rounded-2xl bg-paper border-2 border-ink flex items-center justify-center shadow-[3px_3px_0px_0px_#171715]">
               <Sprout className="w-7 h-7 text-moss-800" />
