@@ -40,7 +40,7 @@ export default function Sidebar({
         <div className="relative z-10 space-y-6">
           
           {/* User Profile Monogram Header Card */}
-          <div className="p-4 rounded-2xl bg-moss-900 border-2 border-white/15 shadow-[4px_4px_0px_0px_#C9942B]">
+          <div className="p-4 rounded-2xl bg-moss-900 border-2 border-white/15 shadow-[4px_4px_0px_0px_#F59E0B]">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-ochre-400 text-ink font-display font-bold text-xl flex items-center justify-center border-2 border-ink shadow-[2px_2px_0px_0px_#171715] shrink-0">
                 {user.name ? user.name.charAt(0).toUpperCase() : 'U'}

@@ -37,18 +37,18 @@
   --color-leaf-500: #287C4D;
   --color-leaf-600: #1D613A;
 
-  /* Calibrated Golden Harvest Ochre (Sunlight, agricultural prosperity, high-contrast brass) */
-  --color-ochre-50: #FDFBF7;
-  --color-ochre-100: #FAF0DB;
-  --color-ochre-200: #F4DEA8;
-  --color-ochre-300: #ECC572;
-  --color-ochre-400: #DEAB42;
-  --color-ochre-500: #C9942B;
-  --color-ochre-600: #A8771A;
-  --color-ochre-700: #875C10;
-  --color-ochre-800: #6A4709;
-  --color-ochre-900: #503504;
-  --color-ochre-950: #2E1E02;
+  /* Radiant Golden Harvest & Marigold (Cerah, segar, hangat, bebas warna butek/keruh) */
+  --color-ochre-50: #FFFDF5;
+  --color-ochre-100: #FEF3C7;
+  --color-ochre-200: #FDE68A;
+  --color-ochre-300: #FCD34D;
+  --color-ochre-400: #FBBF24;
+  --color-ochre-500: #F59E0B;
+  --color-ochre-600: #D97706;
+  --color-ochre-700: #B45309;
+  --color-ochre-800: #92400E;
+  --color-ochre-900: #78350F;
+  --color-ochre-950: #451A03;
 
   /* Atmospheric Dew & Irrigation Water (Natural sage-aquamarine replacing synthetic cyan) */
   --color-dew-50: #F1F9F8;
@@ -185,7 +185,7 @@ html.lenis, html.lenis body {
 }
 
 .nb-shadow-ochre {
-  box-shadow: 5px 5px 0px 0px #C9942B;
+  box-shadow: 5px 5px 0px 0px #F59E0B;
 }
 
 .nb-shadow-leaf {
@@ -214,9 +214,9 @@ html.lenis, html.lenis body {
   box-shadow: 1px 1px 0px 0px #171715;
 }
 
-/* Primary Ochre Action Neo-Brutalist Button (Calibrated Golden Harvest) */
+/* Primary Ochre Action Neo-Brutalist Button (Luminous Golden Harvest) */
 .nb-btn-ochre {
-  background-color: #C9942B;
+  background-color: #FBBF24;
   color: #171715;
   border: 2px solid #171715;
   box-shadow: 3.5px 3.5px 0px 0px #171715;
@@ -225,7 +225,7 @@ html.lenis, html.lenis body {
 }
 
 .nb-btn-ochre:hover {
-  background-color: #DEAB42;
+  background-color: #FCD34D;
   transform: translate(-2px, -2px);
   box-shadow: 5.5px 5.5px 0px 0px #171715;
 }
@@ -270,24 +270,24 @@ html.lenis, html.lenis body {
 
 .nb-card-ochre {
   border: 2px solid #171715;
-  box-shadow: 5px 5px 0px 0px #C9942B;
+  box-shadow: 5px 5px 0px 0px #F59E0B;
   transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.22s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .nb-card-ochre:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 8px 8px 0px 0px #DEAB42;
+  box-shadow: 8px 8px 0px 0px #FBBF24;
 }
 
 .nb-card-dark {
   border: 2px solid #FAF9F6;
-  box-shadow: 5px 5px 0px 0px #C9942B;
+  box-shadow: 5px 5px 0px 0px #F59E0B;
   transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.22s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .nb-card-dark:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 8px 8px 0px 0px #DEAB42;
+  box-shadow: 8px 8px 0px 0px #FBBF24;
 }
 
 /* 2D Stamp Seal Sticker */
@@ -387,7 +387,7 @@ html.lenis, html.lenis body {
 /* Tactile editorial scrollbar */
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: #C9942B transparent;
+  scrollbar-color: #F59E0B transparent;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -400,10 +400,10 @@ html.lenis, html.lenis body {
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #C9942B;
+  background: #F59E0B;
   border-radius: 9999px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #DEAB42;
+  background: #FBBF24;
 }

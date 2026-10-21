@@ -98,7 +98,7 @@ export default function OverviewTab({
           </div>
 
           {/* Right side summary telemetry card */}
-          <div className="w-full xl:w-auto min-w-[300px] p-5 rounded-2xl bg-white/10 backdrop-blur-md border-2 border-white/20 shadow-[4px_4px_0px_0px_#C9942B]">
+          <div className="w-full xl:w-auto min-w-[300px] p-5 rounded-2xl bg-white/10 backdrop-blur-md border-2 border-white/20 shadow-[4px_4px_0px_0px_#F59E0B]">
             <div className="flex items-center justify-between pb-3 border-b border-white/15 mb-3 font-mono text-xs">
               <span className="text-ochre-300 font-bold uppercase">Rekomendasi AI Hari Ini</span>
               <span className="text-leaf-300 font-bold">Status: Prima</span>

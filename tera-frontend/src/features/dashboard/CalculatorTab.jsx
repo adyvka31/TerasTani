@@ -125,7 +125,7 @@ export default function CalculatorTab({ setUserXP }) {
                       onClick={() => setCalcCrop(cKey)}
                       className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer text-left ${
                         calcCrop === cKey
-                          ? 'bg-moss-900 text-paper border-ink font-bold shadow-[2.5px_2.5px_0px_0px_#C9942B]'
+                          ? 'bg-moss-900 text-paper border-ink font-bold shadow-[2.5px_2.5px_0px_0px_#F59E0B]'
                           : 'bg-paper border-ink/20 text-graphite hover:border-ink'
                       }`}
                     >

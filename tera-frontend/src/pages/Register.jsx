@@ -228,7 +228,7 @@ export default function Register() {
                   <span className="font-mono text-[9px] text-paper/60 uppercase">Live Rendering</span>
                 </div>
 
-                <div className="bg-moss-900 rounded-2xl p-5 border-2 border-white/30 shadow-[6px_6px_0px_0px_#C9942B] relative overflow-hidden reg-mark transition-all">
+                <div className="bg-moss-900 rounded-2xl p-5 border-2 border-white/30 shadow-[6px_6px_0px_0px_#F59E0B] relative overflow-hidden reg-mark transition-all">
                   
                   {/* Subtle Card Background Pattern */}
                   <div className="absolute top-0 right-0 w-44 h-44 bg-leaf-400/10 rounded-full blur-2xl pointer-events-none"></div>
@@ -472,7 +472,7 @@ export default function Register() {
                       onChange={handleChange}
                       placeholder={formData.role === 'distributor' ? 'Contoh: PT Segar Retail Nusantara' : 'Contoh: Siti Rahmawati'}
                       required
-                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#C9942B] transition-all"
+                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#F59E0B] transition-all"
                     />
                   </div>
                 </div>
@@ -493,7 +493,7 @@ export default function Register() {
                       onChange={handleChange}
                       placeholder="nama@domain.com"
                       required
-                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#C9942B] transition-all"
+                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#F59E0B] transition-all"
                     />
                   </div>
                 </div>
@@ -521,7 +521,7 @@ export default function Register() {
                       placeholder="Min. 8 karakter kombinasi"
                       required
                       minLength={6}
-                      className="w-full pl-10 pr-11 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#C9942B] transition-all"
+                      className="w-full pl-10 pr-11 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#F59E0B] transition-all"
                     />
                     <button
                       type="button"

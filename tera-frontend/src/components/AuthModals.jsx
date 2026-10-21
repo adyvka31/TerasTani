@@ -77,7 +77,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
               placeholder="nama@domain.com" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-3 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
+              className="w-full px-4 py-3 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#F59E0B] transition-all"
             />
           </div>
           <div>
@@ -92,7 +92,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
               placeholder="••••••••" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-3 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
+              className="w-full px-4 py-3 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#F59E0B] transition-all"
             />
           </div>
           
@@ -235,7 +235,7 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               placeholder="Contoh: Raden Dananjaya" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-2.5 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
+              className="w-full px-4 py-2.5 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#F59E0B] transition-all"
             />
           </div>
 
@@ -249,7 +249,7 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               placeholder="nama@instansi.com" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-2.5 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
+              className="w-full px-4 py-2.5 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#F59E0B] transition-all"
             />
           </div>
 
@@ -263,7 +263,7 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
               placeholder="••••••••" 
               onChange={handleChange} 
               required 
-              className="w-full px-4 py-2.5 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#C9942B] transition-all"
+              className="w-full px-4 py-2.5 rounded-xl border-2 border-ink bg-white text-ink text-sm placeholder:text-graphite/40 focus:outline-none focus:shadow-[3px_3px_0px_0px_#F59E0B] transition-all"
             />
           </div>
 

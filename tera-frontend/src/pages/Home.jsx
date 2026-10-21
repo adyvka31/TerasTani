@@ -1515,7 +1515,7 @@ export default function Home() {
             </div>
 
             <div className="hero-metric-card-odd">
-              <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#C9942B] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#C9942B] transition-all h-full flex flex-col justify-between">
+              <div className="hero-metric-card border-2 border-ink bg-paper p-5 md:p-6 rounded-2xl shadow-[4px_4px_0px_0px_#F59E0B] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#F59E0B] transition-all h-full flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-mono text-[10px] uppercase tracking-widest text-graphite">Kenaikan Margin</span>
@@ -1633,7 +1633,7 @@ export default function Home() {
 
             {/* Card 2: Masalah Tradisional */}
             <div className="paradox-card-2">
-              <div className="paradox-card p-6 md:p-8 rounded-3xl bg-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#C9942B] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#C9942B] transition-all flex flex-col justify-between h-full">
+              <div className="paradox-card p-6 md:p-8 rounded-3xl bg-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#F59E0B] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#F59E0B] transition-all flex flex-col justify-between h-full">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-[11px] uppercase tracking-wider text-ochre-800 font-bold bg-ochre-100 px-2.5 py-1 rounded-md border-2 border-ink shadow-[1.5px_1.5px_0px_0px_#171715]">
@@ -1658,7 +1658,7 @@ export default function Home() {
 
             {/* Card 3: Solusi TerasTani */}
             <div className="paradox-card-3">
-              <div className="paradox-card p-6 md:p-8 rounded-3xl bg-moss-900 text-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#C9942B] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#DEAB42] transition-all flex flex-col justify-between h-full">
+              <div className="paradox-card p-6 md:p-8 rounded-3xl bg-moss-900 text-paper border-2 border-ink space-y-4 shadow-[5px_5px_0px_0px_#F59E0B] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_#FBBF24] transition-all flex flex-col justify-between h-full">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-[11px] uppercase tracking-wider text-moss-950 font-bold bg-ochre-400 px-2.5 py-1 rounded-md border-2 border-ink shadow-[1.5px_1.5px_0px_0px_#171715]">
@@ -1799,7 +1799,7 @@ export default function Home() {
               </div>
 
               {/* Right Column: Live Output Result Card with 2D Accent */}
-              <div className="simulator-right-col lg:col-span-7 bg-moss-900 text-paper rounded-3xl p-8 md:p-10 flex flex-col justify-between border-2 border-ink shadow-[6px_6px_0px_0px_#C9942B] relative overflow-hidden">
+              <div className="simulator-right-col lg:col-span-7 bg-moss-900 text-paper rounded-3xl p-8 md:p-10 flex flex-col justify-between border-2 border-ink shadow-[6px_6px_0px_0px_#F59E0B] relative overflow-hidden">
                 <div className="simulator-glow-orb absolute top-0 right-0 w-80 h-80 bg-leaf-400/10 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div>
@@ -1830,7 +1830,7 @@ export default function Home() {
                       </span>
                     </div>
 
-                    <div className="bg-moss-950 rounded-2xl p-5 border-2 border-ochre-500 shadow-[3px_3px_0px_0px_#C9942B]">
+                    <div className="bg-moss-950 rounded-2xl p-5 border-2 border-ochre-500 shadow-[3px_3px_0px_0px_#F59E0B]">
                       <span className="font-mono text-xs uppercase tracking-wider text-ochre-300 block mb-1 font-bold">
                         Nilai Penyerapan Lumbung
                       </span>
@@ -1877,7 +1877,7 @@ export default function Home() {
             </div>
           ) : (
             /* DISTRIBUTOR VIEW: Enterprise Procurement & Batch Reserve Simulator */
-            <div className="simulator-console-box bg-moss-950 text-paper rounded-[2.5rem] border-2 border-ink p-6 md:p-12 shadow-[10px_10px_0px_0px_#C9942B] grid lg:grid-cols-12 gap-10 items-stretch">
+            <div className="simulator-console-box bg-moss-950 text-paper rounded-[2.5rem] border-2 border-ink p-6 md:p-12 shadow-[10px_10px_0px_0px_#F59E0B] grid lg:grid-cols-12 gap-10 items-stretch">
               
               <div className="simulator-left-col lg:col-span-6 space-y-6">
                 <span className="font-mono text-xs uppercase tracking-widest text-ochre-300 block font-bold">
@@ -1892,7 +1892,7 @@ export default function Home() {
                 </p>
 
                 <div className="space-y-3 pt-2">
-                  <div className="p-4 rounded-xl bg-white/5 border-2 border-white/20 shadow-[3px_3px_0px_0px_#C9942B] flex items-center justify-between">
+                  <div className="p-4 rounded-xl bg-white/5 border-2 border-white/20 shadow-[3px_3px_0px_0px_#F59E0B] flex items-center justify-between">
                     <div>
                       <div className="text-sm font-semibold text-paper">Batch #RAW-2026-10</div>
                       <div className="text-xs text-paper/60">Konsolidasi 8 Klaster Rawasari &bull; 1.450 kg Pakcoy</div>
@@ -1900,7 +1900,7 @@ export default function Home() {
                     <span className="font-mono text-xs bg-leaf-400 text-moss-950 px-2 py-0.5 rounded font-bold border border-ink">TERSEDIA</span>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-white/5 border-2 border-white/20 shadow-[3px_3px_0px_0px_#C9942B] flex items-center justify-between">
+                  <div className="p-4 rounded-xl bg-white/5 border-2 border-white/20 shadow-[3px_3px_0px_0px_#F59E0B] flex items-center justify-between">
                     <div>
                       <div className="text-sm font-semibold text-paper">Batch #CMP-2026-10</div>
                       <div className="text-xs text-paper/60">Konsolidasi 12 Klaster Cempaka &bull; 2.100 kg Selada</div>
@@ -2239,7 +2239,7 @@ export default function Home() {
           
           <div className="chapter-header-anim max-w-3xl mx-auto text-center mb-16 pb-6 border-b-2 border-white/10 flex flex-col items-center">
             <div className="chapter-header-text flex flex-col items-center">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-white/30 bg-moss-950 font-mono text-xs uppercase tracking-widest text-ochre-300 mb-4 shadow-[2px_2px_0px_0px_#C9942B]">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 border-white/30 bg-moss-950 font-mono text-xs uppercase tracking-widest text-ochre-300 mb-4 shadow-[2px_2px_0px_0px_#F59E0B]">
                 <span className="w-2 h-2 rounded-full bg-ochre-400"></span>
                 <span>Chapter 06 &mdash; Suara Dari Komunitas</span>
               </div>
@@ -2254,7 +2254,7 @@ export default function Home() {
             
             {/* Testimonial 1 */}
             <div className="testimonial-card-1">
-              <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#C9942B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#DEAB42] transition-all flex flex-col justify-between h-full">
+              <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#F59E0B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#FBBF24] transition-all flex flex-col justify-between h-full">
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-1 text-ochre-400 font-mono text-xs bg-moss-900 px-2.5 py-1 rounded-md border border-white/20">
@@ -2282,7 +2282,7 @@ export default function Home() {
 
             {/* Testimonial 2 */}
             <div className="testimonial-card-2">
-              <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#C9942B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#DEAB42] transition-all flex flex-col justify-between h-full">
+              <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#F59E0B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#FBBF24] transition-all flex flex-col justify-between h-full">
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-1 text-ochre-400 font-mono text-xs bg-moss-900 px-2.5 py-1 rounded-md border border-white/20">
@@ -2310,7 +2310,7 @@ export default function Home() {
 
             {/* Testimonial 3 */}
             <div className="testimonial-card-3">
-              <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#C9942B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#DEAB42] transition-all flex flex-col justify-between h-full">
+              <div className="testimonial-card bg-moss-950 rounded-3xl p-8 border-2 border-white/20 shadow-[6px_6px_0px_0px_#F59E0B] hover:-translate-y-1.5 hover:shadow-[8px_8px_0px_0px_#FBBF24] transition-all flex flex-col justify-between h-full">
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-1 text-ochre-400 font-mono text-xs bg-moss-900 px-2.5 py-1 rounded-md border border-white/20">
@@ -2654,7 +2654,7 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-ivory border-2 border-ink text-center shadow-[3px_3px_0px_0px_#C9942B]">
+                    <div className="p-4 rounded-2xl bg-ivory border-2 border-ink text-center shadow-[3px_3px_0px_0px_#F59E0B]">
                       <span className="text-[10px] uppercase tracking-wider text-ochre-800 block mb-1 font-bold">
                         Potensi / Bulan
                       </span>
@@ -2685,7 +2685,7 @@ export default function Home() {
             <div className="calc-right-col lg:col-span-3 hidden lg:flex flex-col justify-between space-y-6">
               
               {/* Card 3: Guaranteed Off-Taker Contract */}
-              <div className="bg-paper rounded-2xl border-2 border-ink p-6 shadow-[5px_5px_0px_0px_#C9942B] reg-mark flex-1 flex flex-col justify-between">
+              <div className="bg-paper rounded-2xl border-2 border-ink p-6 shadow-[5px_5px_0px_0px_#F59E0B] reg-mark flex-1 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-ink bg-ochre-300 px-2 py-0.5 rounded border border-ink/20 flex items-center gap-1">
@@ -2778,7 +2778,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="calc-mobile-card bg-paper p-5 rounded-2xl border-2 border-ink shadow-[4px_4px_0px_0px_#C9942B]">
+            <div className="calc-mobile-card bg-paper p-5 rounded-2xl border-2 border-ink shadow-[4px_4px_0px_0px_#F59E0B]">
               <div className="flex items-center gap-2 mb-2 font-mono text-xs font-bold text-ochre-800">
                 <ShieldCheck className="w-4 h-4 text-ochre-600" />
                 <span>Kontrak Off-Taker Resmi Rp 25.000/kg</span>

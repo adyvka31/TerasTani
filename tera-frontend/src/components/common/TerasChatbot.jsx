@@ -454,7 +454,7 @@ Silakan pilih topik saran cepat di bawah atau tanyakan parameter spesifik lainny
         {/* Header Bar - Clean & Simple */}
         <div className="bg-moss-950 text-paper px-4 py-3 border-b-2 border-ink flex items-center justify-between relative select-none shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-moss-900 border border-white/20 shadow-[1.5px_1.5px_0px_0px_#C9942B] flex items-center justify-center text-ochre-400">
+            <div className="w-8 h-8 rounded-xl bg-moss-900 border border-white/20 shadow-[1.5px_1.5px_0px_0px_#F59E0B] flex items-center justify-center text-ochre-400">
               <Sprout className="w-4 h-4" />
             </div>
             <div>

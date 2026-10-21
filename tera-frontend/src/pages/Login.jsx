@@ -175,7 +175,7 @@ export default function Login() {
             <div className="relative z-10 space-y-6">
               
               {/* Role Perspective Switcher for Narrative & Telemetry */}
-              <div className="inline-flex p-1.5 rounded-2xl bg-moss-900 border-2 border-white/20 shadow-[3px_3px_0px_0px_#C9942B]">
+              <div className="inline-flex p-1.5 rounded-2xl bg-moss-900 border-2 border-white/20 shadow-[3px_3px_0px_0px_#F59E0B]">
                 <button
                   type="button"
                   onClick={() => setLoginPerspective('warga')}
@@ -226,7 +226,7 @@ export default function Login() {
               </div>
 
               {/* Photographic Composition with 2D Frame & Verification Stamp */}
-              <div className="relative rounded-2xl overflow-hidden border-2 border-white/30 shadow-[6px_6px_0px_0px_#C9942B] bg-moss-900 group">
+              <div className="relative rounded-2xl overflow-hidden border-2 border-white/30 shadow-[6px_6px_0px_0px_#F59E0B] bg-moss-900 group">
                 <img 
                   src={heroHarvestImage} 
                   alt="Pertanian hidroponik urban TerasTani dengan selada segar berkualitas" 
@@ -344,7 +344,7 @@ export default function Login() {
                       onChange={handleChange}
                       placeholder="nama@terastani.id"
                       required
-                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#C9942B] transition-all"
+                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#F59E0B] transition-all"
                     />
                   </div>
                 </div>
@@ -375,7 +375,7 @@ export default function Login() {
                       onChange={handleChange}
                       placeholder="••••••••••••"
                       required
-                      className="w-full pl-10 pr-11 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#C9942B] transition-all"
+                      className="w-full pl-10 pr-11 py-3.5 rounded-xl border-2 border-ink bg-paper text-ink text-sm font-sans placeholder:text-graphite/40 focus:outline-none focus:shadow-[3.5px_3.5px_0px_0px_#F59E0B] transition-all"
                     />
                     <button
                       type="button"
