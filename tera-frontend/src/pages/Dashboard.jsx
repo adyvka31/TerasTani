@@ -54,6 +54,8 @@ export default function Dashboard() {
   const [depositCrop, setDepositCrop] = useState('Selada Romaine Super');
   const [depositWeight, setDepositWeight] = useState(12.5);
   const [depositTicket, setDepositTicket] = useState(null);
+  const [recentTickets, setRecentTickets] = useState([]);
+  const [certifiedVisionData, setCertifiedVisionData] = useState(null);
 
   // Fetch initial data from Backend
   useEffect(() => {
@@ -95,6 +97,36 @@ export default function Dashboard() {
       } catch (e) {
         console.warn('Gamification data fallback:', e);
       }
+
+      try {
+        // 4. Harvest Submissions (Supabase)
+        const hRes = await dashboardApi.getMyHarvests();
+        if (isMounted && hRes.data && hRes.data.length > 0) {
+          setRecentTickets(hRes.data);
+          const latest = hRes.data[0];
+          const cropPrices = {
+            'Selada Romaine Super': 28500,
+            'Pakcoy Hijau Nauli': 24000,
+            'Bayam Jepang Horenso': 35000,
+            'Daun Mint & Basil Segar': 45000,
+          };
+          const unitPrice = cropPrices[latest.crop_name] || 28500;
+          const weight = parseFloat(latest.claimed_weight_kg || 0);
+          setDepositTicket({
+            id: latest.id,
+            batchId: latest.qr_ticket_code,
+            crop: latest.crop_name,
+            weight,
+            cluster: latest.village_name ? `Hub ${latest.rw_number || 'RW'} ${latest.village_name}` : 'Hub RW 07 Rawasari',
+            timestamp: new Date(latest.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + new Date(latest.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
+            escrowValuation: Math.round(weight * unitPrice),
+            qualityGrade: latest.ai_quality_grade ? latest.ai_quality_grade.replace('GRADE_', 'Grade ').replace('_', ' ') : 'Grade A',
+            status: latest.status,
+          });
+        }
+      } catch (e) {
+        console.warn('Harvest history fetch fallback:', e);
+      }
     }
 
     loadSystemData();
@@ -110,35 +142,53 @@ export default function Dashboard() {
 
   const handleGenerateTicket = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
+    const cropPrices = {
+      'Selada Romaine Super': 28500,
+      'Pakcoy Hijau Nauli': 24000,
+      'Bayam Jepang Horenso': 35000,
+      'Daun Mint & Basil Segar': 45000,
+    };
+    const unitPrice = certifiedVisionData?.pricePerKg || cropPrices[depositCrop] || 28500;
     try {
       const res = await dashboardApi.createHarvestSubmission({
         cluster_id: activeCluster.id && activeCluster.id.includes('-') ? activeCluster.id : null,
         crop_name: depositCrop,
-        claimed_weight_kg: depositWeight,
+        claimed_weight_kg: Number(depositWeight),
+        vision_metrics: certifiedVisionData?.metrics || null,
+        photo_url: certifiedVisionData?.imageUrl || null,
       });
 
       const sub = res.data;
-      setDepositTicket({
+      const formattedTicket = {
+        id: sub.id,
         batchId: sub.qr_ticket_code,
         crop: sub.crop_name,
-        weight: sub.claimed_weight_kg,
+        weight: parseFloat(sub.claimed_weight_kg),
         cluster: activeCluster.name || `Hub ${activeCluster.rw_number || 'RW07'}`,
         timestamp: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
-        escrowValuation: Math.round(depositWeight * 28500),
-      });
+        escrowValuation: Math.round(depositWeight * unitPrice),
+        qualityGrade: sub.ai_details?.qualityGradeDisplay || (sub.ai_quality_grade ? sub.ai_quality_grade.replace('GRADE_', 'Grade ').replace('_', ' ') : (certifiedVisionData?.grade || 'Grade A')),
+        status: sub.status || 'HOME_VALIDATED',
+      };
+      setDepositTicket(formattedTicket);
+      setRecentTickets((prev) => [sub, ...prev]);
       setUserXP((prev) => prev + 75);
       setIsQRModalOpen(true);
     } catch (err) {
       console.warn('Fallback local ticket:', err);
       const batchId = `TT-${activeCluster.rw_number || activeCluster.id || 'RW07'}-${Math.floor(100000 + Math.random() * 900000)}`;
-      setDepositTicket({
+      const localTicket = {
         batchId,
         crop: depositCrop,
         weight: depositWeight,
         cluster: activeCluster.name || `Hub ${activeCluster.rw_number || 'RW07'}`,
         timestamp: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
-        escrowValuation: Math.round(depositWeight * 28500),
-      });
+        escrowValuation: Math.round(depositWeight * unitPrice),
+        qualityGrade: certifiedVisionData?.grade || 'Grade A',
+        status: 'HOME_VALIDATED',
+      };
+      setDepositTicket(localTicket);
+      setRecentTickets((prev) => [{ ...localTicket, qr_ticket_code: batchId, crop_name: depositCrop, claimed_weight_kg: depositWeight }, ...prev]);
       setUserXP((prev) => prev + 75);
       setIsQRModalOpen(true);
     }
@@ -238,6 +288,7 @@ export default function Dashboard() {
               onSelectTab={setActiveTab}
               setDepositWeight={setDepositWeight}
               setDepositCrop={setDepositCrop}
+              setCertifiedVisionData={setCertifiedVisionData}
             />
           )}
 
@@ -245,11 +296,14 @@ export default function Dashboard() {
             <LumbungTab
               activeCluster={activeCluster}
               depositCrop={depositCrop}
-              setDepositCrop={setDepositCrop}
+              certifiedVisionData={certifiedVisionData}
               depositWeight={depositWeight}
               setDepositWeight={setDepositWeight}
               depositTicket={depositTicket}
+              setDepositTicket={setDepositTicket}
+              recentTickets={recentTickets}
               onGenerateTicket={handleGenerateTicket}
+              onOpenQRModal={() => setIsQRModalOpen(true)}
             />
           )}
 

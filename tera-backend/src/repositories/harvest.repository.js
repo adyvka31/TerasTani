@@ -19,9 +19,11 @@ class HarvestRepository {
 
   async findByUserId(userId, limit = 20, offset = 0) {
     const text = `
-      SELECT * FROM harvest_submissions
-      WHERE user_id = $1
-      ORDER BY created_at DESC
+      SELECT hs.*, c.rw_number, c.village_name
+      FROM harvest_submissions hs
+      LEFT JOIN clusters c ON c.id = hs.cluster_id
+      WHERE hs.user_id = $1
+      ORDER BY hs.created_at DESC
       LIMIT $2 OFFSET $3
     `;
     const result = await query(text, [userId, limit, offset]);
@@ -66,7 +68,7 @@ class HarvestRepository {
           ai_quality_grade = $3,
           ai_confidence_score = $4,
           ai_analysis_notes = $5,
-          status = 'AI_VALIDATED'
+          status = 'HOME_VALIDATED'
       WHERE id = $1
       RETURNING *
     `;

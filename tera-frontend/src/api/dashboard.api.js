@@ -38,12 +38,19 @@ export const dashboardApi = {
   },
 
   // 5. Vision AI Inspection
-  analyzeVisionSample: async (sampleType, cropName, estimatedWeightKg) => {
-    const res = await apiClient.post('/api/v1/harvests/analyze', {
-      sample_type: sampleType,
-      crop_name: cropName,
-      estimated_weight_kg: estimatedWeightKg,
-    });
+  analyzeVisionSample: async (sampleTypeOrPayload, cropName, estimatedWeightKg, visionMetrics) => {
+    let payload;
+    if (typeof sampleTypeOrPayload === 'object' && sampleTypeOrPayload !== null) {
+      payload = sampleTypeOrPayload;
+    } else {
+      payload = {
+        sample_type: sampleTypeOrPayload,
+        crop_name: cropName,
+        estimated_weight_kg: estimatedWeightKg,
+        vision_metrics: visionMetrics,
+      };
+    }
+    const res = await apiClient.post('/api/v1/harvests/analyze', payload);
     return res.data;
   },
 
