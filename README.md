@@ -2,444 +2,157 @@
 
 [![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org/)
 [![React Version](https://img.shields.io/badge/React-19.x-blue.svg)](https://react.dev/)
-[![Vite Version](https://img.shields.io/badge/Vite-8.x-646CFF.svg)](https://vitejs.dev/)
 [![Express Version](https://img.shields.io/badge/Express-5.x-lightgrey.svg)](https://expressjs.com/)
-[![TailwindCSS Version](https://img.shields.io/badge/TailwindCSS-4.x-38bdf8.svg)](https://tailwindcss.com/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4.x-38bdf8.svg)](https://tailwindcss.com/)
 [![Database](https://img.shields.io/badge/Database-PostgreSQL%20%2F%20Supabase-336791.svg)](https://supabase.com/)
-[![License](https://img.shields.io/badge/License-ISC-green.svg)](#-lisensi--tim-pengembang)
 
-> **TerasTani** adalah sistem operasi rantai pasok agrikultur presisi perkotaan terdesentralisasi (*Decentralized Urban Micro-Farm Operating System*). Platform ini mengonsolidasikan panen mikro pekarangan dan balkon warga perkotaan (radius jalan kaki 200–500 meter) ke titik kumpul **Lumbung RW (Hub Crate Komunal)**, memvalidasi mutu sayur daun secara objektif menggunakan **AI Computer Vision Spectrometry**, menerbitkan **Tiket Setor QR Digital**, mengamankan transaksi dengan **Smart Escrow Financial Settlement**, serta menyuplai kebutuhan grosir distributor komersial (*off-taker* / Horeka) melalui armada logistik berpendingin (*Cold Chain Fleet*).
+> **TerasTani** adalah sistem operasi rantai pasok agrikultur perkotaan terdesentralisasi (*Decentralized Urban Micro-Farm OS*). Platform ini mengonsolidasikan panen mikro pekarangan dan balkon warga (radius 200–500 meter) ke titik kumpul **Lumbung RW (Hub Crate Komunal)**, memvalidasi kualitas secara objektif menggunakan **AI Computer Vision Spectrometry**, menerbitkan **Tiket Setor QR Digital**, dan mengamankan pembayaran dari distributor komersial (*off-taker*) melalui kontrak **Smart Escrow**.
 
 ---
 
-## ⚡ CARA CEPAT MENJALANKAN APLIKASI (EVALUASI JURI)
+## ⚡ PANDUAN CEPAT EVALUASI JURI
 
-Seluruh ekosistem monorepo (Frontend & Backend) dapat dijalankan dalam **satu perintah terpadu**:
+Seluruh sistem (Frontend & Backend) dapat langsung dijalankan dalam **satu langkah**:
 
 ### 1. Pasang Dependensi Monorepo
 ```bash
 pnpm install
 ```
 
-### 2. Salin Berkas Konfigurasi Lingkungan (`.env`)
-```bash
-# Salin konfigurasi backend & frontend dari template
-cp tera-backend/.env.example tera-backend/.env
-cp tera-frontend/.env.example tera-frontend/.env
-```
+### 2. Pastikan Berkas `.env` Sudah Dikonfigurasi
+Salin isi konfigurasi asli pada bagian [Konfigurasi Berkas `.env` Asli](#-konfigurasi-berkas-env-asli-siap-pakai) ke `tera-backend/.env` dan `tera-frontend/.env`.
 
-### 3. Jalankan Mode Pengembangan Bersama
+### 3. Jalankan Aplikasi
 ```bash
 pnpm dev
 ```
 
-> [!IMPORTANT]
-> Perintah `pnpm dev` di atas akan otomatis mengaktifkan:
-> - 🌐 **Frontend Web Client**: [http://localhost:5173](http://localhost:5173)
-> - ⚙️ **Backend RESTful API**: [http://localhost:5001](http://localhost:5001)
-> - 🩺 **Health Diagnostic Endpoint**: [http://localhost:5001/api/v1/health](http://localhost:5001/api/v1/health)
+Aplikasi otomatis berjalan di:
+- 🌐 **Frontend Client**: [http://localhost:5173](http://localhost:5173)
+- ⚙️ **Backend API**: [http://localhost:5001](http://localhost:5001)
+- 🩺 **Health Check**: [http://localhost:5001/api/v1/health](http://localhost:5001/api/v1/health)
 
 ---
 
-### 🔑 Kredensial Uji Coba Cepat (Evaluasi Juri)
-
-Untuk mempermudah pengujian, halaman login ([http://localhost:5173/login](http://localhost:5173/login)) telah dilengkapi **tombol 1-klik instan**:
+### 🔑 Akun Evaluasi Cepat (1-Klik di Halaman Login)
+Pada halaman login ([http://localhost:5173/login](http://localhost:5173/login)), gunakan tombol evaluasi instan berikut:
 
 | Peran (*Role*) | Surel (*Email*) | Kata Sandi | Fokus Evaluasi Fitur |
 | :--- | :--- | :--- | :--- |
 | **Warga Kultivator** | `warga.rawasari@terastani.id` | `rahasia123` | Kalkulator Lahan AI, Plot Dasbor, Inspeksi Mutu AI, Tiket QR, Dompet & Escrow, Misi XP |
-| **Mitra Distributor** | `distributor@segarlogistik.co.id` | `rahasia123` | Bursa Alokasi Kuota Grosir RW, Manifest Armada Cold Chain, Pemesanan Kuota B2B |
-| **Admin Pengawas RW** | `admin@gmail.com` | `12345678` | Telemetri Sensor Lingkungan, Pengelolaan Hub RW, Verifikasi Timbang Lumbung |
+| **Mitra Distributor** | `distributor@segarlogistik.co.id` | `rahasia123` | Bursa Alokasi Kuota Grosir RW, Manifest Armada Cold Chain |
+| **Admin Pengawas RW** | `admin@gmail.com` | `12345678` | Telemetri Sensor Lingkungan, Verifikasi Timbangan Lumbung |
 
 > [!TIP]
 > **Superpower Evaluasi Juri (Role Switcher):**  
-> Setelah login, Anda dapat beralih sudut pandang secara instan (*Kultivator* $\leftrightarrow$ *Distributor*) melalui tombol **"Ganti Tampilan Peran"** di bagian bawah sidebar tanpa perlu melakukan proses logout dan login ulang!
+> Setelah login, juri dapat berganti sudut pandang secara instan (*Kultivator* $\leftrightarrow$ *Distributor*) melalui tombol **"Ganti Tampilan Peran"** di bagian bawah sidebar tanpa perlu logout dan login ulang.
 
 ---
 
-## 🔧 KONFIGURASI LINGKUNGAN (`.env`)
+## 🔐 KONFIGURASI BERKAS `.env` ASLI (SIAP PAKAI)
 
-Sistem TerasTani menggunakan konfigurasi berbasis variabel lingkungan (*Environment Variables*) yang terisolasi antara backend dan frontend:
+Berikut adalah isi berkas `.env` asli yang siap digunakan untuk langsung terhubung ke database cloud Supabase aktif:
 
-### 1. Konfigurasi Backend (`tera-backend/.env`)
-
-Berkas ini mengontrol port HTTP, koneksi basis data PostgreSQL, keamanan token JWT, dan kebijakan CORS.
-
+### 1. File: `tera-backend/.env`
+Simpan kode berikut di dalam berkas `tera-backend/.env`:
 ```ini
-# ==============================================================================
-# TERASTANI BACKEND CONFIGURATION (tera-backend/.env)
-# ==============================================================================
-
-# Port server HTTP (Default: 5001 - Mencegah bentrok dengan macOS AirPlay di port 5000)
+# Port Server HTTP Express
 PORT=5001
 
-# Lingkungan runtime aplikasi (development | production | test)
+# Lingkungan Runtime
 NODE_ENV=development
 
-# Kebijakan Cross-Origin Resource Sharing (CORS)
+# Kebijakan CORS
 CORS_ORIGIN=*
 
-# PostgreSQL Connection String (Supabase Cloud Pooler / PostgreSQL Lokal)
-DATABASE_URL=postgresql://postgres.user:password@aws-0-ap-southeast-2.pooler.supabase.com:5432/postgres
+# PostgreSQL Database Connection URL (Supabase Cloud Pooler Aktif)
+DATABASE_URL=postgresql://postgres.bjzkqyuhknqssygrcimx:teras12345678tani@aws-0-ap-southeast-2.pooler.supabase.com:5432/postgres
 
-# Keamanan JWT (JSON Web Token)
-JWT_SECRET=terastani_jwt_secret_production_key_4096_secure
+# Keamanan Token JWT
+JWT_SECRET=terastani_jwt_secret_production_key_4096
 JWT_EXPIRES_IN=7d
 ```
 
-#### Rincian Variabel Backend:
-| Variabel | Tipe | Default | Penjelasan |
-| :--- | :---: | :---: | :--- |
-| `PORT` | `Number` | `5001` | Port listen server Express. Sengaja menggunakan `5001` untuk kompatibilitas macOS. |
-| `NODE_ENV` | `String` | `development` | Mengatur mode kerja Express (`development` atau `production`). |
-| `CORS_ORIGIN` | `String` | `*` | Domain asal yang diizinkan memanggil API (misal `http://localhost:5173`). |
-| `DATABASE_URL` | `String` | *(URL Supabase)* | URI koneksi PostgreSQL terenkripsi SSL dengan PgBouncer pooling. |
-| `JWT_SECRET` | `String` | `terastani_...` | Kunci simetris rahasia untuk menandatangani dan memverifikasi token sesi JWT. |
-| `JWT_EXPIRES_IN`| `String` | `7d` | Masa berlaku sesi token sebelum pengguna diminta login kembali. |
-
----
-
-### 2. Konfigurasi Frontend (`tera-frontend/.env`)
-
-Berkas ini mengontrol URL endpoint backend yang ditargetkan oleh klien Axios pada saat kompilasi Vite:
-
+### 2. File: `tera-frontend/.env`
+Simpan kode berikut di dalam berkas `tera-frontend/.env`:
 ```ini
-# ==============================================================================
-# TERASTANI FRONTEND CONFIGURATION (tera-frontend/.env)
-# ==============================================================================
-
-# Base URL API Backend TerasTani
+# URL Endpoint API Backend
 VITE_API_URL=http://localhost:5001
 
-# Identitas Aplikasi
+# Nama Aplikasi
 VITE_APP_NAME=TerasTani
 ```
 
-#### Rincian Variabel Frontend:
-| Variabel | Tipe | Default | Penjelasan |
-| :--- | :---: | :---: | :--- |
-| `VITE_API_URL` | `String` | `http://localhost:5001` | Alamat host REST API backend untuk seluruh pemanggilan HTTP Axios. |
-| `VITE_APP_NAME`| `String` | `TerasTani` | Nama entitas aplikasi yang ditampilkan pada peramban. |
-
 ---
 
-## 📋 Daftar Isi
-1. [Latar Belakang & Keselarasan SDGs](#-latar-belakang--keselarasan-sdgs)
-2. [Arsitektur Sistem (Enterprise Architecture)](#-arsitektur-sistem-enterprise-architecture)
-3. [Konsep Hub Lumbung RW Terdesentralisasi](#-konsep-hub-lumbung-rw-terdesentralisasi)
-4. [Skema Basis Data (Entity-Relationship Diagram)](#-skema-basis-data-entity-relationship-diagram)
-5. [Struktur Direktori Monorepo](#-struktur-direktori-monorepo)
-6. [Fitur Utama Ekosistem](#-fitur-utama-ekosistem)
-7. [Dokumentasi Katalog RESTful API v1](#-dokumentasi-katalog-restful-api-v1)
-8. [Design System & Estetika Visual](#-design-system--estetika-visual)
-9. [Sub-Modul Repositori](#-sub-modul-repositori)
-10. [Lisensi & Tim Pengembang](#-lisensi--tim-pengembang)
-
----
-
-## 🌍 Latar Belakang & Keselarasan SDGs
-
-Pertanian perkotaan (*urban farming*) menghadapi kendala fragmentasi: panen warga skala mikro (5–15 kg) tidak memiliki nilai tawar di hadapan jaringan ritel besar, sementara distributor Horeka kesulitan mendapatkan sayuran daun segar berkualitas tanpa rantai dingin yang efisien.
-
-TerasTani hadir menyelesaikan masalah ini dengan menyelaraskan diri pada target **PBB Sustainable Development Goals (SDGs)**:
-- **SDG 2 (Zero Hunger):** Memperkuat ketahanan pangan kota melalui sirkulasi produksi lokal yang mandiri dan terjangkau.
-- **SDG 11 (Sustainable Cities and Communities):** Mengubah pekarangan pasif dan balkon beton menjadi zona hijau produktif berbasis komunitas RW.
-- **SDG 12 (Responsible Consumption and Production):** Memangkas susut pangan (*food loss*) akibat rantai distribusi panjang dari perkebunan luar kota.
-- **SDG 13 (Climate Action):** Memangkas jejak karbon (*food miles*) pengangkutan sayur melalui sistem agregasi jarak dekat (*zero-mile transport*).
-
----
-
-## 🏛️ Arsitektur Sistem (Enterprise Architecture)
-
-TerasTani mengadopsi standar **Clean Layered Architecture** pada backend dan **Feature-Sliced Architecture** pada frontend:
+## 🏘️ Mengapa Berbasis RW? (Konsep Rantai Pasok Terdesentralisasi)
 
 ```mermaid
-graph TD
-    subgraph Client ["Frontend Layer (React 19 + Vite 8 + Tailwind 4)"]
-        UI["Tactile Editorial Interface<br/>(Neo-Brutalist & Botanical Luxury)"]
-        CTX["AuthContext & Role Switcher Store"]
-        CLIENT["Resilient Axios HTTP Client<br/>(Bearer Token & 401 Interceptors)"]
-        PARALLEL["Parallel Data Fetcher<br/>(Promise.allSettled Sync)"]
-        UI --> CTX
-        CTX --> CLIENT
-        CLIENT --> PARALLEL
-    end
+flowchart LR
+    A["Warga A (5 kg)<br/>Warga B (12 kg)<br/>Warga C (8 kg)"] -->|"Jalan Kaki 200-500m<br/>(Tiket Setor QR)"| B["HUB LUMBUNG RW<br/>(Crate Pendingin 1.000 kg)"]
+    B -->|"Truk Cold Chain<br/>(Jadwal 14:30 WIB)"| C["Supermarket &<br/>Restoran Horeka"]
+    C -.->|"Pencairan Escrow Otomatis"| A
 
-    subgraph Gateway ["Middleware & Security Pipeline"]
-        CORS["CORS & Origin Whitelist"]
-        LOGGER["High-Resolution Latency Logger"]
-        ROUTER["Versioned Master Router (/api/v1)"]
-        AUTH_MW["JWT & RBAC Middleware"]
-        VALID_MW["Payload Sanitizer & Fail-Fast Validator"]
-        PARALLEL --> CORS
-        CORS --> LOGGER
-        LOGGER --> ROUTER
-        ROUTER --> AUTH_MW
-        AUTH_MW --> VALID_MW
-    end
-
-    subgraph ServiceLayer ["Business Logic & Service Layer"]
-        AUTH_SVC["Authentication Service"]
-        CALC_SVC["Land Calculator Engine"]
-        VISION_SVC["Plant Vision Spectrometry"]
-        ESCROW_SVC["Smart Escrow Settlement"]
-        VALID_MW --> AUTH_SVC
-        VALID_MW --> CALC_SVC
-        VALID_MW --> VISION_SVC
-        VALID_MW --> ESCROW_SVC
-    end
-
-    subgraph DatabaseLayer ["Persistence Layer"]
-        PG["PostgreSQL (Supabase Cloud Pool / PgBouncer)"]
-        AUTH_SVC --> PG
-        CALC_SVC --> PG
-        VISION_SVC --> PG
-        ESCROW_SVC --> PG
-    end
+    style A fill:#f4f6f0,stroke:#2d5a27,stroke-width:2px
+    style B fill:#fdfbf7,stroke:#c88a2c,stroke-width:2px
+    style C fill:#f0f4f8,stroke:#2b4c7e,stroke-width:2px
 ```
 
----
-
-## 🏘️ Konsep Hub Lumbung RW Terdesentralisasi
-
-Mengapa TerasTani membagi operasi ke dalam klaster Rukun Warga (RW)?
-
-```
-[Rumah Warga A (5 kg)] ──┐
-[Rumah Warga B (12 kg)] ──┼──> [ HUB LUMBUNG RW 07 ] ──> [ TRUK COLD CHAIN DISTRIBUTOR ]
-[Rumah Warga C (8 kg)]  ──┘    (Terkumpul: 840 kg)        (Kirim ke Supermarket / Horeka)
-```
-
-1. **Radius Jalan Kaki (*Walking Distance 200–500m*):** Sayur daun sangat cepat layu. Dengan lumbung di tingkat RW, warga cukup berjalan kaki 3–5 menit untuk menyetor hasil panen tanpa ongkos transportasi.
-2. **Titik Konsolidasi Logistik Crate:** Truk pendingin 1–2 ton milik distributor tidak perlu masuk ke gang-gang pemukiman warga; truk cukup berhenti di titik akses lumbung RW untuk mengangkut muatan masal (500–1.000 kg).
-3. **Telemetri Mikroklimat Nyata:** Sensor IoT mengukur cahaya, suhu, dan kelembapan per klaster RW secara spesifik untuk memandu rekomendasi tanam yang akurat.
+1. **Zero-Mile Transport (Jarak Kaki 200–500m):** Sayuran daun sangat rentan layu. Warga cukup berjalan kaki 3 menit ke Balai RW untuk menyetor panen tanpa risiko rusak di perjalanan.
+2. **Efisiensi Logistik Armada Distributor:** Truk pendingin 1–2 ton tidak perlu blusukan ke gang-gang perumahan. Cukup berhenti di satu titik lumbung RW untuk mengangkut ratusan kilogram sayur sekaligus.
+3. **Kepastian Finansial (Smart Escrow):** Pembayaran dari distributor dikunci di sistem dan otomatis cair ke dompet warga seketika saat sayur ditimbang di lumbung.
 
 ---
 
-## 🗄️ Skema Basis Data (Entity-Relationship Diagram)
+## 🌟 8 Fitur Unggulan Dasbor
 
-Struktur relasional PostgreSQL di Supabase yang mengikat ekosistem dari kultivator hingga distributor secara kontinu:
-
-```mermaid
-erDiagram
-    USERS ||--o{ HARVEST_SUBMISSIONS : creates
-    USERS ||--o{ USER_WALLETS : owns
-    USERS ||--o{ LAND_CALCULATIONS : saves
-    USERS ||--o{ USER_MISSIONS : completes
-    USER_WALLETS ||--o{ WALLET_TRANSACTIONS : records
-    CLUSTERS ||--o{ SENSOR_LOGS : records
-    CLUSTERS ||--o{ HARVEST_SUBMISSIONS : aggregates
-    CLUSTERS ||--o{ DISTRIBUTOR_QUOTAS : provisions
-    DISTRIBUTOR_QUOTAS ||--o{ FLEET_SCHEDULES : dispatches
-
-    USERS {
-        uuid id PK
-        string email UK
-        string name
-        string role
-        integer xp_points
-        decimal wallet_balance
-        string password_hash
-        timestamp created_at
-    }
-
-    CLUSTERS {
-        uuid id PK
-        string rw_number
-        string village_name
-        string leader_name
-        integer active_nodes
-        decimal target_weight_kg
-        decimal current_weight_kg
-        string pickup_time
-    }
-
-    HARVEST_SUBMISSIONS {
-        uuid id PK
-        uuid user_id FK
-        uuid cluster_id FK
-        string crop_name
-        decimal claimed_weight_kg
-        string ai_quality_grade
-        string qr_ticket_code UK
-        string status
-        timestamp created_at
-    }
-
-    USER_WALLETS {
-        uuid id PK
-        uuid user_id FK
-        decimal balance
-        decimal pending_escrow
-        decimal total_withdrawn
-        timestamp updated_at
-    }
-
-    WALLET_TRANSACTIONS {
-        uuid id PK
-        uuid wallet_id FK
-        string type
-        decimal amount
-        string notes
-        timestamp created_at
-    }
-
-    DISTRIBUTOR_QUOTAS {
-        uuid id PK
-        uuid cluster_id FK
-        string crop_name
-        decimal target_weight_kg
-        decimal collected_weight_kg
-        decimal price_per_kg
-        string status
-    }
-
-    FLEET_SCHEDULES {
-        uuid id PK
-        uuid quota_id FK
-        string vehicle_name
-        string driver_name
-        string route_name
-        string pickup_time
-        string status
-    }
-```
+1. **Ringkasan Dasbor & Sensor IoT RW:** Telemetri mikroklimat hidup (lux cahaya, suhu, pH) dan pemantauan kartu plot budidaya pekarangan (Plot A, B, C) dengan pencatatan nutrisi harian.
+2. **Kalkulator Lahan AI:** Simulasi presisi lubang tanam, estimasi panen biomassa, dan analisis laba bersih berdasarkan 4 tipe lahan sempit perkotaan (Balkon, Pekarangan, Rooftop, Dinding Vertikal). Terhubung langsung menyimpan plot ke dasbor.
+3. **Inspeksi Mutu AI (Spektrometri Daun):** Pemindaian piksel kanvas dari webcam/foto untuk menganalisis klorofil SPAD, klorosis, dan sertifikasi komersial (**Grade A+** s/d **Grade D**) serta mengunci jaminan harga beli lumbung.
+4. **Lumbung Komunitas & Tiket Setor QR:** Menerbitkan tiket setor resmi dengan kode batch unik (`TT-RW07-XXXXXX`) dan QR Code asli untuk penyerahan panen ke peti pendingin RW (*Crate Lumbung*).
+5. **Dompet & Smart Escrow Settlement:** Pengelolaan saldo siap ditarik, saldo tertahan di escrow, serta buku besar transaksi (*ledger*) dengan fitur penarikan saldo instan ke Bank/E-Wallet.
+6. **Misi Budidaya & Peringkat Komunal:** Misi harian/mingguan berhadiah XP, kenaikan pangkat kultivator, dan papan peringkat produktivitas warga se-kelurahan.
+7. **Bursa Alokasi Kuota Grosir Distributor:** Portal B2B bagi mitra pembeli untuk memantau pasokan sayur yang terkumpul per RW, memesan kuota pasokan, dan mendanai escrow.
+8. **Manifest Armada Logistik Cold Chain:** Pelacakan jadwal dan status rute armada truk berpendingin (*SCHEDULED* $\to$ *IN_TRANSIT* $\to$ *COMPLETED*).
 
 ---
 
-## 📂 Struktur Direktori Monorepo
+## 📡 Ringkasan Endpoint RESTful API v1
 
-```text
-TerasTani/
-├── .gitignore                   # Ignore rules build, node_modules, dan file .env
-├── package.json                 # Master npm scripts (concurrently pnpm dev & build)
-├── pnpm-workspace.yaml          # Konfigurasi monorepo pnpm
-├── README.md                    # Dokumentasi utama proyek TerasTani
-│
-├── tera-backend/                # Core RESTful API Service (Express 5 + Clean Layered)
-│   ├── .env                     # Kredensial runtime lokal (PORT, DATABASE_URL, JWT)
-│   ├── .env.example             # Template konfigurasi environment backend
-│   ├── index.js                 # Entrypoint runtime aplikasi backend
-│   ├── package.json             # Manifest dependensi & skrip backend
-│   ├── seed.js                  # Shortcut runner seeder database
-│   ├── README.md                # Dokumentasi komprehensif backend
-│   └── src/
-│       ├── app.js               # Express application builder, CORS & error pipeline
-│       ├── server.js            # Port listener & graceful shutdown handlers
-│       ├── config/              # env.config, db.config (pg.Pool), constants
-│       ├── controllers/         # HTTP handlers (auth, dashboard, harvest, quota, wallet)
-│       ├── services/            # Logika bisnis inti murni
-│       ├── repositories/        # Kueri database PostgreSQL terisolasi (parameterized SQL)
-│       ├── routes/              # Routing versioned /api/v1 (14 modul API)
-│       ├── middlewares/         # JWT auth, RBAC, error handler, latency logger, validator
-│       ├── validations/         # Schema sanitasi & validasi input fail-fast
-│       ├── utils/               # ApiError, ApiResponse, asyncHandler
-│       └── seed/                # Seeder idempoten untuk akun tester juri
-│
-└── tera-frontend/               # Client Web Application (Vite 8 + React 19 + Tailwind 4)
-    ├── .env                     # Variabel runtime frontend (VITE_API_URL)
-    ├── .env.example             # Template variabel frontend
-    ├── vite.config.js           # Konfigurasi Vite & Tailwind CSS v4
-    ├── index.html               # Master HTML template
-    ├── package.json             # Manifest dependensi client
-    ├── README.md                # Dokumentasi komprehensif frontend
-    └── src/
-        ├── main.jsx             # DOM mounting point
-        ├── App.jsx              # Routing, lazy suspense, dan global AuthProvider
-        ├── index.css            # Tailwind directives, custom scrollbar & utility classes
-        ├── api/                 # Axios client singleton & endpoints API terisolasi
-        ├── config/              # Variabel lingkungan client terpusat (env.js)
-        ├── constants/           # app.constants (klaster, tanaman, cuaca) & storage.keys
-        ├── context/             # AuthContext (state session & role switcher)
-        ├── hooks/               # useAuth, useLocalStorage
-        ├── utils/               # formatters (formatIDR), plantVisionEngine, validators
-        ├── components/
-        │   ├── common/          # Modal taktil, QRCodeImage, Button, Badge
-        │   └── layout/          # Header (telemetri IoT & sync pill), Sidebar, ProtectedRoute
-        ├── features/
-        │   ├── auth/            # AuthModals (Login & Register dialog)
-        │   └── dashboard/       # 8 Modul Tab Dasbor & dialog modal terkait
-        └── pages/               # Halaman mandiri: Home, Login, Register, Dashboard
-```
+| Modul | Endpoint | Akses | Fungsi |
+| :--- | :--- | :---: | :--- |
+| **Auth** | `POST /api/v1/auth/login` | Publik | Otentikasi & pengembalian JWT Bearer token |
+| | `POST /api/v1/auth/register` | Publik | Pendaftaran akun baru kultivator / distributor |
+| | `GET /api/v1/auth/me` | Bearer | Data profil, saldo dompet, dan poin XP |
+| **Health** | `GET /api/v1/health` | Publik | Uptime server Express & koneksi database PostgreSQL |
+| **Clusters** | `GET /api/v1/clusters` | Publik | Daftar klaster Lumbung RW & kapasitas crate aktif |
+| **Sensors** | `GET /api/v1/sensors/latest` | Publik | Data telemetri mikroklimat sensor IoT |
+| **Calculator** | `GET /api/v1/calculator/my` | Bearer | Daftar unit plot budidaya tersimpan milik pengguna |
+| | `POST /api/v1/calculator/save` | Bearer | Menyimpan estimasi kalkulator lahan ke database |
+| | `DELETE /api/v1/calculator/:id` | Bearer | Menghapus unit plot budidaya dari dasbor |
+| **Harvests** | `GET /api/v1/harvests/my` | Bearer | Riwayat tiket setor panen QR milik pengguna |
+| | `POST /api/v1/harvests/submit` | Bearer | Menerbitkan tiket setor panen QR ke Lumbung RW |
+| **Quotas** | `GET /api/v1/quotas` | Publik | Daftar kuota pengadaan sayur grosir distributor |
+| | `POST /api/v1/quotas/:id/book` | Bearer | Pemesanan alokasi kuota panen oleh distributor |
+| **Fleets** | `GET /api/v1/fleets` | Publik | Manifest rute dan jadwal armada cold chain |
+| | `PATCH /api/v1/fleets/:id/status`| Bearer | Pembaruan status operasional armada truk |
+| **Wallet** | `GET /api/v1/wallet` | Bearer | Rincian saldo dompet, dana escrow, & buku besar |
+| | `POST /api/v1/wallet/withdraw` | Bearer | Penarikan dana dompet ke rekening bank / e-wallet |
+| **Gamify** | `GET /api/v1/gamification/missions` | Bearer | Daftar misi budidaya & status klaim hadiah |
+| | `POST /api/v1/gamification/claim` | Bearer | Klaim hadiah poin XP dari misi yang selesai |
+| | `GET /api/v1/gamification/leaderboard` | Publik | Papan peringkat kultivator se-kelurahan |
 
 ---
 
-## 🌟 Fitur Utama Ekosistem
+## 🎯 Poin Plus Teknis & UX (Penilaian Juri)
 
-1. **Dashboard Monitoring Real-Time & Sensor IoT RW**:
-   - Menampilkan telemetri mikroklimat hidup (intensitas cahaya $W/m^2$, suhu lingkungan, pH air, kelembapan).
-   - Sinkronisasi paralel di latar belakang tanpa kedipan halaman (*zero flash-of-empty-content*).
-2. **Kalkulator Lahan AI Presisi**:
-   - Menghitung kapasitas lubang tanam berdasarkan 4 jenis struktur lahan (Balkon, Pekarangan, Rooftop, Dinding Vertikal), luas efektif, dan paparan sinar surya harian.
-   - Tombol *"Simpan ke Rencana Budidaya"* menyimpan simulasi ke database dan memunculkan unit pemantauan plot hidup.
-3. **Computer Vision AI Quality Inspection (Spektrometri Daun)**:
-   - Pemindaian spektral piksel kanvas dari webcam/foto: Indeks Klorofil SPAD, rasio klorosis/hama, dan penentuan sertifikasi komersial resmi (**Grade A+** hingga **Grade D**).
-   - Mengunci harga beli resmi per kg dan mentransfer sertifikasi ke lumbung secara instan.
-4. **Lumbung Komunitas & Tiket Setor QR Digital**:
-   - Agregasi panen mikro warga ke peti pendingin RW (*Crate Lumbung*) dengan kode batch unik (`TT-RW07-XXXXXX`) dan QR Code asli yang dapat dipindai.
-5. **Bursa Pasokan Panen Grosir Distributor**:
-   - Portal pengadaan sayur komersial B2B bagi restoran dan ritel dengan transparansi bobot terkumpul, harga kontrak, dan pemesanan kuota real-time.
-6. **Manifest Armada Logistik Cold Chain**:
-   - Penjadwalan dan pelacakan status armada truk berpendingin (*SCHEDULED* $\to$ *IN_TRANSIT* $\to$ *COMPLETED*) untuk menjaga kesegaran panen.
-7. **Smart Escrow Financial Wallet & Settlement**:
-   - Dana distributor dikunci dalam rekening bersama (*Smart Escrow*) dan dicairkan otomatis ke dompet warga saat tiket ditimbang. Dilengkapi simulasi penarikan saldo instan ke Bank/E-Wallet.
-8. **Misi Budidaya & Peringkat Komunal (Gamifikasi)**:
-   - Misi harian/mingguan berhadiah Poin XP, kenaikan pangkat kultivator, dan papan peringkat se-kelurahan.
+- **Parallel Background Data Fetching (`Promise.allSettled`):** Seluruh data dasbor dimuat secara paralel tanpa saling menghambat, mengeliminasi kedipan layar kosong saat memuat ulang halaman (*zero flash-of-empty-content*).
+- **Indikator Loading Halus (*Subtle & Noticeable*):** Menggunakan titik berdenyut (*animated ping dot*) bertema Neo-Brutalist yang memberikan kepastian status koneksi server.
+- **Bebas Native Browser Alert:** Seluruh dialog konfirmasi dan notifikasi penarikan saldo menggunakan modal dialog taktil kustom tanpa memicu pesan `localhost says...` standar peramban.
+- **Clean Layered Backend Architecture:** Pemisahan tegas antara *Controller* (HTTP), *Service* (Logika Bisnis), dan *Repository* (Kueri SQL Terparameterisasi anti-SQL Injection).
 
 ---
 
-## 📡 Dokumentasi Katalog RESTful API v1
-
-Backend TerasTani menyediakan arsitektur RESTful API berversi `/api/v1`:
-
-| Modul | Method | Endpoint | Hak Akses | Deskripsi |
-| :--- | :---: | :--- | :---: | :--- |
-| **Auth** | `POST` | `/api/v1/auth/login` | Publik | Otentikasi email & kata sandi, menghasilkan JWT Bearer |
-| | `POST` | `/api/v1/auth/register` | Publik | Registrasi akun kultivator atau distributor baru |
-| | `GET` | `/api/v1/auth/me` | Bearer | Mendapatkan data profil, saldo dompet, dan poin XP |
-| **Health** | `GET` | `/api/v1/health` | Publik | Diagnostik kesehatan server Express dan koneksi PostgreSQL |
-| **Clusters** | `GET` | `/api/v1/clusters` | Publik | Daftar klaster Lumbung RW dan kapasitas peti crate aktif |
-| **Sensors** | `GET` | `/api/v1/sensors/latest` | Publik | Data telemetri sensor lingkungan IoT per klaster RW |
-| **Calculator** | `GET` | `/api/v1/calculator/my` | Bearer | Mengambil seluruh plot budidaya tersimpan milik pengguna |
-| | `POST` | `/api/v1/calculator/save`| Bearer | Menyimpan hasil perhitungan simulasi lahan AI ke database |
-| | `DELETE`| `/api/v1/calculator/:id` | Bearer | Menghapus unit plot budidaya dari pemantauan dasbor |
-| **Harvests** | `GET` | `/api/v1/harvests/my` | Bearer | Riwayat tiket setor panen QR milik pengguna |
-| | `POST` | `/api/v1/harvests/submit` | Bearer | Menerbitkan tiket setor panen QR baru ke Lumbung RW |
-| **Quotas** | `GET` | `/api/v1/quotas` | Publik | Daftar alokasi kuota pengadaan grosir distributor |
-| | `POST` | `/api/v1/quotas/:id/book`| Bearer | Pemesanan alokasi kuota panen RW oleh distributor |
-| **Fleets** | `GET` | `/api/v1/fleets` | Publik | Jadwal dan status rute armada logistik cold chain |
-| | `PATCH`| `/api/v1/fleets/:id/status`| Bearer | Pembaruan status pergerakan armada penjemput |
-| **Wallet** | `GET` | `/api/v1/wallet` | Bearer | Rincian saldo dompet, dana tertahan di escrow, & mutasi |
-| | `POST` | `/api/v1/wallet/withdraw`| Bearer | Penarikan saldo dompet ke rekening bank atau e-wallet |
-| **Gamify** | `GET` | `/api/v1/gamification/missions`| Bearer | Daftar quest harian & mingguan beserta status klaim |
-| | `POST` | `/api/v1/gamification/claim` | Bearer | Mengklaim hadiah XP dari misi budidaya yang selesai |
-| | `GET` | `/api/v1/gamification/leaderboard`| Publik | Papan peringkat kultivator teraktif di kelurahan |
-
----
-
-## 🎨 Design System & Estetika Visual
-
-TerasTani menerapkan pendekatan desain **Tactile Editorial Neo-Brutalism & Botanical Luxury**:
-- **Palet Warna Alami**:
-  - *Ivory / Paper*: `#F4F0E8` / `#FAF9F6` (latar belakang taktil lembut)
-  - *Botanical Moss*: `#0B1912` / `#122B1E` / `#24553B` (hijau kanopi hutan)
-  - *Harvest Ochre*: `#C9942B` / `#DEAB42` (emas kematangan panen)
-  - *Ink*: `#171715` (tinta hitam arsitektural)
-- **Komponen Taktil 2D**: Border tegas `border-2 border-ink`, bayangan offset solid (`shadow-[4px_4px_0px_0px_#171715]`), tipografi serif editorial dipadukan monospace tabular.
-- **Bebas Alert Peramban**: Seluruh interaksi menggunakan modal pop-up taktil beranimasi halus tanpa memicu `localhost says` peramban.
-
----
-
-## 📚 Sub-Modul Repositori
-
-Untuk dokumentasi teknis mendalam per modul aplikasi:
-- [📖 Dokumentasi Frontend Client (`tera-frontend/README.md`)](./tera-frontend/README.md)
-- [📖 Dokumentasi Backend API Core (`tera-backend/README.md`)](./tera-backend/README.md)
-- [📄 Panduan Lengkap Konseptual Sistem Dari Nol](./panduan_lengkap_terastani_dari_nol.md)
-
----
-
-## 📄 Lisensi & Tim Pengembang
-
-Hak Cipta &copy; 2026 TerasTani Nusantara Inc. Seluruh hak cipta dilindungi undang-undang.  
-Dikembangkan untuk kompetisi inovasi digital agrikultur dan ketahanan pangan nasional.
+<p align="center">
+  <b>TerasTani Nusantara &copy; 2026. Decentralized Urban Agriculture Platform.</b>
+</p>
