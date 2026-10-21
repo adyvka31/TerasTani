@@ -34,7 +34,7 @@ class QuotaRepository {
       SELECT dq.*, u.name AS distributor_name
       FROM distributor_quotas dq
       LEFT JOIN users u ON u.id = dq.distributor_id
-      WHERE dq.cluster_id = $1 AND dq.status IN ('OPEN', 'PARTIALLY_FILLED')
+      WHERE dq.cluster_id = $1 AND dq.status IN ('OPEN', 'PARTIALLY_FILLED', 'IN_PROGRESS')
       ORDER BY dq.end_date ASC
     `;
     const result = await query(text, [clusterId]);
@@ -47,7 +47,7 @@ class QuotaRepository {
       FROM distributor_quotas dq
       LEFT JOIN users u ON u.id = dq.distributor_id
       LEFT JOIN clusters c ON c.id = dq.cluster_id
-      WHERE dq.status IN ('OPEN', 'PARTIALLY_FILLED')
+      WHERE dq.status IN ('OPEN', 'PARTIALLY_FILLED', 'IN_PROGRESS')
       ORDER BY dq.end_date ASC
     `;
     const result = await query(text);

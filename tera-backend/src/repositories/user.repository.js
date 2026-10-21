@@ -11,7 +11,7 @@ class UserRepository {
    * @returns {Promise<object|null>}
    */
   async findByEmail(email) {
-    const text = 'SELECT id, name, email, password, role FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1';
+    const text = 'SELECT id, name, email, password, role, xp_points, user_level, wallet_balance, cluster_id, avatar_url FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1';
     const result = await query(text, [email]);
     return result.rows[0] || null;
   }
@@ -22,7 +22,7 @@ class UserRepository {
    * @returns {Promise<object|null>}
    */
   async findById(id) {
-    const text = 'SELECT id, name, email, role FROM users WHERE id = $1 LIMIT 1';
+    const text = 'SELECT id, name, email, role, xp_points, user_level, wallet_balance, cluster_id, avatar_url, created_at FROM users WHERE id = $1 LIMIT 1';
     const result = await query(text, [id]);
     return result.rows[0] || null;
   }

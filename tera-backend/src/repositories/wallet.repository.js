@@ -99,11 +99,11 @@ class WalletRepository {
         [userId, amount]
       );
 
-      // 2. Create escrow release transaction
+      // 2. Create escrow release transaction (HARVEST_PAYOUT)
       const refCode = `ESC-${Date.now()}-${Math.floor(Math.random() * 9999)}`;
       const txRes = await client.query(
         `INSERT INTO wallet_transactions (user_id, harvest_submission_id, amount, type, status, reference_code, processed_at)
-         VALUES ($1, $2, $3, 'ESCROW_RELEASE', 'COMPLETED', $4, NOW())
+         VALUES ($1, $2, $3, 'HARVEST_PAYOUT', 'COMPLETED', $4, NOW())
          RETURNING *`,
         [userId, harvestSubmissionId, amount, refCode]
       );
@@ -125,16 +125,39 @@ class WalletRepository {
   }
 
   async getSummary(userId) {
-    const text = `
+    const txSummaryText = `
       SELECT
         COALESCE(SUM(CASE WHEN type = 'WITHDRAWAL' AND status = 'COMPLETED' THEN amount ELSE 0 END), 0) AS total_withdrawn,
-        COALESCE(SUM(CASE WHEN type = 'ESCROW_RELEASE' AND status = 'COMPLETED' THEN amount ELSE 0 END), 0) AS total_earned,
-        COALESCE(SUM(CASE WHEN status = 'PENDING' THEN amount ELSE 0 END), 0) AS pending_escrow
+        COALESCE(SUM(CASE WHEN type IN ('HARVEST_PAYOUT', 'ESCROW_RELEASE', 'BONUS') AND status = 'COMPLETED' THEN amount ELSE 0 END), 0) AS total_earned,
+        COALESCE(SUM(CASE WHEN status = 'PENDING' THEN amount ELSE 0 END), 0) AS tx_pending_escrow
       FROM wallet_transactions
       WHERE user_id = $1
     `;
-    const result = await query(text, [userId]);
-    return result.rows[0];
+    const harvestEscrowText = `
+      SELECT COALESCE(SUM(
+        hs.claimed_weight_kg * CASE 
+          WHEN hs.crop_name LIKE '%Mint%' THEN 45000
+          WHEN hs.crop_name LIKE '%Bayam%' THEN 35000
+          WHEN hs.crop_name LIKE '%Pakcoy%' THEN 24000
+          ELSE 28500
+        END
+      ), 0) AS harvest_pending_escrow
+      FROM harvest_submissions hs
+      WHERE hs.user_id = $1 AND hs.status IN ('PENDING_HOME', 'HOME_VALIDATED', 'PHYSICAL_CHECKED')
+    `;
+    const [txRes, harvestRes] = await Promise.all([
+      query(txSummaryText, [userId]),
+      query(harvestEscrowText, [userId]),
+    ]);
+    const txRow = txRes.rows[0] || {};
+    const harvestRow = harvestRes.rows[0] || {};
+    const totalPending = parseFloat(txRow.tx_pending_escrow || 0) + parseFloat(harvestRow.harvest_pending_escrow || 0);
+
+    return {
+      total_withdrawn: parseFloat(txRow.total_withdrawn || 0),
+      total_earned: parseFloat(txRow.total_earned || 0),
+      pending_escrow: totalPending,
+    };
   }
 }
 

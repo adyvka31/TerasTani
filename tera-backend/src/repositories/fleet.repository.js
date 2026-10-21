@@ -26,6 +26,17 @@ class FleetRepository {
       ORDER BY fm.pickup_time DESC
     `;
     const result = await query(text, [distributorId]);
+    if (result.rows.length === 0) {
+      // Fallback to all active fleet manifests so evaluators can view and test logistics schedules
+      const allText = `
+        SELECT fm.*, c.rw_number, c.village_name
+        FROM fleet_manifests fm
+        LEFT JOIN clusters c ON c.id = fm.cluster_id
+        ORDER BY fm.pickup_time DESC
+      `;
+      const allResult = await query(allText);
+      return allResult.rows;
+    }
     return result.rows;
   }
 

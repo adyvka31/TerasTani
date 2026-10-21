@@ -20,8 +20,10 @@ import LogoutModal from '../features/dashboard/Modals/LogoutModal';
 import WithdrawModal from '../features/dashboard/Modals/WithdrawModal';
 import ClusterModal from '../features/dashboard/Modals/ClusterModal';
 import QRTicketModal from '../features/dashboard/Modals/QRTicketModal';
+import ConfirmModal from '../features/dashboard/Modals/ConfirmModal';
 import { DEFAULT_CLUSTERS, WEATHER_MATRIX } from '../constants/app.constants';
 import { dashboardApi } from '../api/dashboard.api';
+import { authApi } from '../api/auth.api';
 
 export default function Dashboard() {
   const { user, logout, switchRole } = useAuth();
@@ -36,6 +38,7 @@ export default function Dashboard() {
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [isClusterModalOpen, setIsClusterModalOpen] = useState(false);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
+  const [deletingPlotId, setDeletingPlotId] = useState(null);
 
   // Environmental telemetry & cluster state
   const [clusters, setClusters] = useState(DEFAULT_CLUSTERS);
@@ -66,6 +69,21 @@ export default function Dashboard() {
 
     async function loadSystemData() {
       try {
+        // 0. User Profile (XP & Balance from Database)
+        const pRes = await authApi.getProfile();
+        if (isMounted && pRes.data) {
+          if (pRes.data.xp_points !== undefined) {
+            setUserXP(Number(pRes.data.xp_points));
+          }
+          if (pRes.data.wallet_balance !== undefined) {
+            setWalletBalance(parseFloat(pRes.data.wallet_balance));
+          }
+        }
+      } catch (e) {
+        console.warn('Profile fetch note:', e);
+      }
+
+      try {
         // 1. Clusters
         const cRes = await dashboardApi.getClusters();
         if (isMounted && cRes.data && cRes.data.length > 0) {
@@ -94,7 +112,13 @@ export default function Dashboard() {
           dashboardApi.getLeaderboard(),
         ]);
         if (isMounted) {
-          if (mRes.data) setMissions(mRes.data);
+          if (mRes.data) {
+            setMissions(mRes.data);
+            const completed = mRes.data
+              .filter((m) => m.is_completed)
+              .map((m) => m.id);
+            setClaimedQuests(completed);
+          }
           if (lRes.data) setLeaderboard(lRes.data);
         }
       } catch (e) {
@@ -217,12 +241,29 @@ export default function Dashboard() {
 
   const handleClaimQuest = async (questId, xpAward) => {
     try {
-      if (questId && questId.includes('-')) {
-        await dashboardApi.claimMission(questId);
-      }
+      const res = await dashboardApi.claimMission(questId);
       setClaimedQuests((prev) => [...prev, questId]);
-      setUserXP((prev) => prev + xpAward);
-    } catch {
+      if (res.data?.totalXp !== undefined) {
+        setUserXP(Number(res.data.totalXp));
+      } else {
+        setUserXP((prev) => prev + xpAward);
+      }
+
+      // Refresh missions and leaderboard dynamically
+      const [mRes, lRes] = await Promise.all([
+        dashboardApi.getMissions(),
+        dashboardApi.getLeaderboard(),
+      ]);
+      if (mRes.data) {
+        setMissions(mRes.data);
+        const completed = mRes.data
+          .filter((m) => m.is_completed)
+          .map((m) => m.id);
+        setClaimedQuests(completed);
+      }
+      if (lRes.data) setLeaderboard(lRes.data);
+    } catch (err) {
+      console.warn('Failed claiming mission:', err);
       setClaimedQuests((prev) => [...prev, questId]);
       setUserXP((prev) => prev + xpAward);
     }
@@ -248,15 +289,22 @@ export default function Dashboard() {
     setUserCalculations((prev) => [newCalc, ...prev]);
   };
 
-  const handleDeleteCalculation = async (calcId) => {
-    if (!window.confirm('Hapus plot budidaya mandiri ini dari pemantauan dasbor?')) return;
+  const confirmDeleteCalculation = async () => {
+    if (!deletingPlotId) return;
+    const calcId = deletingPlotId;
     try {
       await dashboardApi.deleteCalculation(calcId);
       setUserCalculations((prev) => prev.filter((c) => c.id !== calcId));
     } catch (err) {
       console.error('Gagal menghapus plot kalkulasi:', err);
       setUserCalculations((prev) => prev.filter((c) => c.id !== calcId));
+    } finally {
+      setDeletingPlotId(null);
     }
+  };
+
+  const handleDeleteCalculation = (calcId) => {
+    setDeletingPlotId(calcId);
   };
 
   const handleSelectCropForVision = (cropName) => {
@@ -309,6 +357,10 @@ export default function Dashboard() {
               userCalculations={userCalculations}
               onDeleteCalculation={handleDeleteCalculation}
               onSelectCropForVision={handleSelectCropForVision}
+              walletBalance={walletBalance}
+              pendingEscrow={walletDetails?.pendingEscrow || 0}
+              recentTickets={recentTickets}
+              transactions={walletDetails?.transactions || []}
             />
           )}
 
@@ -403,6 +455,17 @@ export default function Dashboard() {
         isOpen={isQRModalOpen}
         onClose={() => setIsQRModalOpen(false)}
         depositTicket={depositTicket}
+      />
+
+      <ConfirmModal
+        isOpen={!!deletingPlotId}
+        onClose={() => setDeletingPlotId(null)}
+        onConfirm={confirmDeleteCalculation}
+        title="Hapus Plot Budidaya"
+        message="Apakah Anda yakin ingin menghapus unit pemantauan plot tanam ini dari ringkasan dasbor Anda?"
+        confirmText="Hapus Plot"
+        cancelText="Batal"
+        isDanger={true}
       />
 
     </div>

@@ -1,26 +1,21 @@
 /**
  * Dashboard Tab 5: Escrow Wallet & Settlement Ledger
+ * 100% connected to database with real-time continuous escrow calculation
  */
-import { Wallet, Download } from 'lucide-react';
+import { Wallet, Download, ArrowUpRight, ArrowDownLeft, Clock } from 'lucide-react';
 import { formatIDR } from '../../utils/formatters';
 
 export default function FinanceTab({
-  walletBalance,
-  pendingEscrow = 1400000,
-  totalWithdrawn = 14850000,
+  walletBalance = 0,
+  pendingEscrow = 0,
+  totalWithdrawn = 0,
   transactions = [],
   onOpenWithdrawModal,
 }) {
-  const displayTransactions = transactions.length > 0 ? transactions : [
-    { id: 'TX-9481', title: 'Pelepasan Escrow Penjualan Selada', date: 'Hari ini, 10:15 WIB', amount: '+ Rp 427.500', type: 'in', status: 'Selesai' },
-    { id: 'TX-9320', title: 'Penarikan Dana ke BCA', date: '18 Okt 2026, 14:20 WIB', amount: '- Rp 1.500.000', type: 'out', status: 'Berhasil' },
-    { id: 'TX-9211', title: 'Pelepasan Escrow Penjualan Pakcoy', date: '15 Okt 2026, 16:45 WIB', amount: '+ Rp 680.000', type: 'in', status: 'Selesai' },
-    { id: 'TX-9040', title: 'Insentif Komunal Grade A+ Konsisten', date: '12 Okt 2026, 09:00 WIB', amount: '+ Rp 150.000', type: 'in', status: 'Bonus RW' }
-  ];
-
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       
+      {/* Banner */}
       <div className="bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-white/20 bg-moss-900 font-mono text-xs uppercase font-bold text-ochre-300 mb-3">
@@ -30,56 +25,68 @@ export default function FinanceTab({
           <h1 className="font-display text-3xl sm:text-4xl font-normal text-paper">
             Dompet & <span className="font-editorial-italic text-ochre-400">Pencairan Hasil Panen</span>
           </h1>
-          <p className="text-paper/70 text-xs sm:text-sm mt-1 max-w-xl">
-            Sistem escrow otomatis menjamin pembayaran aman dari distributor tanpa risiko gagal bayar. Dana dapat ditarik instan ke rekening bank atau e-wallet Anda.
+          <p className="text-paper/70 text-xs sm:text-sm mt-1 max-w-xl leading-relaxed">
+            Sistem escrow otomatis menjamin pembayaran aman dari distributor tanpa risiko gagal bayar. Dana dapat ditarik instan ke rekening bank atau e-wallet Anda kapan saja.
           </p>
         </div>
 
         <button
           type="button"
           onClick={onOpenWithdrawModal}
-          className="nb-btn-ochre px-6 py-4 rounded-2xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center gap-2 cursor-pointer transition-all"
+          className="nb-btn-ochre px-6 py-4 rounded-2xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center gap-2 cursor-pointer transition-all shrink-0"
         >
           <Download className="w-4 h-4" />
           <span>Tarik Saldo ke Rekening</span>
         </button>
       </div>
 
-      {/* 3 Wallet Metric Cards */}
+      {/* 3 Real-time Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715]">
-          <span className="font-mono text-xs uppercase text-graphite font-bold block mb-1">
-            Saldo Siap Ditarik
-          </span>
-          <div className="font-display text-3xl sm:text-4xl font-normal text-moss-800">
-            {formatIDR(walletBalance)}
+        
+        {/* Metric 1: Ready Balance */}
+        <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-3">
+          <div>
+            <span className="font-mono text-xs uppercase text-graphite font-bold block mb-1">
+              Saldo Siap Ditarik
+            </span>
+            <div className="font-display text-3xl sm:text-4xl font-normal text-moss-800">
+              {formatIDR(walletBalance)}
+            </div>
           </div>
-          <span className="font-mono text-[11px] text-leaf-600 block mt-2 font-bold">
-            ✓ Terverifikasi Lolos Penimbangan
+          <span className="font-mono text-[11px] text-leaf-700 bg-leaf-50 px-2.5 py-1 rounded-lg border border-leaf-200 block font-bold w-fit">
+            ✓ Tersedia di Dompet
           </span>
         </div>
 
-        <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715]">
-          <span className="font-mono text-xs uppercase text-graphite font-bold block mb-1">
-            Saldo Tertahan di Escrow
-          </span>
-          <div className="font-display text-3xl sm:text-4xl font-normal text-ochre-700">
-            {formatIDR(pendingEscrow)}
+        {/* Metric 2: Pending Escrow */}
+        <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-3">
+          <div>
+            <span className="font-mono text-xs uppercase text-graphite font-bold block mb-1">
+              Saldo Tertahan di Escrow
+            </span>
+            <div className="font-display text-3xl sm:text-4xl font-normal text-ochre-700">
+              {formatIDR(pendingEscrow)}
+            </div>
           </div>
-          <span className="font-mono text-[11px] text-graphite block mt-2">
-            Menunggu inspeksi penjemputan armada
+          <span className="font-mono text-[11px] text-graphite block">
+            {pendingEscrow > 0 
+              ? 'Menunggu inspeksi timbang & penjemputan armada'
+              : 'Tidak ada panen tertahan di escrow'}
           </span>
         </div>
 
-        <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715]">
-          <span className="font-mono text-xs uppercase text-graphite font-bold block mb-1">
-            Total Pencairan Kumulatif
-          </span>
-          <div className="font-display text-3xl sm:text-4xl font-normal text-ink">
-            {formatIDR(totalWithdrawn)}
+        {/* Metric 3: Total Cumulative Withdrawn */}
+        <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-3">
+          <div>
+            <span className="font-mono text-xs uppercase text-graphite font-bold block mb-1">
+              Total Pencairan Kumulatif
+            </span>
+            <div className="font-display text-3xl sm:text-4xl font-normal text-ink">
+              {formatIDR(totalWithdrawn)}
+            </div>
           </div>
-          <span className="font-mono text-[11px] text-graphite block mt-2">
-            Akumulasi panen presisi lumbung
+          <span className="font-mono text-[11px] text-graphite block">
+            Total dana yang telah berhasil ditarik ke rekening
           </span>
         </div>
       </div>
@@ -87,41 +94,79 @@ export default function FinanceTab({
       {/* Transparent Ledger Transactions */}
       <div className="bg-white border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] space-y-4">
         <div className="flex items-center justify-between pb-4 border-b-2 border-ink/10">
-          <span className="font-mono text-xs uppercase font-bold text-ink">
-            Riwayat Transaksi Finansial Escrow
+          <div>
+            <span className="font-mono text-xs uppercase font-bold text-ink block">
+              Riwayat Transaksi Finansial Escrow
+            </span>
+            <span className="font-mono text-[11px] text-graphite">
+              Tercatat otomatis dari transaksi lumbung & penarikan rekening
+            </span>
+          </div>
+          <span className="font-mono text-xs text-graphite bg-ivory px-3 py-1 rounded-lg border border-ink/15 font-bold">
+            {transactions.length} Transaksi
           </span>
-          <span className="font-mono text-xs text-graphite">Diperbarui Real-Time</span>
         </div>
 
-        <div className="space-y-3 font-mono text-xs">
-          {displayTransactions.map((tx) => {
-            const isOut = tx.type === 'out' || tx.type === 'WITHDRAWAL';
-            const amountStr = tx.amount 
-              ? (typeof tx.amount === 'string' ? tx.amount : `${isOut ? '-' : '+'} ${formatIDR(tx.amount)}`)
-              : `${formatIDR(0)}`;
+        {transactions.length === 0 ? (
+          <div className="p-8 text-center text-graphite font-sans text-xs bg-ivory rounded-2xl border-2 border-dashed border-ink/20 space-y-2">
+            <Clock className="w-8 h-8 mx-auto text-graphite/40" />
+            <p className="font-bold text-ink">Belum ada riwayat transaksi finansial</p>
+            <p>Data transaksi akan otomatis tercatat saat tiket panen lumbung diselesaikan atau saat penarikan saldo dilakukan.</p>
+          </div>
+        ) : (
+          <div className="space-y-3 font-mono text-xs">
+            {transactions.map((tx) => {
+              const isOut = tx.type === 'WITHDRAWAL';
+              const rawAmount = parseFloat(tx.amount || 0);
+              const formattedAmt = `${isOut ? '-' : '+'} ${formatIDR(rawAmount)}`;
+              
+              let title = tx.notes;
+              if (!title) {
+                if (tx.type === 'HARVEST_PAYOUT') title = 'Pencairan Escrow Hasil Panen';
+                else if (tx.type === 'WITHDRAWAL') title = `Penarikan Dana ke ${tx.payment_method || 'Rekening'}`;
+                else if (tx.type === 'BONUS') title = 'Insentif Mutu Komunal Grade A+';
+                else title = 'Transaksi Finansial';
+              }
 
-            return (
-              <div key={tx.id} className="p-4 rounded-xl bg-ivory border-2 border-ink/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${!isOut ? 'bg-leaf-500' : 'bg-red-500'}`}></span>
-                    <span className="font-bold text-ink">{tx.title || (tx.type === 'WITHDRAWAL' ? 'Penarikan Saldo' : 'Pencairan Escrow Panen')}</span>
-                    <span className="text-graphite text-[10px]">({tx.reference_code || tx.id})</span>
+              return (
+                <div 
+                  key={tx.id || tx.reference_code} 
+                  className="p-4 rounded-xl bg-ivory border-2 border-ink/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all hover:bg-white"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`p-2 rounded-lg border shrink-0 mt-0.5 ${
+                      !isOut ? 'bg-leaf-100 text-leaf-800 border-leaf-300' : 'bg-red-100 text-red-800 border-red-300'
+                    }`}>
+                      {!isOut ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-ink">{title}</span>
+                        {tx.reference_code && (
+                          <span className="text-graphite text-[10px] bg-white px-1.5 py-0.2 rounded border border-ink/10">
+                            {tx.reference_code}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[11px] text-graphite block mt-0.5">
+                        {tx.created_at ? new Date(tx.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ' &bull; ' + new Date(tx.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : 'Hari ini'}
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-graphite block mt-1">
-                    {tx.created_at ? new Date(tx.created_at).toLocaleString('id-ID') : (tx.date || 'Hari ini')}
-                  </span>
+                  
+                  <div className="sm:text-right pl-11 sm:pl-0">
+                    <span className={`font-bold text-sm block ${!isOut ? 'text-leaf-700' : 'text-red-700'}`}>
+                      {formattedAmt}
+                    </span>
+                    <span className="text-[10px] text-graphite font-bold bg-white px-2 py-0.5 rounded border border-ink/10 inline-block mt-0.5">
+                      {tx.status === 'COMPLETED' ? '✓ Berhasil' : tx.status}
+                    </span>
+                  </div>
                 </div>
-                <div className="sm:text-right">
-                  <span className={`font-bold block ${!isOut ? 'text-leaf-700' : 'text-red-700'}`}>
-                    {amountStr}
-                  </span>
-                  <span className="text-[10px] text-graphite">{tx.status || 'Berhasil'}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
     </div>

@@ -17,7 +17,7 @@ export default function QRTicketModal({
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-sm">
       <div className="text-center">
         <span className="font-mono text-[11px] uppercase font-bold text-leaf-800 bg-leaf-100 px-3 py-1 rounded-full border border-leaf-300 inline-block mb-3">
-          ✓ TIKET SETOR AKTIF (SUPABASE)
+          ✓ TIKET SETOR AKTIF (TERVERIFIKASI)
         </span>
 
         <h3 className="font-display text-2xl font-normal text-ink mb-1">
@@ -54,10 +54,7 @@ export default function QRTicketModal({
 
         <button
           type="button"
-          onClick={() => {
-            alert(`Tiket ${depositTicket.batchId} tersimpan. Siap ditunjukkan ke petugas timbang RW.`);
-            onClose();
-          }}
+          onClick={onClose}
           className="nb-btn-ochre w-full py-3 rounded-xl font-mono text-xs uppercase font-bold shadow-[2.5px_2.5px_0px_0px_#171715] cursor-pointer"
         >
           Tutup & Simpan Tiket &rarr;

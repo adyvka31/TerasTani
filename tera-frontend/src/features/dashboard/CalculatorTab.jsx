@@ -92,7 +92,7 @@ export default function CalculatorTab({
 
       setTimeout(() => setCalcSavedNotice(false), 5000);
     } catch (err) {
-      console.error("Gagal menyimpan kalkulasi ke Supabase:", err);
+      console.error("Gagal menyimpan kalkulasi ke database:", err);
       // Fallback local update
       setUserXP((prev) => prev + 50);
       setCalcSavedNotice(true);
@@ -344,7 +344,7 @@ export default function CalculatorTab({
               <Check className="w-4 h-4" />
               <span>
                 {isSaving
-                  ? "Menyimpan ke Supabase..."
+                  ? "Menyimpan ke Database..."
                   : "Simpan ke Rencana Budidaya (+50 XP)"}
               </span>
             </button>
@@ -352,7 +352,7 @@ export default function CalculatorTab({
             {calcSavedNotice && (
               <div className="p-3.5 rounded-xl bg-leaf-500/20 border border-leaf-400 text-leaf-200 font-mono text-xs text-center animate-in fade-in space-y-2">
                 <p className="font-bold">
-                  ✓ Rencana budidaya berhasil disimpan ke Supabase!
+                  ✓ Rencana budidaya berhasil disimpan ke database!
                 </p>
                 {onSelectTab && (
                   <button

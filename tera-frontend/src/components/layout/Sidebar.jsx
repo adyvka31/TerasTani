@@ -134,7 +134,7 @@ export default function Sidebar({
                 <Camera className="w-4 h-4" />
                 <span>Inspeksi Mutu AI</span>
               </div>
-              <span className="text-[10px] bg-leaf-500 text-ink font-bold px-1.5 py-0.5 rounded">Grade A</span>
+              <span className="text-[10px] bg-white/15 px-2 py-0.5 rounded text-paper font-bold">Engine</span>
             </button>
 
             {/* Tab 4: Lumbung & QR */}
@@ -151,7 +151,6 @@ export default function Sidebar({
                 <QrCode className="w-4 h-4" />
                 <span>Lumbung & Tiket QR</span>
               </div>
-              <span className="text-[10px] bg-ochre-500/30 text-ochre-300 px-2 py-0.5 rounded font-bold">RW 07</span>
             </button>
 
             {/* Tab 5: Escrow & Dompet */}
@@ -168,7 +167,6 @@ export default function Sidebar({
                 <Wallet className="w-4 h-4" />
                 <span>Escrow & Dompet</span>
               </div>
-              <span className="text-[10px] text-leaf-300 font-bold">Rp 2.45M</span>
             </button>
 
             {/* Tab 6: Gamifikasi & Quest */}
@@ -185,7 +183,6 @@ export default function Sidebar({
                 <Award className="w-4 h-4" />
                 <span>Misi & Peringkat</span>
               </div>
-              <span className="text-[10px] bg-ochre-400 text-ink font-bold px-1.5 py-0.5 rounded">+50 XP</span>
             </button>
 
             {/* Additional Distributor Tabs */}
@@ -270,7 +267,7 @@ export default function Sidebar({
               <ShieldCheck className="w-3.5 h-3.5 text-leaf-400" />
               <span>Node RSA-4096 Terhubung</span>
             </span>
-            <span className="text-ochre-300 font-bold">Postgres Live</span>
+            <span className="text-ochre-300 font-bold">Database Live</span>
           </div>
 
         </div>

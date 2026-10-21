@@ -107,21 +107,21 @@ export default function LumbungTab({
       </div>
 
       {/* QR Generation & Hub Schedule Grid */}
-      <div className="grid lg:grid-cols-12 gap-8 items-stretch">
+      <div className="grid lg:grid-cols-12 gap-8 items-start">
         {/* Left: Input Form for QR Dispatch Ticket */}
-        <div className="lg:col-span-6 bg-white border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-5">
+        <div className="lg:col-span-6 bg-white border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-start space-y-5">
           <div className="pb-4 border-b-2 border-ink/10">
             <span className="font-mono text-xs uppercase font-bold text-ink block">
               Formulir Setor Panen Baru
             </span>
             <p className="text-xs text-graphite mt-0.5">
               Sistem akan menerbitkan tiket QR dan mencatat data transaksi panen
-              langsung ke Supabase.
+              langsung ke database.
             </p>
           </div>
 
           {/* AI Certification Attached Notice */}
-          {certifiedVisionData && certifiedVisionData.crop === depositCrop && (
+          {certifiedVisionData && certifiedVisionData.crop === depositCrop ? (
             <div className="p-3.5 rounded-xl bg-leaf-50 border-2 border-leaf-300 font-mono text-xs text-leaf-900 flex items-center justify-between shadow-[2px_2px_0px_0px_#598E3D]">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-leaf-600 shrink-0" />
@@ -133,6 +133,11 @@ export default function LumbungTab({
               <span className="font-bold text-moss-900">
                 {formatIDR(currentPricePerKg)}/kg
               </span>
+            </div>
+          ) : (
+            <div className="p-3.5 rounded-xl bg-ivory border-2 border-dashed border-ink/20 font-mono text-xs text-graphite flex items-center justify-between">
+              <span>Sertifikasi Mutu AI belum dilampirkan</span>
+              <span className="text-[10px] text-ink font-bold">Grade Standar</span>
             </div>
           )}
 
@@ -361,7 +366,7 @@ export default function LumbungTab({
             <div className="space-y-2">
               <span className="font-mono text-[11px] uppercase font-bold text-graphite flex items-center gap-1.5">
                 <Layers className="w-3.5 h-3.5 text-moss-800" />
-                Riwayat Tiket Tersimpan di Supabase ({recentTickets.length})
+                Riwayat Tiket ({recentTickets.length})
               </span>
               <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin">
                 {recentTickets.slice(0, 5).map((tk) => {

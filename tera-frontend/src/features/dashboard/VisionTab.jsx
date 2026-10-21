@@ -51,6 +51,7 @@ export default function VisionTab({
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState(null);
   const [scanError, setScanError] = useState(null);
+  const [sendSuccessNotice, setSendSuccessNotice] = useState(false);
 
   const fileInputRef = useRef(null);
   const videoRef = useRef(null);
@@ -179,16 +180,6 @@ export default function VisionTab({
 
       setScanResult(finalResult);
 
-      if (setCertifiedVisionData) {
-        setCertifiedVisionData({
-          crop,
-          grade: finalResult.grade,
-          pricePerKg: finalResult.priceGuarantee,
-          metrics: analysis,
-          imageUrl: imageSrc,
-        });
-      }
-
       // Sync and certify with backend in the background
       dashboardApi
         .analyzeVisionSample({
@@ -301,7 +292,10 @@ export default function VisionTab({
         imageUrl: selectedImageSrc,
       });
     }
-    onSelectTab("lumbung");
+    setSendSuccessNotice(true);
+    setTimeout(() => {
+      onSelectTab("lumbung");
+    }, 600);
   };
 
   return (
@@ -718,14 +712,22 @@ export default function VisionTab({
                   </p>
                 </div>
 
+                {sendSuccessNotice && (
+                  <div className="p-3 rounded-xl bg-leaf-100 border-2 border-leaf-400 text-leaf-900 font-mono text-xs flex items-center justify-between shadow-[2px_2px_0px_0px_#598E3D] animate-in fade-in">
+                    <span>✓ Sertifikasi mutu berhasil dikirim ke Lumbung RW! Mengalihkan...</span>
+                    <CheckCircle2 className="w-4 h-4 text-leaf-700 shrink-0" />
+                  </div>
+                )}
+
                 {/* Forward to Lumbung RW Button */}
                 <button
                   type="button"
+                  disabled={sendSuccessNotice}
                   onClick={handleProceedToLumbung}
-                  className="nb-btn-ochre w-full py-3.5 rounded-xl font-mono text-xs uppercase font-bold shadow-[2px_2px_0px_0px_#171715] flex items-center justify-center gap-2 cursor-pointer transition-all"
+                  className="nb-btn-ochre w-full py-3.5 rounded-xl font-mono text-xs uppercase font-bold shadow-[2px_2px_0px_0px_#171715] flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-75"
                 >
                   <QrCode className="w-4 h-4" />
-                  <span>Kirim Sertifikasi ke Lumbung RW &rarr;</span>
+                  <span>{sendSuccessNotice ? "Terkirim ke Lumbung RW ✓" : "Kirim Sertifikasi ke Lumbung RW →"}</span>
                 </button>
               </div>
             ) : (

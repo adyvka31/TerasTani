@@ -11,19 +11,23 @@ export default function GamificationTab({
   onClaimQuest,
   leaderboard = [],
 }) {
-  const displayMissions = missions.length > 0 ? missions : [
-    { id: 'q1', title: 'Catat pH & EC Air 3 Hari Berturut', reward_xp: 50, description: 'Jaga kestabilan nutrisi tandon hidroponik pekarangan Anda.' },
-    { id: 'q2', title: 'Validasi Foto Panen dengan Kamera AI', reward_xp: 75, description: 'Gunakan fitur Computer Vision untuk memastikan standar mutu Grade A.' },
-    { id: 'q3', title: 'Setor Minimal 10 kg ke Crate Lumbung', reward_xp: 120, description: 'Bantu klaster RW Anda mencapai kuota truk logistik mingguan.' }
-  ];
+  const displayMissions = missions;
 
-  const displayLeaderboard = leaderboard.length > 0 ? leaderboard : [
-    { rank: 1, name: 'Siti Rahmawati (RT 03)', xp: '2.420 XP', kg: '84 kg', medal: '🥇' },
-    { rank: 2, name: 'Bambang Trianto (RT 05)', xp: '1.890 XP', kg: '62 kg', medal: '🥈' },
-    { rank: 3, name: `${user?.name || 'Adyvka'} (Anda)`, xp: `${userXP} XP`, kg: '42.5 kg', medal: '🥉', isSelf: true },
-    { rank: 4, name: 'Kurniawan H. (RT 01)', xp: '1.210 XP', kg: '38 kg' },
-    { rank: 5, name: 'Dewi Anggraini (RT 07)', xp: '980 XP', kg: '31 kg' }
-  ];
+  const medals = ['🥇', '🥈', '🥉'];
+  const displayLeaderboard = leaderboard.map((row, idx) => {
+    const isSelf = user && (row.id === user.id || row.email === user.email);
+    const xpVal = row.xp_points !== undefined ? Number(row.xp_points) : (row.xp || 0);
+    const kgVal = row.total_harvest_kg !== undefined ? `${parseFloat(row.total_harvest_kg).toFixed(1)} kg` : (row.kg || '0.0 kg');
+    return {
+      ...row,
+      rank: idx + 1,
+      medal: medals[idx] || `#${idx + 1}`,
+      isSelf,
+      nameDisplay: isSelf ? `${row.name} (Anda)` : row.name,
+      xpDisplay: `${xpVal.toLocaleString('id-ID')} XP`,
+      kgDisplay: kgVal,
+    };
+  });
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
@@ -62,9 +66,18 @@ export default function GamificationTab({
               return (
                 <div key={q.id} className="p-4 rounded-2xl bg-ivory border-2 border-ink/20 flex flex-col justify-between gap-3">
                   <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-ink text-sm">{q.title}</span>
-                      <span className="font-bold text-ochre-700 bg-ochre-100 px-2 py-0.5 rounded border border-ochre-300 text-[10px]">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${
+                          q.category === 'weekly' 
+                            ? 'bg-moss-100 text-moss-800 border-moss-300' 
+                            : 'bg-leaf-100 text-leaf-800 border-leaf-300'
+                        }`}>
+                          {q.category === 'weekly' ? 'Misi Mingguan' : 'Misi Harian'}
+                        </span>
+                        <span className="font-bold text-ink text-sm">{q.title}</span>
+                      </div>
+                      <span className="font-bold text-ochre-700 bg-ochre-100 px-2 py-0.5 rounded border border-ochre-300 text-[10px] shrink-0">
                         +{xpVal} XP
                       </span>
                     </div>
@@ -111,15 +124,15 @@ export default function GamificationTab({
                     {row.medal || `#${row.rank || idx + 1}`}
                   </span>
                   <div>
-                    <span className="text-ink text-xs block">{row.name}</span>
+                    <span className="text-ink text-xs block">{row.nameDisplay || row.name}</span>
                     <span className="text-graphite text-[10px] block">
-                      Panen: {row.kg || `${row.total_harvest_kg || 0} kg`}
+                      Panen: {row.kgDisplay || `${row.total_harvest_kg || 0} kg`}
                     </span>
                   </div>
                 </div>
 
                 <span className="text-ochre-700 font-bold bg-white px-2.5 py-1 rounded border border-ink/15 text-xs">
-                  {row.xp || `${row.xp_points || 0} XP`}
+                  {row.xpDisplay || `${row.xp_points || 0} XP`}
                 </span>
               </div>
             ))}

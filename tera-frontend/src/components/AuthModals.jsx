@@ -7,6 +7,7 @@ import { authApi } from '../api/auth.api';
 export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -25,7 +26,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       onClose();
       navigate('/dashboard');
     } catch (error) {
-      alert(error.message || 'Login gagal. Periksa kembali kredensial Anda.');
+      setErrorMsg(error.message || 'Login gagal. Periksa kembali kredensial Anda.');
     } finally {
       setIsLoading(false);
     }
@@ -66,6 +67,11 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
           </p>
         </div>
 
+        {errorMsg && (
+          <div className="p-3 mb-4 rounded-xl bg-red-100 border-2 border-red-400 text-red-900 font-mono text-xs">
+            {errorMsg}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-1.5 font-bold">
@@ -124,6 +130,8 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
 export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'user' });
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   if (!isOpen) return null;
 
@@ -134,10 +142,12 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
     setIsLoading(true);
     try {
       await authApi.register(formData);
-      alert('Registrasi berhasil! Silakan login untuk mulai bertani.');
-      onSwitchToLogin();
+      setSuccessMsg('Registrasi berhasil! Mengalihkan ke halaman login...');
+      setTimeout(() => {
+        onSwitchToLogin();
+      }, 1200);
     } catch (error) {
-      alert(error.message || 'Terjadi kesalahan saat registrasi.');
+      setErrorMsg(error.message || 'Terjadi kesalahan saat registrasi.');
     } finally {
       setIsLoading(false);
     }

@@ -357,7 +357,7 @@ export default function Login() {
                     </label>
                     <a 
                       href="#lupa" 
-                      onClick={(e) => { e.preventDefault(); alert('Silakan hubungi koordinator RW atau admin TerasTani untuk reset kredensial Anda.'); }}
+                      onClick={(e) => { e.preventDefault(); setErrorMessage('Silakan hubungi koordinator lumbung RW atau admin TerasTani untuk verifikasi reset kredensial Anda.'); }}
                       className="text-[11px] font-mono text-graphite hover:text-ink underline transition-colors"
                     >
                       Lupa kata sandi?

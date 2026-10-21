@@ -34,6 +34,10 @@ export default function OverviewTab({
   userCalculations = [],
   onDeleteCalculation,
   onSelectCropForVision,
+  walletBalance = 0,
+  pendingEscrow = 0,
+  recentTickets = [],
+  transactions = [],
 }) {
   const [recordedPlotNotice, setRecordedPlotNotice] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -45,7 +49,7 @@ export default function OverviewTab({
         await dashboardApi.getClusterLatestSensor(activeCluster.id);
       }
       setUserXP(userXP + 25);
-      setRecordedPlotNotice(`✓ Parameter nutrisi ${plotName} (pH ${phVal}, EC ${ecVal}, Temp ${tempVal}°C) berhasil dicatat ke sensor Supabase! (+25 XP)`);
+      setRecordedPlotNotice(`✓ Parameter nutrisi ${plotName} (pH ${phVal}, EC ${ecVal}, Temp ${tempVal}°C) berhasil dicatat ke database sensor! (+25 XP)`);
       setTimeout(() => setRecordedPlotNotice(false), 3500);
     } catch {
       setUserXP(userXP + 25);
@@ -55,6 +59,99 @@ export default function OverviewTab({
       setIsRecording(false);
     }
   };
+
+  // Continuous telemetry metrics
+  const userDeliveredKg = recentTickets.reduce((sum, t) => sum + parseFloat(t.claimed_weight_kg || t.weight || 0), 0);
+  const currentCrateWeight = Math.round((activeCluster?.current_weight_kg || 840) + userDeliveredKg);
+  const targetCrateWeight = 1000;
+  const crateProgressPct = Math.min(100, Math.round((currentCrateWeight / targetCrateWeight) * 100));
+
+  const totalAsset = walletBalance + pendingEscrow;
+  const settledPct = totalAsset > 0 ? Math.min(100, Math.round((walletBalance / totalAsset) * 100)) : 100;
+
+  // Metric 1: Next Truck schedule based on activeCluster or current hour
+  const currentHour = new Date().getHours();
+  const nextPickupText = activeCluster?.pickup_time 
+    ? `Truk ${activeCluster.pickup_time}` 
+    : (currentHour >= 14 ? 'Truk 18:00 WIB' : 'Truk 14:30 WIB');
+
+  // Metric 3: Active Member Nodes, Pest-free %, & Grade A %
+  const totalVerifiedTickets = recentTickets.filter(t => t.qualityGrade || t.ai_quality_grade);
+  const gradeACount = totalVerifiedTickets.filter(t => {
+    const g = (t.qualityGrade || t.ai_quality_grade || '').toUpperCase();
+    return g.includes('GRADE A') || g.includes('A+') || g.includes('GRADE_A');
+  }).length;
+  const computedGradeAPct = totalVerifiedTickets.length > 0 
+    ? Math.round((gradeACount / totalVerifiedTickets.length) * 100) 
+    : (activeCluster?.grade_a_percentage || 98);
+  const pesticideFreePct = activeCluster?.organic_percentage || 100;
+
+  // Metric 4: Cultivator Rank, Level, and Rank Title based on XP
+  const userLevel = Math.floor(userXP / 500) + 1;
+  const currentLevelXP = userXP % 500;
+  const levelProgressPct = Math.max(5, Math.round((currentLevelXP / 500) * 100));
+
+  const getRankTitle = (xp) => {
+    if (xp < 500) return 'Kultivator Pemula';
+    if (xp < 1000) return 'Petani Urban Mandiri';
+    if (xp < 1500) return 'Spesialis Nutrisi Mikro';
+    if (xp < 2500) return 'Master Hidroponik';
+    if (xp < 4000) return 'Penyelia Lumbung Komunal';
+    return 'Duta Pertanian Presisi';
+  };
+  const rankTitle = getRankTitle(userXP);
+
+  // Dynamic ledger feed from database tickets and transactions
+  const dynamicFeed = [];
+
+  recentTickets.slice(0, 3).forEach((ticket) => {
+    const isVerified = ticket.status === 'VERIFIED' || ticket.status === 'CONFIRMED';
+    const isInTransit = ticket.status === 'IN_TRANSIT';
+    const statusLabel = isVerified ? 'Lolos Grade A' : (isInTransit ? 'Diangkut Armada' : 'Menunggu Timbang RW');
+    const timeText = ticket.created_at
+      ? new Date(ticket.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB'
+      : 'Baru saja';
+    dynamicFeed.push({
+      id: `ticket-${ticket.id || ticket.qr_ticket_code || Math.random()}`,
+      action: `Tiket Setor Panen ${ticket.crop_name || ticket.crop || 'Sayur'} (${ticket.claimed_weight_kg || ticket.weight || 0} kg)`,
+      user: `${user.name || 'Anda'} (${ticket.qr_ticket_code || ticket.batchId || 'Tiket QR'})`,
+      time: timeText,
+      status: statusLabel,
+      type: 'harvest',
+      rawDate: ticket.created_at ? new Date(ticket.created_at).getTime() : Date.now(),
+    });
+  });
+
+  transactions.slice(0, 3).forEach((tx) => {
+    const isOut = tx.type === 'WITHDRAWAL';
+    const actionLabel = isOut 
+      ? `Penarikan Saldo ${formatIDR(tx.amount)} ke ${tx.payment_method || 'Rekening'}`
+      : `Pelepasan Escrow Hasil Panen ${formatIDR(tx.amount)}`;
+    const timeText = tx.created_at
+      ? new Date(tx.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB'
+      : 'Hari ini';
+    dynamicFeed.push({
+      id: `tx-${tx.id || tx.reference_code || Math.random()}`,
+      action: actionLabel,
+      user: `${user.name || 'Anda'} • ${tx.reference_code || 'Sistem Escrow'}`,
+      time: timeText,
+      status: tx.status === 'COMPLETED' ? 'Ditransfer' : 'Diproses',
+      type: 'finance',
+      rawDate: tx.created_at ? new Date(tx.created_at).getTime() : Date.now(),
+    });
+  });
+
+  dynamicFeed.sort((a, b) => b.rawDate - a.rawDate);
+
+  const clusterBaselines = [
+    { id: 'b1', action: 'Penimbangan 14.5 kg Selada Romaine', user: 'Siti R. (RT 03)', time: '5 menit lalu', status: 'Lolos Grade A+' },
+    { id: 'b2', action: 'Truk Pendingin #B-02 Tiba di Lokasi', user: 'Armada Logistik', time: '18 menit lalu', status: 'Proses Muat' },
+    { id: 'b3', action: 'Pelepasan Escrow Rp 427.500', user: 'Kurniawan H.', time: '42 menit lalu', status: 'Ditransfer' }
+  ];
+
+  const displayedFeed = dynamicFeed.length > 0
+    ? [...dynamicFeed, ...clusterBaselines].slice(0, 4)
+    : clusterBaselines;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
@@ -146,34 +243,40 @@ export default function OverviewTab({
             </div>
           </div>
           <div>
-            <div className="font-display text-3xl font-normal text-ink">840 kg</div>
+            <div className="font-display text-3xl font-normal text-ink">{currentCrateWeight} kg</div>
             <div className="flex items-center gap-2 mt-1 text-[11px] text-graphite">
-              <span className="text-leaf-600 font-bold">84% dari 1.000 kg</span>
-              <span>&bull; Truk 14:30</span>
+              <span className="text-leaf-600 font-bold">{crateProgressPct}% dari {targetCrateWeight} kg</span>
+              <span>&bull; {nextPickupText}</span>
             </div>
           </div>
           <div className="w-full h-2 rounded-full bg-paper border border-ink/20 overflow-hidden">
-            <div className="h-full bg-leaf-500 rounded-full w-[84%]"></div>
+            <div 
+              className="h-full bg-leaf-500 rounded-full transition-all duration-500"
+              style={{ width: `${crateProgressPct}%` }}
+            ></div>
           </div>
         </div>
 
         {/* Metric 2: Estimated Escrow Valuation */}
         <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
-            <span className="font-bold uppercase tracking-wider text-graphite">Valuasi Escrow</span>
+            <span className="font-bold uppercase tracking-wider text-graphite">Valuasi Escrow & Saldo</span>
             <div className="p-2 rounded-xl bg-ochre-100 border border-ochre-300 text-ochre-800">
               <Wallet className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <div className="font-display text-3xl font-normal text-ink">{formatIDR(2450000)}</div>
+            <div className="font-display text-3xl font-normal text-ink">{formatIDR(totalAsset)}</div>
             <div className="flex items-center gap-2 mt-1 text-[11px] text-graphite">
-              <span className="text-ochre-600 font-bold">+18.5% siklus ini</span>
-              <span>&bull; Dijamin BNI</span>
+              <span className="text-ochre-600 font-bold">+{formatIDR(pendingEscrow)} di escrow</span>
+              <span>&bull; Siap: {formatIDR(walletBalance)}</span>
             </div>
           </div>
           <div className="w-full h-2 rounded-full bg-paper border border-ink/20 overflow-hidden">
-            <div className="h-full bg-ochre-400 rounded-full w-[72%]"></div>
+            <div 
+              className="h-full bg-ochre-400 rounded-full transition-all duration-500"
+              style={{ width: `${settledPct}%` }}
+            ></div>
           </div>
         </div>
 
@@ -188,8 +291,8 @@ export default function OverviewTab({
           <div>
             <div className="font-display text-3xl font-normal text-ink">{activeCluster?.active_nodes || 84} KK</div>
             <div className="flex items-center gap-2 mt-1 text-[11px] text-graphite">
-              <span className="text-leaf-600 font-bold">100% Organik</span>
-              <span>&bull; Grade A 98%</span>
+              <span className="text-leaf-600 font-bold">{pesticideFreePct}% Bebas Pestisida</span>
+              <span>&bull; Grade A: {computedGradeAPct}%</span>
             </div>
           </div>
           <div className="w-full h-2 rounded-full bg-paper border border-ink/20 overflow-hidden">
@@ -208,12 +311,15 @@ export default function OverviewTab({
           <div>
             <div className="font-display text-3xl font-normal text-ink">{userXP} XP</div>
             <div className="flex items-center gap-2 mt-1 text-[11px] text-graphite">
-              <span className="text-moss-700 font-bold">Level {Math.floor(userXP / 500) + 1}</span>
-              <span>&bull; Master Hidroponik</span>
+              <span className="text-moss-700 font-bold">Level {userLevel}</span>
+              <span>&bull; {rankTitle}</span>
             </div>
           </div>
           <div className="w-full h-2 rounded-full bg-paper border border-ink/20 overflow-hidden">
-            <div className="h-full bg-moss-700 rounded-full w-[65%]"></div>
+            <div 
+              className="h-full bg-moss-700 rounded-full transition-all duration-500" 
+              style={{ width: `${levelProgressPct}%` }}
+            ></div>
           </div>
         </div>
 
@@ -424,20 +530,20 @@ export default function OverviewTab({
         </div>
 
         <div className="space-y-3 font-mono text-xs">
-          {[
-            { id: '1', cluster: 'Hub RW 07 Rawasari', action: 'Penimbangan 14.5 kg Selada Romaine', user: 'Siti R. (RT 03)', time: '5 menit lalu', status: 'Lolos Grade A+' },
-            { id: '2', cluster: 'Hub RW 04 Cempaka', action: 'Truk Pendingin #B-02 Tiba di Lokasi', user: 'Armada Logistik', time: '18 menit lalu', status: 'Proses Muat' },
-            { id: '3', cluster: 'Hub RW 02 Kemayoran', action: 'Pelepasan Escrow Rp 427.500', user: 'Kurniawan H.', time: '42 menit lalu', status: 'Ditransfer' }
-          ].map((item) => (
+          {displayedFeed.map((item) => (
             <div key={item.id} className="p-3.5 rounded-xl bg-ivory border-2 border-ink/15 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2.5">
-                <span className="w-2 h-2 rounded-full bg-leaf-500"></span>
+                <span className={`w-2 h-2 rounded-full ${item.type === 'finance' ? 'bg-ochre-500' : 'bg-leaf-500'}`}></span>
                 <span className="font-bold text-ink">{item.action}</span>
                 <span className="text-graphite text-[11px]">&bull; {item.user}</span>
               </div>
               <div className="flex items-center gap-3 text-[11px]">
                 <span className="text-graphite">{item.time}</span>
-                <span className="px-2 py-0.5 rounded bg-leaf-100 text-leaf-800 font-bold border border-leaf-300 text-[10px]">
+                <span className={`px-2 py-0.5 rounded font-bold border text-[10px] ${
+                  item.type === 'finance'
+                    ? 'bg-ochre-100 text-ochre-800 border-ochre-300'
+                    : 'bg-leaf-100 text-leaf-800 border-leaf-300'
+                }`}>
                   {item.status}
                 </span>
               </div>

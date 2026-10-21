@@ -127,6 +127,10 @@ export const dashboardApi = {
     const res = await apiClient.get(`/api/v1/fleets/cluster/${clusterId}`);
     return res.data;
   },
+  updateFleetStatus: async (fleetId, status) => {
+    const res = await apiClient.patch(`/api/v1/fleets/${fleetId}/status`, { status });
+    return res.data;
+  },
 
   // 11. Notifications
   getNotifications: async () => {
