@@ -35,13 +35,13 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   return (
     <div 
       onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/35 backdrop-blur-[2px] transition-all duration-300"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-ink/35 backdrop-blur-[2px] transition-all duration-300 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="login-modal-title"
     >
       <div 
-        className="bg-paper border-2 border-ink rounded-3xl shadow-[8px_8px_0px_0px_#171715] md:shadow-[12px_12px_0px_0px_#171715] w-full max-w-md p-8 md:p-10 relative animate-in fade-in zoom-in-95 duration-200"
+        className="bg-paper border-2 border-ink rounded-2xl sm:rounded-3xl shadow-[6px_6px_0px_0px_#171715] sm:shadow-[10px_10px_0px_0px_#171715] w-full max-w-md p-5 sm:p-8 md:p-10 relative animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto overscroll-contain my-auto scrollbar-thin"
         onClick={(e) => e.stopPropagation()}
       >
         <button 
@@ -156,13 +156,13 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
   return (
     <div 
       onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-ink/35 backdrop-blur-[2px] transition-all duration-300"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-ink/35 backdrop-blur-[2px] transition-all duration-300 overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-labelledby="register-modal-title"
     >
       <div 
-        className="bg-paper border-2 border-ink rounded-3xl shadow-[8px_8px_0px_0px_#171715] md:shadow-[12px_12px_0px_0px_#171715] w-full max-w-lg p-8 md:p-10 relative animate-in fade-in zoom-in-95 duration-200"
+        className="bg-paper border-2 border-ink rounded-2xl sm:rounded-3xl shadow-[6px_6px_0px_0px_#171715] sm:shadow-[10px_10px_0px_0px_#171715] w-full max-w-lg p-5 sm:p-8 md:p-10 relative animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto overscroll-contain my-auto scrollbar-thin"
         onClick={(e) => e.stopPropagation()}
       >
         <button 
@@ -188,13 +188,25 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
           </p>
         </div>
 
+        {errorMsg && (
+          <div className="p-3 mb-4 rounded-xl bg-red-100 border-2 border-red-400 text-red-900 font-mono text-xs">
+            {errorMsg}
+          </div>
+        )}
+
+        {successMsg && (
+          <div className="p-3 mb-4 rounded-xl bg-leaf-100 border-2 border-leaf-400 text-leaf-900 font-mono text-xs font-bold">
+            {successMsg}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Role selector as bespoke 2D Neo-Brutalist toggle cards */}
           <div>
             <label className="block font-mono text-xs uppercase tracking-wider text-graphite mb-2 font-bold">
               Pilih Peran Entitas
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, role: 'user' })}

@@ -67,7 +67,7 @@ export default function WithdrawModal({
             <label className="block font-mono text-xs uppercase font-bold text-graphite mb-1.5">
               Pilih Bank / E-Wallet Tujuan:
             </label>
-            <div className="grid grid-cols-4 gap-2 font-mono text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs">
               {['BCA', 'Mandiri', 'BRI', 'GoPay'].map((b) => (
                 <button
                   key={b}

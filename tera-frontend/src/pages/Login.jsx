@@ -6,7 +6,6 @@ import { authApi } from '../api/auth.api';
 import { 
   ArrowLeft, 
   ArrowRight, 
-  Sprout, 
   Eye, 
   EyeOff, 
   AlertCircle, 
@@ -161,7 +160,7 @@ export default function Login() {
           {/* =====================================================================
               LEFT COLUMN: Interactive Narrative, Visual Curation & Telemetry
               ===================================================================== */}
-          <div className="login-left-col lg:col-span-6 h-full bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 lg:p-12 border-2 border-ink shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative overflow-hidden">
+          <div className="login-left-col lg:col-span-6 h-full bg-moss-950 text-paper rounded-3xl lg:rounded-[2.5rem] p-5 sm:p-8 lg:p-12 border-2 border-ink shadow-[8px_8px_0px_0px_#171715] sm:shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative overflow-hidden">
             
             {/* Background Texture & Ambient Grain */}
             <div className="absolute inset-0 dark-grain opacity-40 pointer-events-none"></div>
@@ -170,7 +169,7 @@ export default function Login() {
             <div className="relative z-10 space-y-6">
               
               {/* Role Perspective Switcher for Narrative & Telemetry */}
-              <div className="inline-flex p-1.5 rounded-2xl bg-moss-900 border-2 border-white/20 shadow-[3px_3px_0px_0px_#F59E0B]">
+              <div className="flex flex-col sm:flex-row w-full sm:w-auto p-1.5 rounded-2xl bg-moss-900 border-2 border-white/20 shadow-[3px_3px_0px_0px_#F59E0B]">
                 <button
                   type="button"
                   onClick={() => setLoginPerspective('warga')}
@@ -289,7 +288,7 @@ export default function Login() {
               RIGHT COLUMN: Tactile 2D Neo-Brutalist Authentication Form Card
               (Equal height with Left Column)
               ===================================================================== */}
-          <div className="login-right-col lg:col-span-6 h-full bg-white border-2 border-ink rounded-[2.5rem] p-7 sm:p-10 lg:p-12 shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative reg-mark">
+          <div className="login-right-col lg:col-span-6 h-full bg-white border-2 border-ink rounded-3xl lg:rounded-[2.5rem] p-5 sm:p-8 lg:p-12 shadow-[8px_8px_0px_0px_#171715] sm:shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative reg-mark">
             
             {/* Top Form Region */}
             <div>

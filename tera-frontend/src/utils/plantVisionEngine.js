@@ -63,8 +63,6 @@ export function computeAgronomicOutputs({
   chlorosisRatio = 0,
   necrosisRatio = 0,
   canopyCoveragePct = 60,
-  plantPixels = 50000,
-  totalPixels = 76800,
   cropName = 'Selada Romaine Super',
 }) {
   // 1. Continuous SPAD Chlorophyll Calibration
@@ -76,7 +74,7 @@ export function computeAgronomicOutputs({
   spadRaw = Math.max(14.0, Math.min(51.8, spadRaw));
   const spadFormatted = spadRaw.toFixed(1);
 
-  let spadLabel = 'Optimal';
+  let spadLabel;
   if (spadRaw >= 44.0) {
     spadLabel = 'Optimal & Sangat Kaya Klorofil';
   } else if (spadRaw >= 40.0) {
@@ -131,11 +129,11 @@ export function computeAgronomicOutputs({
   const biomassPerPlant = `${estimatedBiomassGram} gram`;
 
   // 4. Granular 8-Tier Grade Classification (A+, A, B+, B, C+, C, D+, D)
-  let grade = 'GRADE_A';
-  let qualityGradeDisplay = 'Grade A Standard';
-  let status = 'Lolos Validasi Komersial Crate RW';
-  let priceMultiplier = 0.92;
-  let confidenceScore = 0.95;
+  let grade;
+  let qualityGradeDisplay;
+  let status;
+  let priceMultiplier;
+  let confidenceScore;
 
   if (spadRaw >= 44.0 && saturation >= 0.58 && defectRatio <= 0.02) {
     grade = 'GRADE_A_PLUS';
@@ -193,7 +191,7 @@ export function computeAgronomicOutputs({
   // 6. Continuous Pemeriksaan Klorosis & Daun
   const chlorosisPct = (chlorosisRatio * 100).toFixed(1);
   const necrosisPct = (necrosisRatio * 100).toFixed(1);
-  let chlorosisDescription = '';
+  let chlorosisDescription;
 
   if (Number(chlorosisPct) < 0.5 && Number(necrosisPct) < 0.2) {
     chlorosisDescription = 'Klorosis 0.0% (Pigmen Klorofil Sempurna, Bebas Tip-Burn)';
@@ -210,7 +208,7 @@ export function computeAgronomicOutputs({
   }
 
   // 7. Dynamic AI Agronomist Actionable Recommendation
-  let recommendation = '';
+  let recommendation;
   if (grade === 'GRADE_A_PLUS') {
     recommendation = `Klorofil sangat optimal (SPAD ${spadFormatted}) dan turgor prima. Bebas bercak klorosis. Siap dipanen dalam 24 jam untuk pengiriman crate distributor berpendingin sore.`;
   } else if (grade === 'GRADE_A') {

@@ -185,7 +185,7 @@ export default function Register() {
           {/* =====================================================================
               LEFT COLUMN: Interactive Live ID Pass, Manifesto & Projected Yield
               ===================================================================== */}
-          <div className="reg-left-col lg:col-span-5 h-full bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 lg:p-12 border-2 border-ink shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative overflow-hidden">
+          <div className="reg-left-col lg:col-span-5 h-full bg-moss-950 text-paper rounded-3xl lg:rounded-[2.5rem] p-5 sm:p-8 lg:p-12 border-2 border-ink shadow-[8px_8px_0px_0px_#171715] sm:shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative overflow-hidden">
             
             {/* Background Texture & Ambient Grain */}
             <div className="absolute inset-0 dark-grain opacity-40 pointer-events-none"></div>
@@ -339,7 +339,7 @@ export default function Register() {
               RIGHT COLUMN: Tactile 2D Neo-Brutalist Registration Form Card
               (Equal height with Left Column)
               ===================================================================== */}
-          <div className="reg-right-col lg:col-span-7 h-full bg-white border-2 border-ink rounded-[2.5rem] p-7 sm:p-10 lg:p-12 shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative reg-mark">
+          <div className="reg-right-col lg:col-span-7 h-full bg-white border-2 border-ink rounded-3xl lg:rounded-[2.5rem] p-5 sm:p-8 lg:p-12 shadow-[8px_8px_0px_0px_#171715] sm:shadow-[10px_10px_0px_0px_#171715] flex flex-col justify-between relative reg-mark">
             
             {/* Top Form Region */}
             <div>

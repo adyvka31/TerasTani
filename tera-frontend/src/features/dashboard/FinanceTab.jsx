@@ -17,7 +17,7 @@ export default function FinanceTab({
     <div className="space-y-8 animate-in fade-in duration-200">
       
       {/* Banner */}
-      <div className="bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+      <div className="bg-moss-950 text-paper rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-white/20 bg-moss-900 font-mono text-xs uppercase font-bold text-ochre-300 mb-3">
             <Wallet className="w-3.5 h-3.5" />
@@ -34,7 +34,7 @@ export default function FinanceTab({
         <button
           type="button"
           onClick={onOpenWithdrawModal}
-          className="nb-btn-ochre px-6 py-4 rounded-2xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center gap-2 cursor-pointer transition-all shrink-0"
+          className="nb-btn-ochre px-6 py-4 rounded-2xl font-mono text-xs uppercase tracking-wider font-bold shadow-[4px_4px_0px_0px_#171715] flex items-center justify-center gap-2 cursor-pointer transition-all shrink-0 w-full sm:w-auto"
         >
           <Download className="w-4 h-4" />
           <span>Tarik Saldo ke Rekening</span>
@@ -42,15 +42,15 @@ export default function FinanceTab({
       </div>
 
       {/* 3 Real-time Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         
         {/* Metric 1: Ready Balance */}
-        <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-3">
+        <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border-2 border-ink shadow-[4px_4px_0px_0px_#171715] sm:shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-3">
           <div>
             <span className="font-mono text-xs uppercase text-graphite font-bold block mb-1">
               Saldo Siap Ditarik
             </span>
-            <div className="font-display text-3xl sm:text-4xl font-normal text-moss-800">
+            <div className="font-display text-3xl sm:text-4xl font-normal text-moss-800 break-words">
               {formatIDR(walletBalance)}
             </div>
           </div>
@@ -60,12 +60,12 @@ export default function FinanceTab({
         </div>
 
         {/* Metric 2: Pending Escrow */}
-        <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-3">
+        <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border-2 border-ink shadow-[4px_4px_0px_0px_#171715] sm:shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-3">
           <div>
             <span className="font-mono text-xs uppercase text-graphite font-bold block mb-1">
               Saldo Tertahan di Escrow
             </span>
-            <div className="font-display text-3xl sm:text-4xl font-normal text-ochre-700">
+            <div className="font-display text-3xl sm:text-4xl font-normal text-ochre-700 break-words">
               {formatIDR(pendingEscrow)}
             </div>
           </div>
@@ -77,12 +77,12 @@ export default function FinanceTab({
         </div>
 
         {/* Metric 3: Total Cumulative Withdrawn */}
-        <div className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-3">
+        <div className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border-2 border-ink shadow-[4px_4px_0px_0px_#171715] sm:shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-3">
           <div>
             <span className="font-mono text-xs uppercase text-graphite font-bold block mb-1">
               Total Pencairan Kumulatif
             </span>
-            <div className="font-display text-3xl sm:text-4xl font-normal text-ink">
+            <div className="font-display text-3xl sm:text-4xl font-normal text-ink break-words">
               {formatIDR(totalWithdrawn)}
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function FinanceTab({
       </div>
 
       {/* Transparent Ledger Transactions */}
-      <div className="bg-white border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] space-y-4">
+      <div className="bg-white border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-7 shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] space-y-4">
         <div className="flex items-center justify-between pb-4 border-b-2 border-ink/10">
           <div>
             <span className="font-mono text-xs uppercase font-bold text-ink block">

@@ -377,7 +377,7 @@ export default function Dashboard() {
         />
 
         {/* Dynamic Content Panel */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-10 max-w-full lg:h-[calc(100vh-61px)] lg:overflow-y-auto scrollbar-thin space-y-8">
+        <main className="flex-1 min-w-0 p-3 sm:p-6 lg:p-10 max-w-full lg:h-[calc(100vh-61px)] lg:overflow-y-auto scrollbar-thin space-y-6 sm:space-y-8">
           
           {activeTab === 'overview' && (
             <OverviewTab

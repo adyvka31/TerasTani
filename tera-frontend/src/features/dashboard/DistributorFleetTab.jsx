@@ -68,7 +68,7 @@ export default function DistributorFleetTab() {
     <div className="space-y-8 animate-in fade-in duration-200">
       
       {/* Banner */}
-      <div className="bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715]">
+      <div className="bg-moss-950 text-paper rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715]">
         <div className="max-w-2xl space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-white/20 bg-moss-900 font-mono text-xs uppercase font-bold text-ochre-300">
             <Truck className="w-3.5 h-3.5" />
@@ -96,7 +96,7 @@ export default function DistributorFleetTab() {
         </div>
       )}
 
-      <div className="p-7 rounded-3xl bg-white border-2 border-ink shadow-[6px_6px_0px_0px_#171715] space-y-4 font-mono text-xs">
+      <div className="p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] sm:shadow-[6px_6px_0px_0px_#171715] space-y-4 font-mono text-xs">
         <div className="flex justify-between items-center pb-3 border-b-2 border-ink/10">
           <span className="font-bold text-ink uppercase block">
             Jadwal Operasional Armada Logistik Cold Chain

@@ -35,13 +35,13 @@ export default function Modal({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/35 backdrop-blur-[2px] animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-ink/35 backdrop-blur-[2px] animate-in fade-in duration-150 overflow-y-auto"
       role="dialog"
       aria-modal="true"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-paper border-2 border-ink rounded-3xl shadow-[10px_10px_0px_0px_#171715] w-full ${maxWidth} p-6 sm:p-8 animate-in zoom-in-95 duration-150 relative`}
+        className={`bg-paper border-2 border-ink rounded-2xl sm:rounded-3xl shadow-[6px_6px_0px_0px_#171715] sm:shadow-[10px_10px_0px_0px_#171715] w-full ${maxWidth} p-5 sm:p-8 animate-in zoom-in-95 duration-150 relative max-h-[90vh] overflow-y-auto overscroll-contain my-auto scrollbar-thin`}
       >
         {showCloseButton && (
           <button

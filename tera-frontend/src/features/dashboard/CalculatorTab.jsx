@@ -105,7 +105,7 @@ export default function CalculatorTab({
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       {/* Header Banner */}
-      <div className="bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715] relative overflow-hidden">
+      <div className="bg-moss-950 text-paper rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715] relative overflow-hidden">
         <div className="absolute inset-0 dark-grain opacity-40 pointer-events-none"></div>
         <div className="relative z-10 max-w-3xl space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-white/20 bg-moss-900 font-mono text-xs uppercase font-bold text-ochre-300">
@@ -130,20 +130,20 @@ export default function CalculatorTab({
       {/* Interactive Calculator Body Grid */}
       <div className="grid lg:grid-cols-12 gap-8 items-stretch">
         {/* Left: Input Controls */}
-        <div className="lg:col-span-7 bg-white border-2 border-ink rounded-[2.5rem] p-6 sm:p-8 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full">
-          <div className="space-y-6 overflow-y-auto max-h-[600px] pr-2 scrollbar-thin">
+        <div className="lg:col-span-7 bg-white border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-6 lg:p-8 shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full">
+          <div className="space-y-6 overflow-y-auto max-h-[600px] pr-1 sm:pr-2 scrollbar-thin">
             {/* Step 1: Karakteristik Lahan (Berpengaruh Nyata pada Efisiensi & Struktur) */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="block font-mono text-xs uppercase tracking-wider text-graphite font-bold">
                   1. Pilih Karakteristik Lahan:
                 </label>
-                <span className="font-mono text-[10px] text-moss-800 bg-leaf-100 px-2 py-0.5 rounded border border-leaf-300 font-bold">
+                <span className="font-mono text-[10px] text-moss-800 bg-leaf-100 px-2 py-0.5 rounded border border-leaf-300 font-bold hidden sm:inline">
                   Pengaruh Efisiensi Terkalkulasi
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2.5 font-mono text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5 font-mono text-xs">
                 {[
                   { id: "balkon", label: "Balkon Apartemen", icon: Building2 },
                   { id: "pekarangan", label: "Pekarangan Rumah", icon: Sprout },
@@ -209,7 +209,7 @@ export default function CalculatorTab({
                       onClick={() => setCalcCrop(cKey)}
                       className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer text-left ${
                         isSelected
-                          ? "bg-moss-900 text-paper border-ink font-bold shadow-[2.5px_2.5px_0px_0px_#C9942B]"
+                          ? "bg-moss-900 text-paper border-ink font-bold shadow-[2.5px_2.5px_0px_0px_#F59E0B]"
                           : "bg-paper border-ink/20 text-graphite hover:border-ink"
                       }`}
                     >
@@ -280,7 +280,7 @@ export default function CalculatorTab({
         </div>
 
         {/* Right: Summary Card */}
-        <div className="lg:col-span-5 bg-moss-900 text-paper border-2 border-ink rounded-[2.5rem] p-6 sm:p-8 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-6">
+        <div className="lg:col-span-5 bg-moss-900 text-paper border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 border border-white/20 font-mono text-xs text-ochre-300 font-bold mb-4">
               <span>HASIL ESTIMASI RESMI</span>
@@ -291,7 +291,7 @@ export default function CalculatorTab({
                 Estimasi Keuntungan Bersih per Siklus (
                 {selectedCropConfig.cycle} Hari):
               </span>
-              <div className="font-display text-4xl sm:text-5xl font-normal text-ochre-300 mt-1">
+              <div className="font-display text-3xl sm:text-4xl lg:text-5xl font-normal text-ochre-300 mt-1 break-words">
                 {formatIDR(calculatedNetRevenue)}
               </div>
               <span className="font-mono text-[10px] text-leaf-300 block mt-1">

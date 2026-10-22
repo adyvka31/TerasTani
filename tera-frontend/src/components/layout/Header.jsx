@@ -169,7 +169,7 @@ export default function Header({
 
             {/* Notification Dropdown Panel */}
             {isNotificationOpen && (
-              <div className="absolute right-0 mt-3 w-80 sm:w-96 rounded-2xl border-2 border-ink bg-paper shadow-[8px_8px_0px_0px_#171715] p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="absolute right-0 mt-3 w-[calc(100vw-2rem)] sm:w-96 max-w-sm rounded-2xl border-2 border-ink bg-paper shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] p-3.5 sm:p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="flex items-center justify-between pb-3 border-b-2 border-ink/10 mb-3">
                   <span className="font-mono text-xs uppercase tracking-wider font-bold text-ink flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-ochre-500" />

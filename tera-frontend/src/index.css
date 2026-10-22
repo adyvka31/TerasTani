@@ -71,6 +71,26 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+  }
+
+  /* Comfortable proportional scaling for laptops (MacBook Air M2 13-14", 1024px - 1440px) */
+  @media (min-width: 1024px) {
+    html {
+      font-size: 16.5px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    html {
+      font-size: 17px;
+    }
+  }
+
+  @media (min-width: 1920px) {
+    html {
+      font-size: 18px;
+    }
   }
 
   ::selection {

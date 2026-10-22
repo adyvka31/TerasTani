@@ -11,7 +11,8 @@ import {
   Award, 
   TrendingUp, 
   Truck, 
-  ShieldCheck 
+  ShieldCheck,
+  X 
 } from 'lucide-react';
 import TerasLogo from '../common/TerasLogo';
 
@@ -42,7 +43,7 @@ export default function Sidebar({
         <div className="relative z-10 space-y-6">
           
           {/* Brand Identity Header in Sidebar */}
-          <div className="pb-4 border-b border-white/10">
+          <div className="pb-4 border-b border-white/10 flex items-center justify-between">
             <Link to="/home" className="flex items-center group cursor-pointer" aria-label="TerasTani Beranda">
               <TerasLogo 
                 size="sm" 
@@ -51,6 +52,14 @@ export default function Sidebar({
                 className="transition-transform group-hover:-translate-y-0.5"
               />
             </Link>
+            <button
+              type="button"
+              onClick={onCloseSidebar}
+              className="lg:hidden p-1.5 rounded-lg border border-white/20 bg-moss-900 text-paper/80 hover:text-paper hover:bg-moss-800 transition-colors cursor-pointer"
+              aria-label="Tutup menu sidebar"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
           {/* User Profile Monogram Header Card */}

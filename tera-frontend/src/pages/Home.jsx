@@ -1209,7 +1209,7 @@ export default function Home() {
       />
 
       {/* 1. Header / Architectural Editorial Navigation */}
-      <nav className="sticky top-0 z-40 w-full bg-paper/95 backdrop-blur-md border-b-2 border-ink transition-all">
+      <nav className={`sticky top-0 z-40 w-full backdrop-blur-md border-b-2 border-ink transition-all ${isScrolled ? 'bg-paper/98 shadow-[0_4px_12px_rgba(23,23,21,0.06)]' : 'bg-paper/95'}`}>
         {/* Subtle Top Reading Progress Bar */}
         <div id="scroll-progress" className="h-[2px] w-full bg-gradient-to-r from-leaf-500 via-ochre-400 to-moss-900 origin-left scale-x-0"></div>
 
@@ -1348,7 +1348,7 @@ export default function Home() {
 
             {/* Monumental Headline */}
             <div className="hero-intro-elem max-w-5xl mb-10">
-              <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-normal leading-[1.05] tracking-tight text-ink text-balance-editorial">
+              <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal leading-[1.05] tracking-tight text-ink text-balance-editorial">
                 Ubah Lahan Sempit Menjadi <br className="hidden md:block"/>
                 <span className="font-editorial-italic font-light text-moss-800">Hasil Panen Komunal</span> Berlimpah.
               </h1>
