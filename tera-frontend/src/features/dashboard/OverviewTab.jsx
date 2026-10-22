@@ -11,12 +11,9 @@ import {
   Plus, 
   Camera, 
   Droplets, 
-  QrCode, 
   Activity,
   Check,
-  Trash2,
-  Building2,
-  Layers
+  Trash2
 } from 'lucide-react';
 import { formatIDR } from '../../utils/formatters';
 import { LAND_CHARACTERISTICS } from '../../constants/app.constants';
@@ -105,7 +102,7 @@ export default function OverviewTab({
   // Dynamic ledger feed from database tickets and transactions
   const dynamicFeed = [];
 
-  recentTickets.slice(0, 3).forEach((ticket) => {
+  recentTickets.slice(0, 3).forEach((ticket, idx) => {
     const isVerified = ticket.status === 'VERIFIED' || ticket.status === 'CONFIRMED';
     const isInTransit = ticket.status === 'IN_TRANSIT';
     const statusLabel = isVerified ? 'Lolos Grade A' : (isInTransit ? 'Diangkut Armada' : 'Menunggu Timbang RW');
@@ -113,17 +110,17 @@ export default function OverviewTab({
       ? new Date(ticket.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB'
       : 'Baru saja';
     dynamicFeed.push({
-      id: `ticket-${ticket.id || ticket.qr_ticket_code || Math.random()}`,
+      id: `ticket-${ticket.id || ticket.qr_ticket_code || idx}`,
       action: `Tiket Setor Panen ${ticket.crop_name || ticket.crop || 'Sayur'} (${ticket.claimed_weight_kg || ticket.weight || 0} kg)`,
       user: `${user.name || 'Anda'} (${ticket.qr_ticket_code || ticket.batchId || 'Tiket QR'})`,
       time: timeText,
       status: statusLabel,
       type: 'harvest',
-      rawDate: ticket.created_at ? new Date(ticket.created_at).getTime() : Date.now(),
+      rawDate: ticket.created_at ? new Date(ticket.created_at).getTime() : (1000 - idx),
     });
   });
 
-  transactions.slice(0, 3).forEach((tx) => {
+  transactions.slice(0, 3).forEach((tx, idx) => {
     const isOut = tx.type === 'WITHDRAWAL';
     const actionLabel = isOut 
       ? `Penarikan Saldo ${formatIDR(tx.amount)} ke ${tx.payment_method || 'Rekening'}`
@@ -132,13 +129,13 @@ export default function OverviewTab({
       ? new Date(tx.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB'
       : 'Hari ini';
     dynamicFeed.push({
-      id: `tx-${tx.id || tx.reference_code || Math.random()}`,
+      id: `tx-${tx.id || tx.reference_code || idx}`,
       action: actionLabel,
       user: `${user.name || 'Anda'} • ${tx.reference_code || 'Sistem Escrow'}`,
       time: timeText,
       status: tx.status === 'COMPLETED' ? 'Ditransfer' : 'Diproses',
       type: 'finance',
-      rawDate: tx.created_at ? new Date(tx.created_at).getTime() : Date.now(),
+      rawDate: tx.created_at ? new Date(tx.created_at).getTime() : (1000 - idx),
     });
   });
 
@@ -158,7 +155,7 @@ export default function OverviewTab({
     <div className="space-y-8 animate-in fade-in duration-200">
       
       {/* Hero Banner: Luxury Editorial Intelligence Card */}
-      <div className="bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715] relative overflow-hidden">
+      <div className="bg-moss-950 text-paper rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715] relative overflow-hidden">
         <div className="absolute inset-0 dark-grain opacity-35 pointer-events-none"></div>
         <div className="absolute -top-32 -right-32 w-80 h-80 bg-leaf-400/15 rounded-full blur-3xl pointer-events-none"></div>
         
@@ -203,7 +200,7 @@ export default function OverviewTab({
           </div>
 
           {/* Right side summary telemetry card */}
-          <div className="w-full xl:w-auto min-w-[300px] p-5 rounded-2xl bg-white/10 backdrop-blur-md border-2 border-white/20 shadow-[4px_4px_0px_0px_#F59E0B]">
+          <div className="w-full xl:w-auto min-w-0 sm:min-w-[280px] p-4 sm:p-5 rounded-2xl bg-white/10 backdrop-blur-md border-2 border-white/20 shadow-[4px_4px_0px_0px_#F59E0B]">
             <div className="flex items-center justify-between pb-3 border-b border-white/15 mb-3 font-mono text-xs">
               <span className="text-ochre-300 font-bold uppercase">Rekomendasi AI Hari Ini</span>
               <span className="text-leaf-300 font-bold">Status: Prima</span>
@@ -327,7 +324,7 @@ export default function OverviewTab({
       </div>
 
       {/* Active Cultivation Plots (User Role Focus) */}
-      <div className="bg-white border-2 border-ink rounded-[2.5rem] p-7 sm:p-8 shadow-[8px_8px_0px_0px_#171715] space-y-6">
+      <div className="bg-white border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-7 lg:p-8 shadow-[5px_5px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b-2 border-ink/10">
           <div>
             <span className="font-mono text-xs uppercase tracking-wider text-graphite font-bold block mb-1">
@@ -525,23 +522,23 @@ export default function OverviewTab({
       </div>
 
       {/* Real-time Ledger Feed */}
-      <div className="p-7 rounded-3xl bg-white border-2 border-ink shadow-[6px_6px_0px_0px_#171715]">
+      <div className="p-4 sm:p-6 lg:p-7 rounded-2xl sm:rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] sm:shadow-[6px_6px_0px_0px_#171715]">
         <div className="flex items-center justify-between pb-4 border-b-2 border-ink/10 mb-4">
           <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-moss-700" />
+            <Activity className="w-4 h-4 text-moss-700 shrink-0" />
             <span className="font-mono text-xs uppercase font-bold text-ink">
               Aktivitas Rantai Pasok Lumbung Terkini
             </span>
           </div>
-          <span className="font-mono text-[10px] text-graphite">Sinkronisasi Otomatis</span>
+          <span className="font-mono text-[10px] text-graphite hidden sm:inline">Sinkronisasi Otomatis</span>
         </div>
 
         <div className="space-y-3 font-mono text-xs">
           {displayedFeed.map((item) => (
             <div key={item.id} className="p-3.5 rounded-xl bg-ivory border-2 border-ink/15 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div className="flex items-center gap-2.5">
-                <span className={`w-2 h-2 rounded-full ${item.type === 'finance' ? 'bg-ochre-500' : 'bg-leaf-500'}`}></span>
-                <span className="font-bold text-ink">{item.action}</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={`w-2 h-2 rounded-full shrink-0 ${item.type === 'finance' ? 'bg-ochre-500' : 'bg-leaf-500'}`}></span>
+                <span className="font-bold text-ink break-words">{item.action}</span>
                 <span className="text-graphite text-[11px]">&bull; {item.user}</span>
               </div>
               <div className="flex items-center gap-3 text-[11px]">

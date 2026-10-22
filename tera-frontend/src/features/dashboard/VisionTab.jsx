@@ -309,7 +309,7 @@ export default function VisionTab({
         className="hidden"
       />
 
-      <div className="bg-white border-2 border-ink rounded-[2.5rem] p-7 sm:p-10 shadow-[8px_8px_0px_0px_#171715]">
+      <div className="bg-white border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-8 lg:p-10 shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715]">
         {/* Header Bar */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 pb-6 border-b-2 border-ink/10 mb-8">
           <div>
@@ -336,7 +336,7 @@ export default function VisionTab({
         </div>
 
         {/* Action Controls: Commodity Selector & Camera / Upload Buttons */}
-        <div className="bg-paper p-5 rounded-2xl border-2 border-ink shadow-[4px_4px_0px_0px_#171715] mb-8 space-y-4">
+        <div className="bg-paper p-3.5 sm:p-5 rounded-2xl border-2 border-ink shadow-[4px_4px_0px_0px_#171715] mb-8 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
             {/* Commodity Selector */}
             <div className="md:col-span-5">
@@ -538,33 +538,33 @@ export default function VisionTab({
 
                 {/* Live Camera Bottom Floating Controls */}
                 {isCameraActive && (
-                  <div className="absolute bottom-4 inset-x-4 flex items-center justify-between z-20 pointer-events-auto">
+                  <div className="absolute bottom-2.5 sm:bottom-4 inset-x-2 sm:inset-x-4 flex items-center justify-between gap-1.5 sm:gap-2 z-20 pointer-events-auto">
                     <button
                       type="button"
                       onClick={handleToggleCamera}
-                      className="p-3 rounded-full bg-black/60 text-white border border-white/40 hover:bg-black/80 transition-all cursor-pointer backdrop-blur-md"
+                      className="p-2.5 sm:p-3 rounded-full bg-black/60 text-white border border-white/40 hover:bg-black/80 transition-all cursor-pointer backdrop-blur-md shrink-0"
                       title="Ganti Kamera Depan/Belakang"
                     >
-                      <RotateCw className="w-5 h-5" />
+                      <RotateCw className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
 
                     {/* Big Shutter Button */}
                     <button
                       type="button"
                       onClick={handleCaptureFromCamera}
-                      className="px-6 py-3 rounded-full bg-leaf-500 hover:bg-leaf-400 text-ink font-mono text-xs font-bold border-2 border-white shadow-[0_0_15px_rgba(255,255,255,0.6)] flex items-center gap-2 cursor-pointer active:scale-95 transition-all"
+                      className="px-3 sm:px-6 py-2 sm:py-3 rounded-full bg-leaf-500 hover:bg-leaf-400 text-ink font-mono text-[11px] sm:text-xs font-bold border-2 border-white shadow-[0_0_15px_rgba(255,255,255,0.6)] flex items-center gap-1.5 sm:gap-2 cursor-pointer active:scale-95 transition-all truncate"
                     >
-                      <Camera className="w-5 h-5 text-ink" />
-                      <span>JEPRET FOTO SEKARANG</span>
+                      <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-ink shrink-0" />
+                      <span>JEPRET<span className="hidden sm:inline"> FOTO SEKARANG</span></span>
                     </button>
 
                     <button
                       type="button"
                       onClick={stopCamera}
-                      className="p-3 rounded-full bg-black/60 text-white border border-white/40 hover:bg-black/80 transition-all cursor-pointer backdrop-blur-md"
+                      className="p-2.5 sm:p-3 rounded-full bg-black/60 text-white border border-white/40 hover:bg-black/80 transition-all cursor-pointer backdrop-blur-md shrink-0"
                       title="Tutup Kamera"
                     >
-                      <X className="w-5 h-5" />
+                      <X className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                   </div>
                 )}
@@ -610,7 +610,7 @@ export default function VisionTab({
           </div>
 
           {/* Right: Inspection Metrics & Commercial Certificate */}
-          <div className="lg:col-span-6 bg-paper border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-6">
+          <div className="lg:col-span-6 bg-paper border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-7 shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-6">
             {scanResult ? (
               <div className="space-y-5 animate-in fade-in duration-300">
                 {/* Certificate Header with 8-Tier Grade Badge */}
@@ -650,7 +650,7 @@ export default function VisionTab({
                 </div>
 
                 {/* 4 Core Agronomic Metrics (Dynamically and Continuously Computed) */}
-                <div className="grid grid-cols-2 gap-3 font-mono text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 font-mono text-xs">
                   <div className="p-3.5 rounded-xl bg-white border-2 border-ink/20">
                     <span className="text-[10px] text-graphite block">
                       Indeks Klorofil Daun (SPAD)

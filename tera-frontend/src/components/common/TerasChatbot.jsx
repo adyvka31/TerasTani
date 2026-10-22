@@ -445,7 +445,7 @@ Silakan pilih topik saran cepat di bawah atau tanyakan parameter spesifik lainny
       <div
         ref={windowRef}
         data-lenis-prevent
-        className="fixed bottom-30 sm:bottom-36 right-10 sm:right-16 z-50 w-[calc(100vw-5rem)] sm:w-[370px] h-[480px] max-h-[78vh] bg-paper rounded-[1.75rem] border-2 border-ink shadow-[8px_8px_0px_0px_#171715] flex flex-col overflow-hidden"
+        className="fixed bottom-28 sm:bottom-36 right-6 sm:right-16 z-50 w-[calc(100vw-3rem)] sm:w-[375px] max-w-[380px] h-[480px] max-h-[76vh] bg-paper rounded-2xl sm:rounded-[1.75rem] border-2 border-ink shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] flex flex-col overflow-hidden"
         style={{ transformOrigin: 'bottom right' }}
         role="dialog"
         aria-label="Jendela Chat TerasBot Agronomi AI"

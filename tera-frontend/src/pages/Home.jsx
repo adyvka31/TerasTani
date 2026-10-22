@@ -1209,7 +1209,7 @@ export default function Home() {
       />
 
       {/* 1. Header / Architectural Editorial Navigation */}
-      <nav className="sticky top-0 z-40 w-full bg-paper/95 backdrop-blur-md border-b-2 border-ink transition-all">
+      <nav className={`sticky top-0 z-40 w-full backdrop-blur-md border-b-2 border-ink transition-all ${isScrolled ? 'bg-paper/98 shadow-[0_4px_12px_rgba(23,23,21,0.06)]' : 'bg-paper/95'}`}>
         {/* Subtle Top Reading Progress Bar */}
         <div id="scroll-progress" className="h-[2px] w-full bg-gradient-to-r from-leaf-500 via-ochre-400 to-moss-900 origin-left scale-x-0"></div>
 
@@ -1348,7 +1348,7 @@ export default function Home() {
 
             {/* Monumental Headline */}
             <div className="hero-intro-elem max-w-5xl mb-10">
-              <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-normal leading-[1.05] tracking-tight text-ink text-balance-editorial">
+              <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal leading-[1.05] tracking-tight text-ink text-balance-editorial">
                 Ubah Lahan Sempit Menjadi <br className="hidden md:block"/>
                 <span className="font-editorial-italic font-light text-moss-800">Hasil Panen Komunal</span> Berlimpah.
               </h1>
@@ -1888,70 +1888,186 @@ export default function Home() {
             </div>
           ) : (
             /* DISTRIBUTOR VIEW: Enterprise Procurement & Batch Reserve Simulator */
-            <div className="simulator-console-box bg-moss-950 text-paper rounded-[2.5rem] border-2 border-ink p-6 md:p-12 shadow-[10px_10px_0px_0px_#F59E0B] grid lg:grid-cols-12 gap-10 items-stretch">
+            <div className="simulator-console-box bg-paper rounded-[2.5rem] border-2 border-ink p-6 md:p-12 shadow-[8px_8px_0px_0px_#171715] md:shadow-[12px_12px_0px_0px_#171715] grid lg:grid-cols-12 gap-10 items-stretch">
               
-              <div className="simulator-left-col lg:col-span-6 space-y-6">
-                <span className="font-mono text-xs uppercase tracking-widest text-ochre-300 block font-bold">
+              <div className="simulator-left-col lg:col-span-5 space-y-6">
+                <span className="font-mono text-xs uppercase tracking-widest text-leaf-800 block font-bold">
                   Dasbor Pengadaan Logistik Komunal
                 </span>
-                <h3 className="font-display text-3xl sm:text-4xl font-normal text-paper leading-tight">
+                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-normal text-ink leading-tight">
                   Akses Pasokan Sayur Segar Bersertifikat AI <br />
-                  <span className="font-editorial-italic font-light text-leaf-300">Langsung dari Ribuan Lahan Warga.</span>
+                  <span className="font-editorial-italic font-light text-moss-700">Langsung dari Ribuan Lahan Warga.</span>
                 </h3>
-                <p className="text-paper/70 text-sm leading-relaxed">
+                <p className="text-graphite text-xs sm:text-sm leading-relaxed">
                   Hilangkan fluktuasi pasokan dan risiko susut sayuran segar di gerai ritel Anda. TerasTani mengonsolidasi ribuan produsen urban ke dalam satu antarmuka pengadaan dengan mutu seragam Grade A dan kepastian waktu muat armada.
                 </p>
 
-                <div className="space-y-3 pt-2">
-                  <div className="p-4 rounded-xl bg-white/5 border-2 border-white/20 shadow-[3px_3px_0px_0px_#F59E0B] flex items-center justify-between">
+                <div className="space-y-3 pt-1">
+                  <div className="p-3.5 sm:p-4 rounded-xl bg-ivory border-2 border-ink shadow-[3px_3px_0px_0px_#171715] flex items-center justify-between transition-transform hover:-translate-y-0.5">
                     <div>
-                      <div className="text-sm font-semibold text-paper">Batch #RAW-2026-10</div>
-                      <div className="text-xs text-paper/60">Konsolidasi 8 Klaster Rawasari &bull; 1.450 kg Pakcoy</div>
+                      <div className="text-xs sm:text-sm font-bold text-ink flex items-center gap-2">
+                        <span>Batch #RAW-2026-10</span>
+                        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      </div>
+                      <div className="text-[11px] sm:text-xs text-graphite mt-0.5 font-mono">
+                        Konsolidasi 8 Klaster Rawasari &bull; 1.450 kg Pakcoy
+                      </div>
                     </div>
-                    <span className="font-mono text-xs bg-leaf-400 text-moss-950 px-2 py-0.5 rounded font-bold border border-ink">TERSEDIA</span>
+                    <span className="font-mono text-[11px] sm:text-xs bg-leaf-300 text-moss-950 px-2.5 py-1 rounded-md font-bold border-2 border-ink shrink-0">
+                      SIAP MUAT
+                    </span>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-white/5 border-2 border-white/20 shadow-[3px_3px_0px_0px_#F59E0B] flex items-center justify-between">
+                  <div className="p-3.5 sm:p-4 rounded-xl bg-ivory border-2 border-ink shadow-[3px_3px_0px_0px_#171715] flex items-center justify-between transition-transform hover:-translate-y-0.5">
                     <div>
-                      <div className="text-sm font-semibold text-paper">Batch #CMP-2026-10</div>
-                      <div className="text-xs text-paper/60">Konsolidasi 12 Klaster Cempaka &bull; 2.100 kg Selada</div>
+                      <div className="text-xs sm:text-sm font-bold text-ink flex items-center gap-2">
+                        <span>Batch #CMP-2026-10</span>
+                        <span className="inline-block w-2 h-2 rounded-full bg-amber-500"></span>
+                      </div>
+                      <div className="text-[11px] sm:text-xs text-graphite mt-0.5 font-mono">
+                        Konsolidasi 12 Klaster Cempaka &bull; 2.100 kg Selada
+                      </div>
                     </div>
-                    <span className="font-mono text-xs bg-ochre-400 text-moss-950 px-2 py-0.5 rounded font-bold border border-ink">BOOKED 70%</span>
+                    <span className="font-mono text-[11px] sm:text-xs bg-ochre-300 text-ink px-2.5 py-1 rounded-md font-bold border-2 border-ink shrink-0">
+                      TERKONTRAK 70%
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 sm:p-4 rounded-xl bg-moss-100 border-2 border-ink shadow-[3px_3px_0px_0px_#171715] flex items-center gap-3">
+                  <Building2 className="w-5 h-5 text-moss-800 shrink-0" />
+                  <div className="text-xs text-ink font-mono">
+                    Kemitraan Resmi: <strong>Escrow &amp; SLA Terverifikasi</strong> &bull; Tier B2B
                   </div>
                 </div>
               </div>
 
-              <div className="simulator-right-col lg:col-span-6 bg-white/5 rounded-2xl p-8 border-2 border-white/20 flex flex-col justify-between shadow-[4px_4px_0px_0px_#171715]">
-                <div>
-                  <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-white/10">
-                    <span className="font-mono text-xs uppercase tracking-wider text-paper/60">Parameter Kontrak Dagang</span>
-                    <span className="font-mono text-xs text-leaf-300 font-bold bg-moss-900 px-2 py-0.5 rounded border border-leaf-400/30">Sistem Escrow Terjamin</span>
+              {/* Right Column: Structured B2B Contract & Allocation Result Card */}
+              <div className="simulator-right-col lg:col-span-7 bg-moss-900 text-paper rounded-3xl p-6 sm:p-8 md:p-10 flex flex-col justify-between border-2 border-ink shadow-[6px_6px_0px_0px_#F59E0B] relative overflow-hidden">
+                <div className="simulator-glow-orb absolute top-0 right-0 w-80 h-80 bg-ochre-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div className="relative z-10">
+                  {/* Card Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b-2 border-white/10 mb-6 gap-3">
+                    <div>
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-ochre-300 block mb-1 font-bold">
+                        Spesifikasi Pengadaan Logistik Komunal
+                      </span>
+                      <h3 className="font-display text-2xl font-normal text-paper">Kontrak Dagang &amp; Skala Distribusi</h3>
+                    </div>
+                    <div className="self-start sm:self-auto">
+                      <span className="font-mono text-[11px] text-leaf-300 font-bold bg-moss-950 px-3 py-1 rounded-lg border border-leaf-400/40 inline-flex items-center gap-1.5 shadow-[2px_2px_0px_0px_#171715]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-leaf-400 animate-pulse"></span>
+                        Sistem Escrow Terjamin
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="space-y-4 mb-6">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-paper/70">Toleransi Kerusakan Fisik:</span>
-                      <span className="font-mono font-medium text-paper">&lt; 1.5% (Standar AI)</span>
+                  {/* Dual Metric Simulation Display */}
+                  <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 mb-6">
+                    <div className="bg-moss-950 rounded-2xl p-4 sm:p-5 border-2 border-moss-700 shadow-[3px_3px_0px_0px_#171715]">
+                      <span className="font-mono text-xs uppercase tracking-wider text-paper/60 block mb-1">
+                        Kapasitas Pasokan Siap Muat
+                      </span>
+                      <div className="font-display text-3xl sm:text-4xl text-paper font-normal">
+                        3.550 <span className="text-base sm:text-lg font-sans text-paper/70">kg / hari</span>
+                      </div>
+                      <span className="text-[11px] text-leaf-300 mt-2 block border-t border-white/10 pt-1.5 font-mono">
+                        Grade A+ &bull; Kurasi AI Computer Vision
+                      </span>
                     </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-paper/70">Waktu Petik ke Gudang:</span>
-                      <span className="font-mono font-medium text-paper">Maksimal 4 Jam</span>
+
+                    <div className="bg-moss-950 rounded-2xl p-4 sm:p-5 border-2 border-ochre-500 shadow-[3px_3px_0px_0px_#F59E0B]">
+                      <span className="font-mono text-xs uppercase tracking-wider text-ochre-300 block mb-1 font-bold">
+                        Efisiensi Biaya Pengadaan
+                      </span>
+                      <div className="font-display text-3xl sm:text-4xl text-ochre-400 font-normal">
+                        +28.4% <span className="text-base sm:text-lg font-sans text-ochre-200/80">Margin</span>
+                      </div>
+                      <span className="text-[11px] text-paper/60 mt-2 block border-t border-white/10 pt-1.5 font-mono">
+                        Pangkas 3 lapis tengkulak konvensional
+                      </span>
                     </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-paper/70">Sertifikasi Keamanan Pangan:</span>
-                      <span className="font-mono font-medium text-leaf-300">Bebas Pestisida Kimia</span>
+                  </div>
+
+                  {/* Structured Contract Parameter Grid */}
+                  <div className="space-y-2.5 mb-6">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-paper/60 block font-bold mb-2">
+                      Parameter Kontrak &amp; Standar Penjaminan:
+                    </span>
+                    
+                    <div className="grid sm:grid-cols-2 gap-2.5 font-sans">
+                      <div className="p-3 rounded-xl bg-moss-950/80 border border-white/10 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-leaf-400/10 border border-leaf-400/30 flex items-center justify-center shrink-0">
+                            <ShieldCheck className="w-4 h-4 text-leaf-300" />
+                          </div>
+                          <span className="text-xs text-paper/80 truncate">Toleransi Kerusakan</span>
+                        </div>
+                        <span className="font-mono text-[11px] font-bold text-paper bg-white/10 px-2 py-0.5 rounded shrink-0">
+                          &lt; 1.5% AI
+                        </span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-moss-950/80 border border-white/10 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-leaf-400/10 border border-leaf-400/30 flex items-center justify-center shrink-0">
+                            <Truck className="w-4 h-4 text-leaf-300" />
+                          </div>
+                          <span className="text-xs text-paper/80 truncate">Petik ke Gudang</span>
+                        </div>
+                        <span className="font-mono text-[11px] font-bold text-paper bg-white/10 px-2 py-0.5 rounded shrink-0">
+                          Maks 4 Jam
+                        </span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-moss-950/80 border border-white/10 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-leaf-400/10 border border-leaf-400/30 flex items-center justify-center shrink-0">
+                            <Sprout className="w-4 h-4 text-leaf-300" />
+                          </div>
+                          <span className="text-xs text-paper/80 truncate">Keamanan Pangan</span>
+                        </div>
+                        <span className="font-mono text-[11px] font-bold text-leaf-300 bg-leaf-400/10 border border-leaf-400/30 px-2 py-0.5 rounded shrink-0">
+                          Bebas Pestisida
+                        </span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-moss-950/80 border border-white/10 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-leaf-400/10 border border-leaf-400/30 flex items-center justify-center shrink-0">
+                            <QrCode className="w-4 h-4 text-leaf-300" />
+                          </div>
+                          <span className="text-xs text-paper/80 truncate">Rantai Pasok</span>
+                        </div>
+                        <span className="font-mono text-[11px] font-bold text-ochre-300 bg-ochre-400/10 border border-ochre-400/30 px-2 py-0.5 rounded shrink-0">
+                          QR Custody
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-paper/70">Pencatatan Rantai Pasok:</span>
-                      <span className="font-mono font-medium text-paper">QR Batch Custody</span>
+                  </div>
+
+                  {/* Operational Assurances Checklist */}
+                  <div className="space-y-2 text-xs text-paper/80 font-sans pt-1">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-leaf-300 shrink-0" />
+                      <span>Garansi retur otomatis 100% jika mutu fisik di bawah standar ambang batas</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-leaf-300 shrink-0" />
+                      <span>API integrasi langsung ke ERP/WMS logistik armada gudang Anda</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t-2 border-white/10">
+                {/* Footer Action */}
+                <div className="pt-6 border-t-2 border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 relative z-10">
+                  <div className="text-xs text-paper/70 font-mono text-center sm:text-left">
+                    Amankan kuota panen komunal untuk rantai pasok Anda hari ini.
+                  </div>
                   <Link
                     to="/register?role=distributor"
-                    className="nb-btn-ochre w-full py-4 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                    className="nb-btn-ochre w-full sm:w-auto px-7 py-3.5 font-bold text-xs tracking-wider uppercase rounded-xl flex items-center justify-center gap-2 cursor-pointer shrink-0"
                   >
                     <span>Daftar Sebagai Distributor Mitra</span>
                     <ArrowRight className="w-4 h-4 text-ink" />

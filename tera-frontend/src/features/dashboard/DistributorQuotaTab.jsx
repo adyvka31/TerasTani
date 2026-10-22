@@ -3,7 +3,7 @@
  * 100% connected to database with real-time continuous quota collection & booking
  */
 import { useState, useEffect } from 'react';
-import { TrendingUp, Check, Scale, ShieldCheck, Sparkles } from 'lucide-react';
+import { TrendingUp, Check } from 'lucide-react';
 import { dashboardApi } from '../../api/dashboard.api';
 import { formatIDR } from '../../utils/formatters';
 
@@ -69,7 +69,7 @@ export default function DistributorQuotaTab() {
     <div className="space-y-8 animate-in fade-in duration-200">
       
       {/* Banner */}
-      <div className="bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715]">
+      <div className="bg-moss-950 text-paper rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715]">
         <div className="max-w-2xl space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-white/20 bg-moss-900 font-mono text-xs uppercase font-bold text-ochre-300">
             <TrendingUp className="w-3.5 h-3.5" />
@@ -120,7 +120,7 @@ export default function DistributorQuotaTab() {
             return (
               <div 
                 key={item.id || idx} 
-                className="p-6 rounded-3xl bg-white border-2 border-ink shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-4"
+                className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border-2 border-ink shadow-[4px_4px_0px_0px_#171715] sm:shadow-[5px_5px_0px_0px_#171715] flex flex-col justify-between space-y-4"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">

@@ -33,7 +33,7 @@ export default function GamificationTab({
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       
-      <div className="bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715]">
+      <div className="bg-moss-950 text-paper rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715]">
         <div className="max-w-2xl space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-white/20 bg-moss-900 font-mono text-xs uppercase font-bold text-ochre-300">
             <Award className="w-3.5 h-3.5" />
@@ -52,7 +52,7 @@ export default function GamificationTab({
       <div className="grid lg:grid-cols-12 gap-8 items-stretch">
         
         {/* Left: Active Quests */}
-        <div className="lg:col-span-6 bg-white border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-4">
+        <div className="lg:col-span-6 bg-white border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-7 shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-4">
           <div className="pb-3 border-b-2 border-ink/10 flex items-center justify-between">
             <span className="font-mono text-xs uppercase font-bold text-ink">
               Misi Harian & Mingguan
@@ -116,7 +116,7 @@ export default function GamificationTab({
         </div>
 
         {/* Right: Leaderboard Kelurahan */}
-        <div className="lg:col-span-6 bg-ivory border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-4">
+        <div className="lg:col-span-6 bg-ivory border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-7 shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-4">
           <div className="pb-3 border-b-2 border-ink/10 flex items-center justify-between font-mono text-xs">
             <span className="font-bold text-ink uppercase">Papan Peringkat Rawasari (Bulan Ini)</span>
             <span className="text-graphite">14 Klaster</span>

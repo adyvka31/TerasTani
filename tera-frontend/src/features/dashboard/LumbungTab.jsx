@@ -70,7 +70,7 @@ export default function LumbungTab({
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       {/* Banner Hero */}
-      <div className="bg-moss-950 text-paper rounded-[2.5rem] p-7 sm:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715]">
+      <div className="bg-moss-950 text-paper rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 border-2 border-ink shadow-[8px_8px_0px_0px_#171715]">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="max-w-2xl space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border-2 border-white/20 bg-moss-900 font-mono text-xs uppercase font-bold text-ochre-300">
@@ -91,7 +91,7 @@ export default function LumbungTab({
           </div>
 
           {/* Collective Crate Capacity */}
-          <div className="p-5 rounded-2xl bg-white/10 backdrop-blur-md border-2 border-white/20 min-w-[280px]">
+          <div className="w-full lg:w-auto min-w-0 sm:min-w-[280px] p-4 sm:p-5 rounded-2xl bg-white/10 backdrop-blur-md border-2 border-white/20">
             <div className="flex justify-between font-mono text-xs text-paper mb-2">
               <span>Kapasitas Crate Hari Ini:</span>
               <span className="font-bold text-ochre-300">840 / 1.000 kg</span>
@@ -110,7 +110,7 @@ export default function LumbungTab({
       {/* QR Generation & Hub Schedule Grid */}
       <div className="grid lg:grid-cols-12 gap-8 items-start">
         {/* Left: Input Form for QR Dispatch Ticket */}
-        <div className="lg:col-span-6 bg-white border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-start space-y-5">
+        <div className="lg:col-span-6 bg-white border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-7 shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-start space-y-5">
           <div className="pb-4 border-b-2 border-ink/10">
             <span className="font-mono text-xs uppercase font-bold text-ink block">
               Formulir Setor Panen Baru
@@ -234,7 +234,7 @@ export default function LumbungTab({
         </div>
 
         {/* Right: Last Issued Ticket or Container List */}
-        <div className="lg:col-span-6 bg-paper border-2 border-ink rounded-[2.5rem] p-7 shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-4">
+        <div className="lg:col-span-6 bg-paper border-2 border-ink rounded-3xl sm:rounded-[2.5rem] p-4 sm:p-7 shadow-[6px_6px_0px_0px_#171715] sm:shadow-[8px_8px_0px_0px_#171715] flex flex-col justify-between h-full space-y-4">
           <div className="pb-3 border-b-2 border-ink/10 flex justify-between items-center">
             <span className="font-mono text-xs uppercase font-bold text-ink flex items-center gap-2">
               <QrCode className="w-4 h-4 text-moss-900" />
